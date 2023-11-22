@@ -1,8 +1,11 @@
 import { NotFoundException } from '@devseeder/microservices-exceptions';
-import { Get, Param, Query } from '@nestjs/common';
+import { Get, Param, Query, ValidationPipe } from '@nestjs/common';
+import { SearchPetDto } from 'src/microservice/application/dto/search/search-pet.dto';
 import { Search } from 'src/microservice/application/dto/search/search.dto';
+import { SchemaValidator } from 'src/microservice/application/helper/schema-validator.helper';
 import { AbstractGetService } from 'src/microservice/application/service/abstract/abstract-get.service';
 import { AbstractTransformation } from 'src/microservice/application/transform/abstract.transformation';
+import { InputSchema } from 'src/microservice/domain/interface/input-schema.interface';
 
 export abstract class AbstractController<
   Collection,
@@ -18,7 +21,8 @@ export abstract class AbstractController<
       SearchParams
     >,
     protected readonly searchKey: string,
-    protected readonly transformation: AbstractTransformation<SearchParams>
+    protected readonly transformation: AbstractTransformation<SearchParams>,
+    protected readonly inputSchema: InputSchema
   ) {}
 
   // @UseGuards(MyJwtAuthGuard)
@@ -32,13 +36,13 @@ export abstract class AbstractController<
 
   @Get(`/search/:searchId`)
   searchBy(
-    @Query() params: SearchParams,
+    @Query() params: SearchPetDto,
     @Param('searchId') searchId: string
   ): Promise<GetResponse[]> {
-    const searchInput = params;
-    searchInput[this.searchKey] = searchId;
+    params[this.searchKey] = searchId;
+    SchemaValidator.validateSchema(this.inputSchema.search, params);
     return this.getService.search(
-      this.transformation.convertReferenceDB(searchInput)
+      this.transformation.convertReferenceDB(params as unknown as SearchParams)
     );
   }
 
