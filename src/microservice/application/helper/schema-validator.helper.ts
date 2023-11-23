@@ -19,4 +19,10 @@ export class SchemaValidator {
       return value;
     };
   }
+
+  static removeUndefined<FilteredObject>(obj: object): FilteredObject {
+    return Object.fromEntries(
+      Object.entries(obj).filter(([_, value]) => value !== undefined)
+    ) as FilteredObject;
+  }
 }

@@ -6,6 +6,12 @@ import { Injectable } from '@nestjs/common';
 import { Search } from 'src/microservice/application/dto/search/search.dto';
 import { Relation } from '../../../domain/interface/relation.interface';
 import { InvalidDataException } from '@devseeder/microservices-exceptions';
+import { AbstractTransformation } from '../../transform/abstract.transformation';
+import {
+  SearchEgineOperators,
+  SearchEngine
+} from 'src/microservice/domain/interface/search-engine.interface';
+import { SchemaValidator } from '../../helper/schema-validator.helper';
 
 @Injectable()
 export abstract class AbstractGetService<
@@ -19,20 +25,21 @@ export abstract class AbstractGetService<
       Collection,
       MongooseModel
     >,
-    protected readonly relations: Relation[] = []
+    protected readonly relations: Relation[] = [],
+    protected readonly searchEngines: SearchEngine[] = []
   ) {
     super();
   }
 
-  async search(params: SearchParams = null): Promise<ResponseModel[]> {
-    await this.convertRelation(params);
-    const activeParam =
-      params && params.active !== undefined ? params.active : true;
-    this.logger.log(
-      `Searching ${JSON.stringify({ ...params, active: activeParam })}...`
-    );
+  async search(searchParams: SearchParams = null): Promise<ResponseModel[]> {
+    await this.convertRelation(searchParams);
+    const params = this.buildSearchEgines(searchParams);
+
+    const active = params && params.active !== undefined ? params.active : true;
+    const searchWhere = { ...params, active };
+    this.logger.log(`Searching ${JSON.stringify(searchWhere)}...`);
     const responseItems = await this.repository.find(
-      { ...params, active: activeParam },
+      searchWhere,
       { all: 0 },
       {},
       false
@@ -55,9 +62,12 @@ export abstract class AbstractGetService<
 
     const itemResponse = { ...item } as unknown as ResponseModel;
     for await (const rel of this.relations) {
-      const value = item[rel.key];
+      let value = item[rel.key];
 
       if (value === undefined) continue;
+
+      if (!Array.isArray(value) && value.split(',').length > 1)
+        value = value.split(',');
 
       if (Array.isArray(value) && value.length) {
         const relPromises = value.map(async (val) => {
@@ -98,5 +108,35 @@ export abstract class AbstractGetService<
       throw new InvalidDataException(rel.key, value);
 
     return objValue[objKey];
+  }
+
+  private buildSearchEgines(item: SearchParams): Partial<SearchParams> {
+    if (!item) return null;
+
+    const itemResponse = { ...item } as unknown as any;
+    for (const rel of this.searchEngines) {
+      const value = item[rel.key];
+
+      if (value === undefined) continue;
+
+      switch (rel.operator) {
+        case SearchEgineOperators.LIKE:
+          itemResponse[rel.key] = {
+            $regex: new RegExp(`${value}`),
+            $options: 'i'
+          };
+          break;
+        case SearchEgineOperators.IN:
+          itemResponse[rel.key] = {
+            $in: value.split(',')
+          };
+          break;
+      }
+    }
+    const rem = SchemaValidator.removeUndefined<SearchParams>(itemResponse);
+    console.log('rem');
+    console.log(rem);
+
+    return rem;
   }
 }

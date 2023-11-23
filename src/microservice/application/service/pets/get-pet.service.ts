@@ -4,7 +4,8 @@ import { PetsRepository } from 'src/microservice/adapter/repository/pets.reposit
 import {
   Pet,
   PetDocument,
-  PetRelations
+  PetRelations,
+  PetSearchEngine
 } from '../../../domain/schemas/pets.schema';
 import { GetColorService } from '../colors/get-color.service';
 import { GetAnimalService } from '../animals/get-animal.service';
@@ -25,6 +26,6 @@ export class GetPetService extends AbstractGetService<
     protected readonly animalsService: GetAnimalService,
     protected readonly racesService: GetRaceService
   ) {
-    super(repository, PetRelations);
+    super(repository, PetRelations, PetSearchEngine);
   }
 }

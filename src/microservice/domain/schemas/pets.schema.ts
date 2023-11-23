@@ -2,6 +2,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { Relation } from '../interface/relation.interface';
+import {
+  SearchEgineOperators,
+  SearchEngine
+} from '../interface/search-engine.interface';
 
 export type PetDocument = Pet & Document;
 
@@ -54,4 +58,11 @@ export const PetRelations: Relation[] = [
     key: 'races',
     service: 'races'
   }
+];
+
+export const PetSearchEngine: SearchEngine[] = [
+  { key: 'name', operator: SearchEgineOperators.LIKE },
+  { key: 'color', operator: SearchEgineOperators.IN },
+  { key: 'idAnimal', operator: SearchEgineOperators.IN },
+  { key: 'races', operator: SearchEgineOperators.IN }
 ];
