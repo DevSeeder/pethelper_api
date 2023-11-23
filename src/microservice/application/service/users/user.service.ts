@@ -2,12 +2,12 @@ import { NotFoundException } from '@devseeder/microservices-exceptions';
 import { AbstractService } from '@devseeder/nestjs-microservices-commons';
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { ForbiddenActionException } from '../../../../core/exceptions/forbbiden-action.exception';
-import { UsersMongoose } from '../../../adapter/repository/users.repository';
+import { UsersRepository } from '../../../adapter/repository/users.repository';
 import { User } from '../../../domain/schemas/users.schema';
 
 @Injectable()
 export abstract class UsersService extends AbstractService {
-  constructor(protected readonly usersRepository: UsersMongoose) {
+  constructor(protected readonly usersRepository: UsersRepository) {
     super();
   }
 

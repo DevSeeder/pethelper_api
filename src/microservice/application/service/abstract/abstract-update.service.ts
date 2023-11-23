@@ -3,16 +3,15 @@ import { MongooseRepository } from '@devseeder/nestjs-microservices-commons';
 import { Injectable } from '@nestjs/common';
 import { AbstractDBService } from './abstract-db.service';
 import { Relation } from 'src/microservice/domain/interface/relation.interface';
-import {
-  AbstractDocument,
-  AbstractSchema
-} from 'src/microservice/domain/schemas/abstract.schema';
+import { AbstractBodyDto } from '../../dto/body/abtract-body.dto';
+import { AbstractSchema } from 'src/microservice/domain/schemas/abstract.schema';
 
 @Injectable()
 export abstract class AbstractUpdateService<
   Collection,
   MongooseModel,
-  ResponseModel
+  ResponseModel,
+  BodyDto extends AbstractBodyDto
 > extends AbstractDBService<Collection, MongooseModel, ResponseModel> {
   constructor(
     protected readonly repository: MongooseRepository<
@@ -27,7 +26,7 @@ export abstract class AbstractUpdateService<
 
   async updateById(
     id: string,
-    body: Partial<MongooseModel> | Partial<AbstractDocument>
+    body: Partial<BodyDto> | Partial<AbstractSchema>
   ): Promise<void> {
     this.logger.log(`Updating record by id '${id}'`);
 

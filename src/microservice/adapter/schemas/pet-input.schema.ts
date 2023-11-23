@@ -3,30 +3,43 @@ import { SchemaValidator } from 'src/microservice/application/helper/schema-vali
 import { InputSchema } from 'src/microservice/domain/interface/input-schema.interface';
 
 const commonSchema = {
-  name: Joi.string().optional(),
   color: Joi.string().optional(),
   sex: Joi.string()
     .optional()
-    .custom(SchemaValidator.validateEnum(['M', 'F'])),
-  idAnimal: Joi.string().optional()
+    .custom(SchemaValidator.validateEnum(['M', 'F']))
 };
 
 const search = Joi.object({
   ...commonSchema,
+  name: Joi.string().optional(),
+  idAnimal: Joi.string().optional(),
   race: Joi.string().optional(),
   active: Joi.boolean().optional()
 });
 
-const bodySchema = Joi.object({
+const bodySchema = {
   ...commonSchema,
   birthDate: Joi.date().optional(),
   races: Joi.array<string>().optional(),
   weight: Joi.number().optional(),
   height: Joi.number().optional()
+};
+
+const update = Joi.object({
+  ...bodySchema,
+  name: Joi.string().optional(),
+  idAnimal: Joi.string().optional()
+});
+
+const create = Joi.object({
+  ...bodySchema,
+  userId: Joi.string().required(),
+  name: Joi.string().required(),
+  idAnimal: Joi.string().required()
 });
 
 export const PetInputSchema: InputSchema = {
   search,
-  create: bodySchema,
-  update: bodySchema
+  create,
+  update
 };

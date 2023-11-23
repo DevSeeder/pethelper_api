@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { AbstractSchema } from './abstract.schema';
 
 export type UserDocument = User & Document;
 
 @Schema({ timestamps: true, collection: 'users' })
-export class User {
-  @Prop({ required: true })
+export class User extends AbstractSchema {
+  @Prop({ required: false })
   id: number;
 
   @Prop({ required: true })
@@ -17,9 +18,6 @@ export class User {
 
   @Prop({ required: false })
   idUserAuth: string;
-
-  @Prop({ required: true })
-  active: boolean;
 }
 
 const schema = SchemaFactory.createForClass(User);

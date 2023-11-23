@@ -1,5 +1,13 @@
 import { NotFoundException } from '@devseeder/microservices-exceptions';
-import { Body, Get, Param, Patch, Query, ValidationPipe } from '@nestjs/common';
+import {
+  Body,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  ValidationPipe
+} from '@nestjs/common';
 import { SearchPetDto } from 'src/microservice/application/dto/search/search-pet.dto';
 import { Search } from 'src/microservice/application/dto/search/search.dto';
 import { DateHelper } from 'src/microservice/application/helper/date.helper';
@@ -9,12 +17,16 @@ import { AbstractUpdateService } from 'src/microservice/application/service/abst
 import { AbstractTransformation } from 'src/microservice/application/transform/abstract.transformation';
 import { InputSchema } from 'src/microservice/domain/interface/input-schema.interface';
 import { PetInputSchema } from '../schemas/pet-input.schema';
+import { PetBodyDto } from 'src/microservice/application/dto/body/pet-body.dto';
+import { AbstractCreateService } from 'src/microservice/application/service/abstract/abstract-create.service';
+import { AbstractBodyDto } from 'src/microservice/application/dto/body/abtract-body.dto';
 
 export abstract class AbstractController<
   Collection,
   MongooseModel,
   GetResponse,
-  SearchParams extends Search
+  SearchParams extends Search,
+  BodyDto extends AbstractBodyDto
 > {
   constructor(
     protected readonly getService: AbstractGetService<
@@ -27,10 +39,17 @@ export abstract class AbstractController<
     protected readonly transformation: AbstractTransformation<SearchParams>,
     protected readonly inputSchema: InputSchema,
     protected readonly itemLabel: string,
-    protected readonly updateService: AbstractUpdateService<
+    protected readonly updateService?: AbstractUpdateService<
       Collection,
       MongooseModel,
-      GetResponse
+      GetResponse,
+      BodyDto
+    >,
+    protected readonly createService?: AbstractCreateService<
+      Collection,
+      MongooseModel,
+      GetResponse,
+      BodyDto
     >
   ) {}
 
@@ -48,8 +67,8 @@ export abstract class AbstractController<
     @Query() params: SearchPetDto,
     @Param('searchId') searchId: string
   ): Promise<GetResponse[]> {
-    params[this.searchKey] = searchId;
     SchemaValidator.validateSchema(this.inputSchema.search, params);
+    params[this.searchKey] = searchId;
     return this.getService.search(
       this.transformation.convertReferenceDB(params as unknown as SearchParams)
     );
@@ -76,8 +95,17 @@ export abstract class AbstractController<
   }
 
   @Patch(`/:id`)
-  async update(@Param('id') id: string, @Body() body: any): Promise<void> {
+  async update(
+    @Param('id') id: string,
+    @Body() body: PetBodyDto
+  ): Promise<void> {
     SchemaValidator.validateSchema(PetInputSchema.update, body);
-    await this.updateService.updateById(id, body);
+    await this.updateService.updateById(id, body as unknown as BodyDto);
+  }
+
+  @Post(`/`)
+  async create(@Body() body: PetBodyDto): Promise<void> {
+    SchemaValidator.validateSchema(PetInputSchema.create, body);
+    await this.createService.create(body as unknown as BodyDto);
   }
 }

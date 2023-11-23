@@ -8,12 +8,13 @@ import {
 import { GetColorService } from '../colors/get-color.service';
 import { GetAnimalService } from '../animals/get-animal.service';
 import { GetRaceService } from '../races/get-race.service';
-import { AbstractUpdateService } from '../abstract/abstract-update.service';
 import { PetResponse } from '../../dto/response/pet.response';
+import { AbstractCreateService } from '../abstract/abstract-create.service';
 import { PetBodyDto } from '../../dto/body/pet-body.dto';
+import { GetUserService } from '../users/get-user.service';
 
 @Injectable()
-export class UpdatePetService extends AbstractUpdateService<
+export class CreatePetService extends AbstractCreateService<
   Pet,
   PetDocument,
   PetResponse,
@@ -23,7 +24,8 @@ export class UpdatePetService extends AbstractUpdateService<
     protected readonly repository: PetsRepository,
     protected readonly colorsService: GetColorService,
     protected readonly animalsService: GetAnimalService,
-    protected readonly racesService: GetRaceService
+    protected readonly racesService: GetRaceService,
+    protected readonly usersService: GetUserService
   ) {
     super(repository, 'Pet', PetRelations);
   }

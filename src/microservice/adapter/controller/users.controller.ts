@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { MyJwtAuthGuard } from '../../../core/auth/jwt.auth';
 import { EnumScopes } from '../../domain/enum/enum-scopes.enum';
 import { User } from '../../domain/schemas/users.schema';
-import { GetUserService } from '../../application/service/users/get-user.service';
+import { GetUserValidationService } from '../../application/service/users/get-user-validation.service';
 import { UpdateUserService } from '../../application/service/users/update-user.service';
 import { UpdateUserDTO, UserDTO } from '../../domain/model/dto/users/user.dto';
 import { CreateUserService } from '../../application/service/users/create-user.service';
@@ -13,7 +13,7 @@ import { GetUser } from '../../domain/decorators/get-user.decorator';
 export class UsersController {
   constructor(
     private readonly createUserService: CreateUserService,
-    private readonly getUserService: GetUserService,
+    private readonly getUserService: GetUserValidationService,
     private readonly updateUserService: UpdateUserService
   ) {}
 

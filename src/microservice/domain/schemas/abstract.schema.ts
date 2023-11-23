@@ -9,5 +9,5 @@ export abstract class AbstractSchema {
   active: boolean;
 
   @Prop({ required: false })
-  inactivationDate: Date;
+  inactivationDate?: Date;
 }

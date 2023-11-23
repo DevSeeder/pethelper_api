@@ -8,16 +8,24 @@ import { ColorsModule } from './colors.module';
 import { AnimalsModule } from './animals.module';
 import { RacesModule } from './races.module';
 import { UpdatePetService } from '../service/pets/update-pet.service';
+import { CreatePetService } from '../service/pets/create-pet.service';
+import { UsersModule } from './users.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Pet.name, schema: PetsSchema }]),
     ColorsModule,
     AnimalsModule,
-    RacesModule
+    RacesModule,
+    UsersModule
   ],
   controllers: [PetsController],
-  providers: [PetsRepository, GetPetService, UpdatePetService],
-  exports: [PetsRepository, GetPetService, UpdatePetService]
+  providers: [
+    PetsRepository,
+    GetPetService,
+    UpdatePetService,
+    CreatePetService
+  ],
+  exports: [PetsRepository, GetPetService, UpdatePetService, CreatePetService]
 })
 export class PetsModule {}

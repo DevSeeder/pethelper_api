@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { UsersMongoose } from '../../../adapter/repository/users.repository';
+import { UsersRepository } from '../../../adapter/repository/users.repository';
 import {
   UpdateUserDTO,
   UserDTO
@@ -8,7 +8,7 @@ import { UsersService } from './user.service';
 
 @Injectable()
 export class UpdateUserService extends UsersService {
-  constructor(protected readonly usersRepository: UsersMongoose) {
+  constructor(protected readonly usersRepository: UsersRepository) {
     super(usersRepository);
   }
 

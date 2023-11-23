@@ -55,6 +55,10 @@ export const PetRelations: Relation[] = [
   {
     key: 'races',
     service: 'races'
+  },
+  {
+    key: 'userId',
+    service: 'users'
   }
 ];
 
