@@ -6,6 +6,7 @@ import { PetResponse } from 'src/microservice/application/dto/response/pet.respo
 import { Pet, PetDocument } from 'src/microservice/domain/schemas/pets.schema';
 import { PetTransformation } from 'src/microservice/application/transform/pet.transformation';
 import { PetInputSchema } from '../schemas/pet-input.schema';
+import { UpdatePetService } from 'src/microservice/application/service/pets/update-pet.service';
 
 @Controller('pets')
 export class PetsController extends AbstractController<
@@ -14,7 +15,17 @@ export class PetsController extends AbstractController<
   PetResponse,
   SearchPetDto
 > {
-  constructor(protected readonly getService: GetPetService) {
-    super(getService, 'userId', new PetTransformation(), PetInputSchema);
+  constructor(
+    protected readonly getService: GetPetService,
+    protected readonly updateService: UpdatePetService
+  ) {
+    super(
+      getService,
+      'userId',
+      new PetTransformation(),
+      PetInputSchema,
+      'Pet',
+      updateService
+    );
   }
 }

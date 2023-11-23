@@ -1,19 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { AbstractSchema } from './abstract.schema';
 
 export type AnimalDocument = Animal & Document;
 
 @Schema({ timestamps: true, collection: 'animals' })
-export class Animal {
+export class Animal extends AbstractSchema {
   @Prop({ required: true })
   name: string;
 
   @Prop({ required: true })
   key: string;
-
-  @Prop({ required: true })
-  active: boolean;
 }
 
 const schema = SchemaFactory.createForClass(Animal);

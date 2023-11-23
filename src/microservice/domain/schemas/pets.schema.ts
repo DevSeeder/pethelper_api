@@ -6,11 +6,12 @@ import {
   SearchEgineOperators,
   SearchEngine
 } from '../interface/search-engine.interface';
+import { AbstractSchema } from './abstract.schema';
 
 export type PetDocument = Pet & Document;
 
 @Schema({ timestamps: true, collection: 'pets' })
-export class Pet {
+export class Pet extends AbstractSchema {
   @Prop({ required: true })
   name: string;
 
@@ -37,9 +38,6 @@ export class Pet {
 
   @Prop({ required: true })
   userId: string;
-
-  @Prop({ required: true })
-  active: boolean;
 }
 
 const schema = SchemaFactory.createForClass(Pet);

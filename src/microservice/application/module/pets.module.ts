@@ -7,6 +7,7 @@ import { GetPetService } from 'src/microservice/application/service/pets/get-pet
 import { ColorsModule } from './colors.module';
 import { AnimalsModule } from './animals.module';
 import { RacesModule } from './races.module';
+import { UpdatePetService } from '../service/pets/update-pet.service';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { RacesModule } from './races.module';
     RacesModule
   ],
   controllers: [PetsController],
-  providers: [PetsRepository, GetPetService],
-  exports: [PetsRepository, GetPetService]
+  providers: [PetsRepository, GetPetService, UpdatePetService],
+  exports: [PetsRepository, GetPetService, UpdatePetService]
 })
 export class PetsModule {}

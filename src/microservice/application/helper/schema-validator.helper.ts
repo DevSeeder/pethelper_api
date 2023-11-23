@@ -1,13 +1,13 @@
 import { BadRequestException } from '@nestjs/common';
 import { ObjectSchema } from 'joi';
+import { StringHelper } from './string.helper';
 
 export class SchemaValidator {
   static validateSchema(schema: ObjectSchema, obj: object) {
     const { error } = schema.validate(obj);
     if (error)
       throw new BadRequestException(
-        error.message.replaceAll('"', '').charAt(0).toUpperCase() +
-          error.message.replaceAll('"', '').slice(1)
+        StringHelper.capitalizeFirstLetter(error.message.replaceAll('"', ''))
       );
   }
 

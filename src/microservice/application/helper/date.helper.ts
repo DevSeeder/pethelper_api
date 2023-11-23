@@ -1,5 +1,5 @@
 export class DateHelper {
-  static GetDateNow(timeZone = 'America/Sao_Paulo') {
+  static getDateNow(timeZone = 'America/Sao_Paulo') {
     const dateLocal =
       new Date()
         .toLocaleString('en-CA', { timeZone, hour12: false })
