@@ -69,6 +69,7 @@ export class AbstractDBService<
 
     let objValue;
     try {
+      this.logger.log(`Calling getById(${value}) from '${rel.service}Service'`);
       objValue = await this[`${rel.service}Service`].getById(value);
     } catch (err) {
       this.logger.error(`Error searching id: ${JSON.stringify(err)}`);

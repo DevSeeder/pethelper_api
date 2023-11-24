@@ -14,6 +14,8 @@ export class ExpenseCategory extends AbstractConfig {}
 
 const schema = SchemaFactory.createForClass(ExpenseCategory);
 schema.index({ name: 1 });
+schema.index({ key: 1 });
+
 export const ExpenseCategoriesSchema = schema;
 
 export const ConfigSearchEngine: SearchEngine[] = [

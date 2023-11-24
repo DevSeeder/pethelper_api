@@ -1,27 +1,26 @@
 import { Injectable } from '@nestjs/common';
-import { AbstractGetService } from '../abstract/abstract-get.service';
 import { AnimalsRepository } from 'src/microservice/adapter/repository/animals.repository';
 import {
   Animal,
   AnimalDocument,
-  AnimalRelations,
-  AnimalSearchEngine
+  AnimalRelations
 } from '../../../domain/schemas/animals.schema';
+import { AbstractUpdateService } from '../abstract/abstract-update.service';
 import { AnimalResponse } from '../../dto/response/animal.response';
-import { SearchAnimalDto } from '../../dto/search/search-animal.dto';
+import { AnimalBodyDto } from '../../dto/body/animal-body.dto';
 import { GetAnimalGroupService } from '../animal-groups/get-animal-group.service';
 
 @Injectable()
-export class GetAnimalService extends AbstractGetService<
+export class UpdateAnimalService extends AbstractUpdateService<
   Animal,
   AnimalDocument,
   AnimalResponse,
-  SearchAnimalDto
+  AnimalBodyDto
 > {
   constructor(
     protected readonly repository: AnimalsRepository,
     protected readonly animalGroupsService: GetAnimalGroupService
   ) {
-    super(repository, 'Animal', AnimalRelations, AnimalSearchEngine);
+    super(repository, 'Animal', AnimalRelations);
   }
 }

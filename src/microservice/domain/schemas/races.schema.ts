@@ -10,4 +10,6 @@ export class Race extends AbstractConfig {}
 
 const schema = SchemaFactory.createForClass(Race);
 schema.index({ name: 1 });
+schema.index({ key: 1 });
+
 export const RacesSchema = schema;

@@ -56,9 +56,10 @@ export abstract class AbstractGetService<
       page
     );
 
-    return Promise.all(
-      await responseItems.map((item) => this.convertRelation(item))
+    const arrMap = await responseItems.map((item) =>
+      this.convertRelation(item)
     );
+    return Promise.all(arrMap);
   }
 
   async getById(id: string): Promise<ResponseModel> {

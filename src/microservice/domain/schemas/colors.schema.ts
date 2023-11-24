@@ -10,4 +10,6 @@ export class Color extends AbstractConfig {}
 
 const schema = SchemaFactory.createForClass(Color);
 schema.index({ name: 1 });
+schema.index({ key: 1 });
+
 export const ColorsSchema = schema;

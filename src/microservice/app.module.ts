@@ -5,6 +5,7 @@ import configuration from '../config/configuration';
 import { PetsModule } from './application/module/pets.module';
 import { ExpensesModule } from './application/module/expenses.module';
 import { ExpenseCategoriesModule } from './application/module/expense-categories.module';
+import { AnimalsModule } from './application/module/animals.module';
 
 @Module({
   imports: [
@@ -23,7 +24,8 @@ import { ExpenseCategoriesModule } from './application/module/expense-categories
     // HttpModule,
     PetsModule,
     ExpensesModule,
-    ExpenseCategoriesModule
+    ExpenseCategoriesModule,
+    AnimalsModule
   ],
   controllers: [],
   providers: []
