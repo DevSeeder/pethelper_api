@@ -41,21 +41,46 @@ export abstract class AbstractGetService<
 
     const active = params && params.active !== undefined ? params.active : true;
     const searchWhere = { ...params, active };
+    const { page, pageSize } = this.getPagination(searchParams, searchWhere);
+
     this.logger.log(`Searching ${JSON.stringify(searchWhere)}...`);
+    this.logger.log(`Pagination ${JSON.stringify({ page, pageSize })}...`);
     const responseItems = await this.repository.find(
       searchWhere,
       { all: 0 },
       {},
-      false
+      false,
+      pageSize,
+      page
     );
-    const arrMap = await responseItems.map((item) =>
-      this.convertRelation(item)
+
+    return Promise.all(
+      await responseItems.map((item) => this.convertRelation(item))
     );
-    return Promise.all(arrMap);
   }
 
   async getById(id: string): Promise<ResponseModel> {
     const item = await this.repository.findById(id, { all: 0 });
     return this.convertRelation(item);
+  }
+
+  private getPagination(
+    search: SearchParams = null,
+    searchWhere: Partial<SearchParams>
+  ): {
+    pageSize: number;
+    page: number;
+  } {
+    if (!search) return { page: 0, pageSize: 0 };
+
+    delete searchWhere.page;
+    delete searchWhere.pageSize;
+
+    const limit = search?.pageSize | 0;
+
+    return {
+      pageSize: search?.pageSize | 0,
+      page: limit && search?.page ? search.page * limit : 0
+    };
   }
 }

@@ -1,6 +1,7 @@
 import * as Joi from 'joi';
 import { SchemaValidator } from 'src/microservice/application/helper/schema-validator.helper';
 import { InputSchema } from 'src/microservice/domain/interface/input-schema.interface';
+import { commonSearchSchema } from './abstract-input.schema';
 
 const commonSchema = {
   color: Joi.string().optional(),
@@ -10,6 +11,7 @@ const commonSchema = {
 };
 
 const search = Joi.object({
+  ...commonSearchSchema,
   ...commonSchema,
   name: Joi.string().optional(),
   idAnimal: Joi.string().optional(),

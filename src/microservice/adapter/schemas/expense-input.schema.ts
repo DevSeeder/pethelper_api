@@ -1,11 +1,13 @@
 import * as Joi from 'joi';
 import { InputSchema } from 'src/microservice/domain/interface/input-schema.interface';
+import { commonSearchSchema } from './abstract-input.schema';
 
 const commonSchema = {
   description: Joi.string().optional()
 };
 
 const search = Joi.object({
+  ...commonSearchSchema,
   ...commonSchema,
   name: Joi.string().optional(),
   description: Joi.string().optional(),
