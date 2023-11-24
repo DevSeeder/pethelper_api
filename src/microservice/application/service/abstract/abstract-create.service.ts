@@ -7,6 +7,7 @@ import {
   InvalidDataException,
   MongoDBException
 } from '@devseeder/microservices-exceptions';
+import { ObjectId } from 'mongoose';
 
 @Injectable()
 export abstract class AbstractCreateService<
@@ -26,7 +27,7 @@ export abstract class AbstractCreateService<
     super(repository, relations);
   }
 
-  async create(body: BodyDto): Promise<void> {
+  async create(body: BodyDto): Promise<{ _id: ObjectId }> {
     await this.convertRelation(body);
 
     this.logger.log(`Body: ${JSON.stringify(body)}`);
@@ -37,7 +38,12 @@ export abstract class AbstractCreateService<
     };
 
     try {
-      await this.repository.insertOne(bodyCreate as Collection, this.itemLabel);
+      const insertedId = await this.repository.insertOne(
+        bodyCreate as Collection,
+        this.itemLabel
+      );
+      this.logger.log(`${this.itemLabel} '${insertedId}' successfully created`);
+      return { _id: insertedId };
     } catch (err) {
       if (err instanceof MongoDBException) {
         if (err.errCode === 11000) {

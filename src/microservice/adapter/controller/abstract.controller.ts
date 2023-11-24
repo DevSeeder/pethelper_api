@@ -19,6 +19,7 @@ import { InputSchema } from 'src/microservice/domain/interface/input-schema.inte
 import { PetBodyDto } from 'src/microservice/application/dto/body/pet-body.dto';
 import { AbstractCreateService } from 'src/microservice/application/service/abstract/abstract-create.service';
 import { AbstractBodyDto } from 'src/microservice/application/dto/body/abtract-body.dto';
+import { ObjectId } from 'mongoose';
 
 export abstract class AbstractController<
   Collection,
@@ -120,10 +121,10 @@ export abstract class AbstractController<
   }
 
   @Post(`/`)
-  async create(@Body() body: PetBodyDto): Promise<void> {
+  async create(@Body() body: PetBodyDto): Promise<{ _id: ObjectId }> {
     this.isMethodAllowed('create');
     SchemaValidator.validateSchema(this.inputSchema.create, body);
-    await this.createService.create(body as unknown as BodyDto);
+    return this.createService.create(body as unknown as BodyDto);
   }
 
   private isMethodAllowed(method: string) {
