@@ -1,5 +1,6 @@
 import { NotFoundException } from '@devseeder/microservices-exceptions';
 import {
+  BadRequestException,
   Body,
   Get,
   Param,
@@ -64,19 +65,28 @@ export abstract class AbstractController<
 
   @Get(`/search/:searchId`)
   searchBy(
-    @Query() params: SearchPetDto,
+    @Query() params: SearchParams,
     @Param('searchId') searchId: string
   ): Promise<GetResponse[]> {
+    if (params[this.searchKey] !== undefined)
+      throw new BadRequestException(`'${this.searchKey}' is not allowed.`);
     SchemaValidator.validateSchema(this.inputSchema.search, params);
     params[this.searchKey] = searchId;
     return this.getService.search(
-      this.transformation.convertReferenceDB(params as unknown as SearchParams)
+      this.transformation
+        ? this.transformation.convertReferenceDB(params)
+        : params
     );
   }
 
   @Get(`/`)
-  getAll(): Promise<GetResponse[]> {
-    return this.getService.search();
+  searchAll(@Query() params: SearchParams): Promise<GetResponse[]> {
+    SchemaValidator.validateSchema(this.inputSchema.search, params);
+    return this.getService.search(
+      this.transformation
+        ? this.transformation.convertReferenceDB(params)
+        : params
+    );
   }
 
   @Patch(`inactivate/:id`)

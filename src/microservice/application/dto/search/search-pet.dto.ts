@@ -7,5 +7,4 @@ export class SearchPetDto extends Search {
   userId?: string;
   idAnimal?: string;
   race?: string;
-  active?: boolean;
 }

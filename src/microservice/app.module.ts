@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import configuration from '../config/configuration';
 import { PetsModule } from './application/module/pets.module';
+import { ExpensesModule } from './application/module/expenses.module';
 
 @Module({
   imports: [
@@ -19,7 +20,8 @@ import { PetsModule } from './application/module/pets.module';
     }),
     // AuthJwtModule,
     // HttpModule,
-    PetsModule
+    PetsModule,
+    ExpensesModule
   ],
   controllers: [],
   providers: []
