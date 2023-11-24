@@ -42,7 +42,6 @@ export abstract class AbstractCreateService<
         bodyCreate as Collection,
         this.itemLabel
       );
-      this.logger.log(`${this.itemLabel} '${insertedId}' successfully created`);
       return { _id: insertedId };
     } catch (err) {
       if (err instanceof MongoDBException) {
