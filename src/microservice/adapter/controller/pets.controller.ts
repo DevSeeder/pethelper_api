@@ -9,6 +9,8 @@ import { PetInputSchema } from '../schemas/pet-input.schema';
 import { UpdatePetService } from 'src/microservice/application/service/pets/update-pet.service';
 import { PetBodyDto } from 'src/microservice/application/dto/body/pet-body.dto';
 import { CreatePetService } from 'src/microservice/application/service/pets/create-pet.service';
+import { BuildFieldSchemaHelper } from 'src/microservice/application/helper/build-field-schema.helper';
+import { PetFieldSchema } from '../schemas/pet-field.schema';
 
 @Controller('pets')
 export class PetsController extends AbstractController<
@@ -27,7 +29,7 @@ export class PetsController extends AbstractController<
       getService,
       'userId',
       new PetTransformation(),
-      PetInputSchema,
+      BuildFieldSchemaHelper.buildSchemas(PetFieldSchema),
       'Pet',
       [],
       updateService,

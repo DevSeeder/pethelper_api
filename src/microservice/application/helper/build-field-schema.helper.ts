@@ -1,0 +1,117 @@
+import { AnySchema, ObjectSchema, Root, SchemaMap } from 'joi';
+import * as Joi from 'joi';
+import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.interface';
+import { InputSchema } from 'src/microservice/domain/interface/input-schema.interface';
+import { SchemaValidator } from './schema-validator.helper';
+import { InternalServerErrorException } from '@nestjs/common';
+
+export class BuildFieldSchemaHelper {
+  static buildSchemas(fieldSchema: FieldItemSchema[]): InputSchema {
+    return {
+      search: BuildFieldSchemaHelper.buildSearchSchema(fieldSchema),
+      update: BuildFieldSchemaHelper.buildUpdateSchema(fieldSchema),
+      create: BuildFieldSchemaHelper.buildCreateSchema(fieldSchema)
+    };
+  }
+
+  static buildSearchSchema(fieldSchema: FieldItemSchema[]): ObjectSchema {
+    const objectSchema: SchemaMap = {};
+
+    fieldSchema
+      .filter((field) => field.allowed.search)
+      .forEach((schema) => {
+        const joiSchema = BuildFieldSchemaHelper.getType(
+          Joi,
+          schema.type,
+          schema?.itensType,
+          true
+        );
+        if (schema.type === 'enum')
+          objectSchema[schema.key] = joiSchema
+            .optional()
+            .custom(SchemaValidator.validateEnum(schema.enumValues));
+        else objectSchema[schema.key] = joiSchema.optional();
+      });
+    return Joi.object(objectSchema);
+  }
+
+  static buildUpdateSchema(fieldSchema: FieldItemSchema[]): ObjectSchema {
+    const objectSchema: SchemaMap = {};
+
+    fieldSchema
+      .filter((field) => field.allowed.update)
+      .forEach((schema) => {
+        console.log(schema.key);
+
+        const joiSchema = BuildFieldSchemaHelper.getType(
+          Joi,
+          schema.type,
+          schema?.itensType,
+          false,
+          schema?.array
+        );
+        if (schema.type === 'enum')
+          objectSchema[schema.key] = joiSchema
+            .optional()
+            .custom(SchemaValidator.validateEnum(schema.enumValues));
+        else objectSchema[schema.key] = joiSchema.optional();
+      });
+    return Joi.object(objectSchema);
+  }
+
+  static buildCreateSchema(fieldSchema: FieldItemSchema[]): ObjectSchema {
+    const objectSchema: SchemaMap = {};
+
+    fieldSchema.forEach((schema) => {
+      let joiSchema = BuildFieldSchemaHelper.getType(
+        Joi,
+        schema.type,
+        schema?.itensType,
+        false,
+        schema?.array
+      );
+      joiSchema = schema.required ? joiSchema.required() : joiSchema.optional();
+
+      if (schema.type === 'enum')
+        objectSchema[schema.key] = joiSchema
+          .optional()
+          .custom(SchemaValidator.validateEnum(schema.enumValues));
+      else objectSchema[schema.key] = joiSchema.optional();
+    });
+    return Joi.object(objectSchema);
+  }
+
+  static getType(
+    Joi: Root,
+    type: string,
+    itensType = undefined,
+    search = false,
+    array = false
+  ): AnySchema {
+    switch (type) {
+      case 'text':
+      case 'string':
+        return Joi.string();
+      case 'externalId':
+        console.log(array);
+        console.log(array ? Joi.array().type : Joi.string().type);
+        return array ? Joi.array() : Joi.string();
+      case 'enum':
+        return itensType === 'string' ? Joi.string() : Joi.number();
+      case 'boolean':
+        return Joi.boolean();
+      case 'number':
+      case 'double':
+      case 'integer':
+        return Joi.number();
+      case 'date':
+        return Joi.date();
+      case 'array':
+        return search ? Joi.string() : Joi.array();
+      default:
+        throw new InternalServerErrorException(
+          `Schema type ${type} not implemented`
+        );
+    }
+  }
+}
