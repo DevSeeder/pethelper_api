@@ -9,7 +9,7 @@ export type AnimalGroupDocument = AnimalGroup & Document;
 export class AnimalGroup extends AbstractConfig {}
 
 const schema = SchemaFactory.createForClass(AnimalGroup);
-schema.index({ name: 1 });
-schema.index({ key: 1 });
+schema.index({ name: 1 }, { unique: true });
+schema.index({ key: 1 }, { unique: true });
 
 export const AnimalGroupsSchema = schema;

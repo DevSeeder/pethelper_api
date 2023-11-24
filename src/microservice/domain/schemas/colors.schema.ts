@@ -9,7 +9,7 @@ export type ColorDocument = Color & Document;
 export class Color extends AbstractConfig {}
 
 const schema = SchemaFactory.createForClass(Color);
-schema.index({ name: 1 });
-schema.index({ key: 1 });
+schema.index({ name: 1 }, { unique: true });
+schema.index({ key: 1 }, { unique: true });
 
 export const ColorsSchema = schema;

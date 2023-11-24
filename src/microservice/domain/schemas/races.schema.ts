@@ -9,7 +9,7 @@ export type RaceDocument = Race & Document;
 export class Race extends AbstractConfig {}
 
 const schema = SchemaFactory.createForClass(Race);
-schema.index({ name: 1 });
-schema.index({ key: 1 });
+schema.index({ name: 1 }, { unique: true });
+schema.index({ key: 1 }, { unique: true });
 
 export const RacesSchema = schema;

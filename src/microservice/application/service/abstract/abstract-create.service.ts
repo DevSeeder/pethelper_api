@@ -1,8 +1,12 @@
 import { MongooseRepository } from '@devseeder/nestjs-microservices-commons';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { AbstractDBService } from './abstract-db.service';
 import { Relation } from 'src/microservice/domain/interface/relation.interface';
 import { Search } from '../../dto/search/search.dto';
+import {
+  InvalidDataException,
+  MongoDBException
+} from '@devseeder/microservices-exceptions';
 
 @Injectable()
 export abstract class AbstractCreateService<
@@ -32,6 +36,14 @@ export abstract class AbstractCreateService<
       active: true
     };
 
-    await this.repository.insertOne(bodyCreate as Collection, this.itemLabel);
+    try {
+      await this.repository.insertOne(bodyCreate as Collection, this.itemLabel);
+    } catch (err) {
+      if (err instanceof MongoDBException) {
+        if (err.errCode === 11000) {
+          throw new NotAcceptableException(`${this.itemLabel} already exists`);
+        }
+      }
+    }
   }
 }

@@ -13,8 +13,8 @@ export type ExpenseCategoryDocument = ExpenseCategory & Document;
 export class ExpenseCategory extends AbstractConfig {}
 
 const schema = SchemaFactory.createForClass(ExpenseCategory);
-schema.index({ name: 1 });
-schema.index({ key: 1 });
+schema.index({ name: 1 }, { unique: true });
+schema.index({ key: 1 }, { unique: true });
 
 export const ExpenseCategoriesSchema = schema;
 
