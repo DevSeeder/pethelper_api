@@ -2,6 +2,10 @@
 import { Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { AbstractConfig } from './config.schema';
+import {
+  SearchEgineOperators,
+  SearchEngine
+} from '../interface/search-engine.interface';
 
 export type ExpenseCategoryDocument = ExpenseCategory & Document;
 
@@ -11,3 +15,8 @@ export class ExpenseCategory extends AbstractConfig {}
 const schema = SchemaFactory.createForClass(ExpenseCategory);
 schema.index({ name: 1 });
 export const ExpenseCategoriesSchema = schema;
+
+export const ConfigSearchEngine: SearchEngine[] = [
+  { key: 'name', operator: SearchEgineOperators.LIKE },
+  { key: 'description', operator: SearchEgineOperators.LIKE }
+];

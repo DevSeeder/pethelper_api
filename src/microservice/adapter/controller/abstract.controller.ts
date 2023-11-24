@@ -2,6 +2,7 @@ import { NotFoundException } from '@devseeder/microservices-exceptions';
 import {
   BadRequestException,
   Body,
+  ForbiddenException,
   Get,
   Param,
   Patch,
@@ -37,6 +38,7 @@ export abstract class AbstractController<
     protected readonly transformation: AbstractTransformation<SearchParams>,
     protected readonly inputSchema: InputSchema,
     protected readonly itemLabel: string,
+    protected readonly forbbidenMethods: string[] = [],
     protected readonly updateService?: AbstractUpdateService<
       Collection,
       MongooseModel,
@@ -65,10 +67,14 @@ export abstract class AbstractController<
     @Query() params: SearchParams,
     @Param('searchId') searchId: string
   ): Promise<GetResponse[]> {
+    this.isMethodAllowed('searchBy');
+
     if (params[this.searchKey] !== undefined)
       throw new BadRequestException(`'${this.searchKey}' is not allowed.`);
     SchemaValidator.validateSchema(this.inputSchema.search, params);
-    params[this.searchKey] = searchId;
+
+    if (this.searchKey) params[this.searchKey] = searchId;
+
     return this.getService.search(
       this.transformation
         ? this.transformation.convertReferenceDB(params)
@@ -88,6 +94,7 @@ export abstract class AbstractController<
 
   @Patch(`inactivate/:id`)
   async inactivate(@Param('id') id: string): Promise<void> {
+    this.isMethodAllowed('inactivate');
     await this.updateService.updateById(id, {
       active: false,
       inactivationDate: DateHelper.getDateNow()
@@ -96,6 +103,7 @@ export abstract class AbstractController<
 
   @Patch(`activate/:id`)
   async activate(@Param('id') id: string): Promise<void> {
+    this.isMethodAllowed('activate');
     await this.updateService.updateById(id, {
       active: true
     });
@@ -106,13 +114,20 @@ export abstract class AbstractController<
     @Param('id') id: string,
     @Body() body: PetBodyDto
   ): Promise<void> {
+    this.isMethodAllowed('update');
     SchemaValidator.validateSchema(this.inputSchema.update, body);
     await this.updateService.updateById(id, body as unknown as BodyDto);
   }
 
   @Post(`/`)
   async create(@Body() body: PetBodyDto): Promise<void> {
+    this.isMethodAllowed('create');
     SchemaValidator.validateSchema(this.inputSchema.create, body);
     await this.createService.create(body as unknown as BodyDto);
+  }
+
+  private isMethodAllowed(method: string) {
+    const notAllowed = this.forbbidenMethods.filter((m) => m === method);
+    if (notAllowed.length) throw new ForbiddenException('Method not allowed');
   }
 }

@@ -29,7 +29,9 @@ export class PetsController extends AbstractController<
       new PetTransformation(),
       PetInputSchema,
       'Pet',
-      updateService
+      [],
+      updateService,
+      createService
     );
   }
 }

@@ -6,6 +6,9 @@ import {
   ExpenseCategoriesSchema
 } from 'src/microservice/domain/schemas/expense-categories.schema';
 import { GetExpenseCategoriesService } from 'src/microservice/application/service/expense-categories/get-expense-category.service';
+import { UpdateExpenseCategoryService } from '../service/expense-categories/update-expense-category.service';
+import { CreateExpenseCategoryService } from '../service/expense-categories/create-expense-category.service';
+import { ExpenseCategoriesController } from 'src/microservice/adapter/controller/expense-categories.controller';
 
 @Module({
   imports: [
@@ -13,8 +16,18 @@ import { GetExpenseCategoriesService } from 'src/microservice/application/servic
       { name: ExpenseCategory.name, schema: ExpenseCategoriesSchema }
     ])
   ],
-  controllers: [],
-  providers: [ExpenseCategoriesRepository, GetExpenseCategoriesService],
-  exports: [ExpenseCategoriesRepository, GetExpenseCategoriesService]
+  controllers: [ExpenseCategoriesController],
+  providers: [
+    ExpenseCategoriesRepository,
+    GetExpenseCategoriesService,
+    UpdateExpenseCategoryService,
+    CreateExpenseCategoryService
+  ],
+  exports: [
+    ExpenseCategoriesRepository,
+    GetExpenseCategoriesService,
+    UpdateExpenseCategoryService,
+    CreateExpenseCategoryService
+  ]
 })
 export class ExpenseCategoriesModule {}

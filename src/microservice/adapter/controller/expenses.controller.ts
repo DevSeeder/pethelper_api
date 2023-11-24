@@ -31,6 +31,7 @@ export class ExpensesController extends AbstractController<
       null,
       ExpenseInputSchema,
       'Expense',
+      [],
       updateService,
       createService
     );
