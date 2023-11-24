@@ -4,19 +4,26 @@ import {
   MongooseRepository
 } from '@devseeder/nestjs-microservices-commons';
 import { Relation } from 'src/microservice/domain/interface/relation.interface';
+import {
+  SearchEgineOperators,
+  SearchEngine
+} from 'src/microservice/domain/interface/search-engine.interface';
 import { AbstractDocument } from 'src/microservice/domain/schemas/abstract.schema';
+import { SchemaValidator } from '../../helper/schema-validator.helper';
 
 export class AbstractDBService<
   Collection,
   MongooseModel,
-  ResponseModel
+  ResponseModel,
+  SearchParams
 > extends AbstractService {
   constructor(
     protected readonly repository: MongooseRepository<
       Collection,
       MongooseModel
     >,
-    protected readonly relations: Relation[] = []
+    protected readonly relations: Relation[] = [],
+    protected readonly searchEngines: SearchEngine[] = []
   ) {
     super();
   }
@@ -74,5 +81,46 @@ export class AbstractDBService<
       throw new InvalidDataException(rel.key, value);
 
     return objValue[objKey];
+  }
+
+  protected buildSearchEgines(item: SearchParams): Partial<SearchParams> {
+    if (!item) return null;
+
+    const itemResponse = { ...item } as unknown as any;
+    for (const rel of this.searchEngines) {
+      const value = item[rel.key];
+
+      if (value === undefined && rel.operator !== SearchEgineOperators.BETWEEN)
+        continue;
+
+      switch (rel.operator) {
+        case SearchEgineOperators.LIKE:
+          itemResponse[rel.key] = {
+            $regex: new RegExp(`${value}`),
+            $options: 'i'
+          };
+          break;
+        case SearchEgineOperators.IN:
+          itemResponse[rel.key] = {
+            $in: value.split(',')
+          };
+          break;
+
+        case SearchEgineOperators.BETWEEN:
+          const betweenQuery = {};
+          if (item[`${rel.key}_start`])
+            betweenQuery['$gte'] = item[`${rel.key}_start`];
+          if (item[`${rel.key}_end`])
+            betweenQuery['$lte'] = item[`${rel.key}_end`];
+
+          if (Object.keys(betweenQuery).length)
+            itemResponse[rel.key] = betweenQuery;
+
+          delete itemResponse[`${rel.key}_start`];
+          delete itemResponse[`${rel.key}_end`];
+          break;
+      }
+    }
+    return SchemaValidator.removeUndefined<SearchParams>(itemResponse);
   }
 }

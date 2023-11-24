@@ -5,6 +5,7 @@ import { AbstractDBService } from './abstract-db.service';
 import { Relation } from 'src/microservice/domain/interface/relation.interface';
 import { AbstractBodyDto } from '../../dto/body/abtract-body.dto';
 import { AbstractSchema } from 'src/microservice/domain/schemas/abstract.schema';
+import { Search } from '../../dto/search/search.dto';
 
 @Injectable()
 export abstract class AbstractUpdateService<
@@ -12,7 +13,7 @@ export abstract class AbstractUpdateService<
   MongooseModel,
   ResponseModel,
   BodyDto extends AbstractBodyDto
-> extends AbstractDBService<Collection, MongooseModel, ResponseModel> {
+> extends AbstractDBService<Collection, MongooseModel, ResponseModel, Search> {
   constructor(
     protected readonly repository: MongooseRepository<
       Collection,

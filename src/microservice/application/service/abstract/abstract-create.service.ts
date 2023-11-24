@@ -2,6 +2,7 @@ import { MongooseRepository } from '@devseeder/nestjs-microservices-commons';
 import { Injectable } from '@nestjs/common';
 import { AbstractDBService } from './abstract-db.service';
 import { Relation } from 'src/microservice/domain/interface/relation.interface';
+import { Search } from '../../dto/search/search.dto';
 
 @Injectable()
 export abstract class AbstractCreateService<
@@ -9,7 +10,7 @@ export abstract class AbstractCreateService<
   MongooseModel,
   ResponseModel,
   BodyDto
-> extends AbstractDBService<Collection, MongooseModel, ResponseModel> {
+> extends AbstractDBService<Collection, MongooseModel, ResponseModel, Search> {
   constructor(
     protected readonly repository: MongooseRepository<
       Collection,

@@ -15,7 +15,12 @@ export abstract class AbstractGetService<
   MongooseModel,
   ResponseModel,
   SearchParams extends Search
-> extends AbstractDBService<Collection, MongooseModel, ResponseModel> {
+> extends AbstractDBService<
+  Collection,
+  MongooseModel,
+  ResponseModel,
+  SearchParams
+> {
   constructor(
     protected readonly repository: MongooseRepository<
       Collection,
@@ -52,31 +57,5 @@ export abstract class AbstractGetService<
   async getById(id: string): Promise<ResponseModel> {
     const item = await this.repository.findById(id, { all: 0 });
     return this.convertRelation(item);
-  }
-
-  private buildSearchEgines(item: SearchParams): Partial<SearchParams> {
-    if (!item) return null;
-
-    const itemResponse = { ...item } as unknown as any;
-    for (const rel of this.searchEngines) {
-      const value = item[rel.key];
-
-      if (value === undefined) continue;
-
-      switch (rel.operator) {
-        case SearchEgineOperators.LIKE:
-          itemResponse[rel.key] = {
-            $regex: new RegExp(`${value}`),
-            $options: 'i'
-          };
-          break;
-        case SearchEgineOperators.IN:
-          itemResponse[rel.key] = {
-            $in: value.split(',')
-          };
-          break;
-      }
-    }
-    return SchemaValidator.removeUndefined<SearchParams>(itemResponse);
   }
 }
