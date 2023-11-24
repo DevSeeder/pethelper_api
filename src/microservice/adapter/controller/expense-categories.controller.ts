@@ -8,9 +8,6 @@ import {
   ExpenseDocument
 } from 'src/microservice/domain/schemas/expenses.schema';
 import { ExpenseInputSchema } from '../schemas/expense-input.schema';
-import { UpdateExpenseService } from 'src/microservice/application/service/expenses/update-expense.service';
-import { ExpenseBodyDto } from 'src/microservice/application/dto/body/expense-body.dto';
-import { CreateExpenseService } from 'src/microservice/application/service/expenses/create-expense.service';
 
 @Controller('expenses')
 export class ExpensesController extends AbstractController<
@@ -18,21 +15,16 @@ export class ExpensesController extends AbstractController<
   ExpenseDocument,
   ExpenseResponse,
   SearchExpenseDto,
-  ExpenseBodyDto
+  any
 > {
-  constructor(
-    protected readonly getService: GetExpenseService,
-    protected readonly updateService: UpdateExpenseService,
-    protected readonly createService: CreateExpenseService
-  ) {
+  constructor(protected readonly getService: GetExpenseService) {
     super(
       getService,
       'pets',
       null,
       ExpenseInputSchema,
-      'Expense',
-      updateService,
-      createService
+      'Expense'
+      // updateService
     );
   }
 }

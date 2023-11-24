@@ -10,6 +10,8 @@ import { GetExpenseService } from '../service/expenses/get-expense.service';
 import { UsersModule } from './users.module';
 import { PetsModule } from './pets.module';
 import { ExpenseCategoriesModule } from './expense-categories.module';
+import { UpdateExpenseService } from '../service/expenses/update-expense.service';
+import { CreateExpenseService } from '../service/expenses/create-expense.service';
 
 @Module({
   imports: [
@@ -21,15 +23,15 @@ import { ExpenseCategoriesModule } from './expense-categories.module';
   controllers: [ExpensesController],
   providers: [
     ExpensesRepository,
-    GetExpenseService
-    // UpdateExpenseService,
-    // CreateExpenseService
+    GetExpenseService,
+    UpdateExpenseService,
+    CreateExpenseService
   ],
   exports: [
     ExpensesRepository,
-    GetExpenseService
-    // UpdateExpenseService,
-    // CreateExpenseService
+    GetExpenseService,
+    UpdateExpenseService,
+    CreateExpenseService
   ]
 })
 export class ExpensesModule {}

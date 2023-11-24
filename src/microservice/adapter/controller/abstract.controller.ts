@@ -6,10 +6,8 @@ import {
   Param,
   Patch,
   Post,
-  Query,
-  ValidationPipe
+  Query
 } from '@nestjs/common';
-import { SearchPetDto } from 'src/microservice/application/dto/search/search-pet.dto';
 import { Search } from 'src/microservice/application/dto/search/search.dto';
 import { DateHelper } from 'src/microservice/application/helper/date.helper';
 import { SchemaValidator } from 'src/microservice/application/helper/schema-validator.helper';
@@ -17,7 +15,6 @@ import { AbstractGetService } from 'src/microservice/application/service/abstrac
 import { AbstractUpdateService } from 'src/microservice/application/service/abstract/abstract-update.service';
 import { AbstractTransformation } from 'src/microservice/application/transform/abstract.transformation';
 import { InputSchema } from 'src/microservice/domain/interface/input-schema.interface';
-import { PetInputSchema } from '../schemas/pet-input.schema';
 import { PetBodyDto } from 'src/microservice/application/dto/body/pet-body.dto';
 import { AbstractCreateService } from 'src/microservice/application/service/abstract/abstract-create.service';
 import { AbstractBodyDto } from 'src/microservice/application/dto/body/abtract-body.dto';
@@ -109,13 +106,13 @@ export abstract class AbstractController<
     @Param('id') id: string,
     @Body() body: PetBodyDto
   ): Promise<void> {
-    SchemaValidator.validateSchema(PetInputSchema.update, body);
+    SchemaValidator.validateSchema(this.inputSchema.update, body);
     await this.updateService.updateById(id, body as unknown as BodyDto);
   }
 
   @Post(`/`)
   async create(@Body() body: PetBodyDto): Promise<void> {
-    SchemaValidator.validateSchema(PetInputSchema.create, body);
+    SchemaValidator.validateSchema(this.inputSchema.create, body);
     await this.createService.create(body as unknown as BodyDto);
   }
 }

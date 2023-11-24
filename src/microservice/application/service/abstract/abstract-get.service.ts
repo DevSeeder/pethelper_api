@@ -43,7 +43,9 @@ export abstract class AbstractGetService<
     const searchWhere = { ...params, active };
     const { page, pageSize } = this.getPagination(searchParams, searchWhere);
 
-    this.logger.log(`Searching ${JSON.stringify(searchWhere)}...`);
+    this.logger.log(
+      `Searching '${this.itemLabel}' ${JSON.stringify(searchWhere)}...`
+    );
     this.logger.log(`Pagination ${JSON.stringify({ page, pageSize })}...`);
     const responseItems = await this.repository.find(
       searchWhere,

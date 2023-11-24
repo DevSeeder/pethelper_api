@@ -10,7 +10,6 @@ const search = Joi.object({
   ...commonSearchSchema,
   ...commonSchema,
   name: Joi.string().optional(),
-  description: Joi.string().optional(),
   idCategory: Joi.string().optional(),
   date_start: Joi.date().optional(),
   date_end: Joi.date().optional(),
@@ -28,7 +27,8 @@ const bodySchema = {
 const update = Joi.object({
   ...bodySchema,
   name: Joi.string().optional(),
-  idCategory: Joi.string().optional()
+  idCategory: Joi.string().optional(),
+  pets: Joi.array<string>().optional()
 });
 
 const create = Joi.object({
