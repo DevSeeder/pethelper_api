@@ -6,7 +6,7 @@ import {
   ExpenseCategoryDocument
 } from '../../../domain/schemas/expense-categories.schema';
 import { SearchConfigDto } from '../../dto/search/search-config.dto';
-import { ConfigFieldSchema } from 'src/microservice/adapter/schemas/config-field.schema';
+import { ConfigFieldSchema } from 'src/microservice/adapter/field-schemas/config-field.schema';
 
 @Injectable()
 export class GetExpenseCategoriesService extends AbstractGetService<

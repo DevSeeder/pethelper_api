@@ -30,9 +30,3 @@ export const AnimalRelations: Relation[] = [
     service: 'animalGroups'
   }
 ];
-
-export const AnimalSearchEngine: SearchEngine[] = [
-  { key: 'name', operator: SearchEgineOperators.LIKE },
-  { key: 'key', operator: SearchEgineOperators.LIKE },
-  { key: 'idGroup', operator: SearchEgineOperators.IN }
-];

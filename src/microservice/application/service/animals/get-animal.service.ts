@@ -9,7 +9,7 @@ import {
 import { AnimalResponse } from '../../dto/response/animal.response';
 import { SearchAnimalDto } from '../../dto/search/search-animal.dto';
 import { GetAnimalGroupService } from '../animal-groups/get-animal-group.service';
-import { AnimalFieldSchema } from 'src/microservice/adapter/schemas/animal-field.schema';
+import { AnimalFieldSchema } from 'src/microservice/adapter/field-schemas/animal-field.schema';
 
 @Injectable()
 export class GetAnimalService extends AbstractGetService<

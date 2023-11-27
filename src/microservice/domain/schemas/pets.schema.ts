@@ -61,10 +61,3 @@ export const PetRelations: Relation[] = [
     service: 'users'
   }
 ];
-
-export const PetSearchEngine: SearchEngine[] = [
-  { key: 'name', operator: SearchEgineOperators.LIKE },
-  { key: 'color', operator: SearchEgineOperators.IN },
-  { key: 'idAnimal', operator: SearchEgineOperators.IN },
-  { key: 'races', operator: SearchEgineOperators.IN }
-];

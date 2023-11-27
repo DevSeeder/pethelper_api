@@ -14,7 +14,6 @@ import { DateHelper } from 'src/microservice/application/helper/date.helper';
 import { SchemaValidator } from 'src/microservice/application/helper/schema-validator.helper';
 import { AbstractGetService } from 'src/microservice/application/service/abstract/abstract-get.service';
 import { AbstractUpdateService } from 'src/microservice/application/service/abstract/abstract-update.service';
-import { AbstractTransformation } from 'src/microservice/application/transform/abstract.transformation';
 import { InputSchema } from 'src/microservice/domain/interface/input-schema.interface';
 import { PetBodyDto } from 'src/microservice/application/dto/body/pet-body.dto';
 import { AbstractCreateService } from 'src/microservice/application/service/abstract/abstract-create.service';
@@ -39,7 +38,6 @@ export abstract class AbstractController<
       SearchParams
     >,
     protected readonly searchKey: string,
-    protected readonly transformation: AbstractTransformation<SearchParams>,
     fieldSchema: FieldItemSchema[],
     protected readonly itemLabel: string,
     protected readonly forbbidenMethods: string[] = [],
@@ -81,21 +79,13 @@ export abstract class AbstractController<
 
     if (this.searchKey) params[this.searchKey] = searchId;
 
-    return this.getService.search(
-      this.transformation
-        ? this.transformation.convertReferenceDB(params)
-        : params
-    );
+    return this.getService.search(params);
   }
 
   @Get(`/`)
   searchAll(@Query() params: SearchParams): Promise<GetResponse[]> {
     SchemaValidator.validateSchema(this.inputSchema.search, params);
-    return this.getService.search(
-      this.transformation
-        ? this.transformation.convertReferenceDB(params)
-        : params
-    );
+    return this.getService.search(params);
   }
 
   @Patch(`inactivate/:id`)

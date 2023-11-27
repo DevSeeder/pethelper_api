@@ -11,7 +11,7 @@ import { SearchExpenseDto } from 'src/microservice/application/dto/search/search
 import { GetUserService } from '../users/get-user.service';
 import { GetPetService } from '../pets/get-pet.service';
 import { GetExpenseCategoriesService } from '../expense-categories/get-expense-category.service';
-import { ExpenseFieldSchema } from 'src/microservice/adapter/schemas/expense-field.schema';
+import { ExpenseFieldSchema } from 'src/microservice/adapter/field-schemas/expense-field.schema';
 
 @Injectable()
 export class GetExpenseService extends AbstractGetService<

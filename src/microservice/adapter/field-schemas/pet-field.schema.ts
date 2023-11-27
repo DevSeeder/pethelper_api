@@ -43,7 +43,10 @@ export const PetFieldSchema: FieldItemSchema[] = [
       search: true,
       update: true
     },
-    searchEgines: [SearchEgineOperators.IN]
+    searchEgines: [SearchEgineOperators.IN],
+    alias: {
+      search: 'race'
+    }
   },
   {
     key: 'color',

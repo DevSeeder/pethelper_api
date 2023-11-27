@@ -4,7 +4,7 @@ import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.
 import { InputSchema } from 'src/microservice/domain/interface/input-schema.interface';
 import { SchemaValidator } from './schema-validator.helper';
 import { InternalServerErrorException } from '@nestjs/common';
-import { commonSearchSchema } from 'src/microservice/adapter/schemas/abstract-input.schema';
+import { commonSearchSchema } from 'src/microservice/adapter/field-schemas/abstract-input.schema';
 import { SearchEgineOperators } from 'src/microservice/domain/interface/search-engine.interface';
 
 export class BuildFieldSchemaHelper {

@@ -17,8 +17,3 @@ schema.index({ name: 1 }, { unique: true });
 schema.index({ key: 1 }, { unique: true });
 
 export const ExpenseCategoriesSchema = schema;
-
-export const ConfigSearchEngine: SearchEngine[] = [
-  { key: 'name', operator: SearchEgineOperators.LIKE },
-  { key: 'description', operator: SearchEgineOperators.LIKE }
-];

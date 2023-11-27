@@ -54,11 +54,3 @@ export const ExpenseRelations: Relation[] = [
     service: 'users'
   }
 ];
-
-export const ExpenseSearchEngine: SearchEngine[] = [
-  { key: 'name', operator: SearchEgineOperators.LIKE },
-  { key: 'description', operator: SearchEgineOperators.LIKE },
-  { key: 'idCategory', operator: SearchEgineOperators.IN },
-  { key: 'pets', operator: SearchEgineOperators.IN },
-  { key: 'date', operator: SearchEgineOperators.BETWEEN }
-];

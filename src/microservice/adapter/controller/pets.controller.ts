@@ -4,11 +4,10 @@ import { GetPetService } from 'src/microservice/application/service/pets/get-pet
 import { AbstractController } from './abstract.controller';
 import { PetResponse } from 'src/microservice/application/dto/response/pet.response';
 import { Pet, PetDocument } from 'src/microservice/domain/schemas/pets.schema';
-import { PetTransformation } from 'src/microservice/application/transform/pet.transformation';
 import { UpdatePetService } from 'src/microservice/application/service/pets/update-pet.service';
 import { PetBodyDto } from 'src/microservice/application/dto/body/pet-body.dto';
 import { CreatePetService } from 'src/microservice/application/service/pets/create-pet.service';
-import { PetFieldSchema } from '../schemas/pet-field.schema';
+import { PetFieldSchema } from '../field-schemas/pet-field.schema';
 
 @Controller('pets')
 export class PetsController extends AbstractController<
@@ -26,7 +25,6 @@ export class PetsController extends AbstractController<
     super(
       getService,
       'userId',
-      new PetTransformation(),
       PetFieldSchema,
       'Pet',
       [],

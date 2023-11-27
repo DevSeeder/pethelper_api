@@ -22,4 +22,7 @@ export interface FieldItemSchema {
   externalRelation?: {
     service: string;
   };
+  alias?: {
+    search?: string;
+  };
 }

@@ -9,7 +9,7 @@ import { ConfigBodyDto } from 'src/microservice/application/dto/body/config-body
 import { SearchConfigDto } from 'src/microservice/application/dto/search/search-config.dto';
 import { UpdateExpenseCategoryService } from 'src/microservice/application/service/expense-categories/update-expense-category.service';
 import { CreateExpenseCategoryService } from 'src/microservice/application/service/expense-categories/create-expense-category.service';
-import { ConfigFieldSchema } from '../schemas/config-field.schema';
+import { ConfigFieldSchema } from '../field-schemas/config-field.schema';
 
 @Controller('expensecategories')
 export class ExpenseCategoriesController extends AbstractController<
@@ -27,7 +27,6 @@ export class ExpenseCategoriesController extends AbstractController<
     super(
       getService,
       '',
-      null,
       ConfigFieldSchema,
       'Expense Category',
       ['searchBy'],
