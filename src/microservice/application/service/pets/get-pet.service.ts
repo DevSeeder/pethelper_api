@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, forwardRef, Inject } from '@nestjs/common';
 import { AbstractGetService } from '../abstract/abstract-get.service';
 import { PetsRepository } from 'src/microservice/adapter/repository/pets.repository';
 import { Pet, PetDocument } from '../../../domain/schemas/pets.schema';
@@ -9,6 +9,7 @@ import { PetResponse } from 'src/microservice/application/dto/response/pet.respo
 import { SearchPetDto } from 'src/microservice/application/dto/search/search-pet.dto';
 import { GetUserService } from '../users/get-user.service';
 import { PetFieldSchema } from 'src/microservice/adapter/field-schemas/pet-field.schema';
+import { GetFieldSchemaService } from '../field-schemas/get-field-schemas.service';
 
 @Injectable()
 export class GetPetService extends AbstractGetService<
@@ -22,8 +23,10 @@ export class GetPetService extends AbstractGetService<
     protected readonly colorsService: GetColorService,
     protected readonly animalsService: GetAnimalService,
     protected readonly racesService: GetRaceService,
-    protected readonly usersService: GetUserService
+    protected readonly usersService: GetUserService,
+    @Inject(forwardRef(() => GetFieldSchemaService))
+    protected readonly getFieldSchemaService: GetFieldSchemaService
   ) {
-    super(repository, 'Pet', PetFieldSchema);
+    super(repository, 'Pet', ['pets'], getFieldSchemaService);
   }
 }

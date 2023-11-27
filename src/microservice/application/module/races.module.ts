@@ -6,10 +6,12 @@ import {
   RacesSchema
 } from 'src/microservice/domain/schemas/races.schema';
 import { GetRaceService } from 'src/microservice/application/service/races/get-race.service';
+import { FieldSchemasModule } from './field-schemas.module';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Race.name, schema: RacesSchema }])
+    MongooseModule.forFeature([{ name: Race.name, schema: RacesSchema }]),
+    FieldSchemasModule
   ],
   controllers: [],
   providers: [RacesRepository, GetRaceService],

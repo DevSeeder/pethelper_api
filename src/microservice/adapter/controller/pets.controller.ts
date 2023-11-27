@@ -25,7 +25,7 @@ export class PetsController extends AbstractController<
   ) {
     super(
       'Pet',
-      'pets',
+      ['pets'],
       'userId',
       [],
       getService,

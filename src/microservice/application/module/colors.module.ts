@@ -6,10 +6,12 @@ import {
   ColorsSchema
 } from 'src/microservice/domain/schemas/colors.schema';
 import { GetColorService } from 'src/microservice/application/service/colors/get-color.service';
+import { FieldSchemasModule } from './field-schemas.module';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Color.name, schema: ColorsSchema }])
+    MongooseModule.forFeature([{ name: Color.name, schema: ColorsSchema }]),
+    FieldSchemasModule
   ],
   controllers: [],
   providers: [ColorsRepository, GetColorService],

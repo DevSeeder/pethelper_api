@@ -8,6 +8,7 @@ import {
 } from '@devseeder/microservices-exceptions';
 import { ObjectId } from 'mongoose';
 import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.interface';
+import { GetFieldSchemaService } from '../field-schemas/get-field-schemas.service';
 
 @Injectable()
 export abstract class AbstractCreateService<
@@ -22,9 +23,10 @@ export abstract class AbstractCreateService<
       MongooseModel
     >,
     protected readonly itemLabel: string = '',
-    protected readonly fieldSchema: FieldItemSchema[] = []
+    protected readonly entityLabels: string[] = [],
+    protected readonly getFieldSchemaService?: GetFieldSchemaService
   ) {
-    super(repository, fieldSchema);
+    super(repository, entityLabels, getFieldSchemaService);
   }
 
   async create(body: BodyDto): Promise<{ _id: ObjectId }> {

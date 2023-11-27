@@ -1,8 +1,8 @@
 import { MongooseRepository } from '@devseeder/nestjs-microservices-commons';
-import { Injectable } from '@nestjs/common';
+import { Injectable, forwardRef, Inject } from '@nestjs/common';
 import { Search } from 'src/microservice/application/dto/search/search.dto';
 import { AbstractDBService } from './abstract-db.service';
-import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.interface';
+import { GetFieldSchemaService } from '../field-schemas/get-field-schemas.service';
 
 @Injectable()
 export abstract class AbstractGetService<
@@ -22,9 +22,11 @@ export abstract class AbstractGetService<
       MongooseModel
     >,
     protected readonly itemLabel: string = '',
-    protected readonly fieldSchema: FieldItemSchema[] = []
+    protected readonly entityLabels: string[] = [],
+    @Inject(forwardRef(() => GetFieldSchemaService))
+    protected readonly getFieldSchemaService?: GetFieldSchemaService
   ) {
-    super(repository, fieldSchema);
+    super(repository, entityLabels, getFieldSchemaService);
   }
 
   async search(searchParams: SearchParams = null): Promise<ResponseModel[]> {

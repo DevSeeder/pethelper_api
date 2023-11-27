@@ -7,6 +7,7 @@ import {
 } from '../../../domain/schemas/expense-categories.schema';
 import { SearchConfigDto } from '../../dto/search/search-config.dto';
 import { ConfigFieldSchema } from 'src/microservice/adapter/field-schemas/config-field.schema';
+import { GetFieldSchemaService } from '../field-schemas/get-field-schemas.service';
 
 @Injectable()
 export class GetExpenseCategoriesService extends AbstractGetService<
@@ -15,7 +16,10 @@ export class GetExpenseCategoriesService extends AbstractGetService<
   ExpenseCategory,
   SearchConfigDto
 > {
-  constructor(protected readonly repository: ExpenseCategoriesRepository) {
-    super(repository, 'Expense Category', ConfigFieldSchema);
+  constructor(
+    protected readonly repository: ExpenseCategoriesRepository,
+    protected readonly getFieldSchemaService: GetFieldSchemaService
+  ) {
+    super(repository, 'Expense Category', ['config'], getFieldSchemaService);
   }
 }

@@ -40,7 +40,7 @@ export abstract class AbstractController<
 
   constructor(
     protected readonly itemLabel: string,
-    protected readonly entityLabel: string,
+    protected readonly entityLabels: string[],
     protected readonly searchKey: string = '',
     protected readonly forbbidenMethods: string[] = [],
     protected readonly getService?: AbstractGetService<
@@ -69,16 +69,13 @@ export abstract class AbstractController<
   private async init() {
     if (!this.getFieldSchemaService) return;
 
-    this.logger.log(`Initializing controller '${this.entityLabel}'...`);
+    this.logger.log(`Initializing controller '${this.entityLabels}'...`);
 
-    const fieldSchemaDb = await this.getFieldSchemaService.search({
-      projectKey: PROJECT_KEY,
-      entity: {
-        $in: [this.entityLabel, GLOBAL_ENTITY]
-      }
-    });
+    const fieldSchemaDb = await this.getFieldSchemaService.search(
+      this.entityLabels
+    );
     this.inputSchema = BuildFieldSchemaHelper.buildSchemas(fieldSchemaDb);
-    this.logger.log(`Controller '${this.entityLabel}' finished`);
+    this.logger.log(`Controller '${this.entityLabels}' finished`);
   }
 
   // @UseGuards(MyJwtAuthGuard)

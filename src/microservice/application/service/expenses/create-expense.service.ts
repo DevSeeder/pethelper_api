@@ -10,7 +10,7 @@ import { GetPetService } from '../pets/get-pet.service';
 import { GetExpenseCategoriesService } from '../expense-categories/get-expense-category.service';
 import { GetUserService } from '../users/get-user.service';
 import { AbstractCreateService } from '../abstract/abstract-create.service';
-import { ExpenseFieldSchema } from 'src/microservice/adapter/field-schemas/expense-field.schema';
+import { GetFieldSchemaService } from '../field-schemas/get-field-schemas.service';
 
 @Injectable()
 export class CreateExpenseService extends AbstractCreateService<
@@ -23,8 +23,9 @@ export class CreateExpenseService extends AbstractCreateService<
     protected readonly repository: ExpensesRepository,
     protected readonly petsService: GetPetService,
     protected readonly expenseCategoriesService: GetExpenseCategoriesService,
-    protected readonly usersService: GetUserService
+    protected readonly usersService: GetUserService,
+    protected readonly getFieldSchemaService: GetFieldSchemaService
   ) {
-    super(repository, 'Expense', ExpenseFieldSchema);
+    super(repository, 'Expense', ['expenses'], getFieldSchemaService);
   }
 }

@@ -10,7 +10,7 @@ import { SearchExpenseDto } from 'src/microservice/application/dto/search/search
 import { GetUserService } from '../users/get-user.service';
 import { GetPetService } from '../pets/get-pet.service';
 import { GetExpenseCategoriesService } from '../expense-categories/get-expense-category.service';
-import { ExpenseFieldSchema } from 'src/microservice/adapter/field-schemas/expense-field.schema';
+import { GetFieldSchemaService } from '../field-schemas/get-field-schemas.service';
 
 @Injectable()
 export class GetExpenseService extends AbstractGetService<
@@ -23,8 +23,9 @@ export class GetExpenseService extends AbstractGetService<
     protected readonly repository: ExpensesRepository,
     protected readonly petsService: GetPetService,
     protected readonly usersService: GetUserService,
-    protected readonly expenseCategoriesService: GetExpenseCategoriesService
+    protected readonly expenseCategoriesService: GetExpenseCategoriesService,
+    protected readonly getFieldSchemaService: GetFieldSchemaService
   ) {
-    super(repository, 'Expense', ExpenseFieldSchema);
+    super(repository, 'Expense', ['expenses'], getFieldSchemaService);
   }
 }

@@ -28,7 +28,7 @@ export class ExpenseCategoriesController extends AbstractController<
   ) {
     super(
       'Expense Category',
-      'expensecategories',
+      ['config'],
       '',
       ['searchBy'],
       getService,

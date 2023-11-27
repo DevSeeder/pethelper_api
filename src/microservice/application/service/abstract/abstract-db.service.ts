@@ -8,6 +8,8 @@ import { SearchEgineOperators } from 'src/microservice/domain/interface/search-e
 import { AbstractDocument } from 'src/microservice/domain/schemas/abstract.schema';
 import { SchemaValidator } from '../../helper/schema-validator.helper';
 import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.interface';
+import { GetFieldSchemaService } from '../field-schemas/get-field-schemas.service';
+import { GLOBAL_ENTITY, PROJECT_KEY } from '../../app.constants';
 
 export class AbstractDBService<
   Collection,
@@ -15,14 +17,28 @@ export class AbstractDBService<
   ResponseModel,
   SearchParams
 > extends AbstractService {
+  protected fieldSchema: FieldItemSchema[] = [];
+
   constructor(
     protected readonly repository: MongooseRepository<
       Collection,
       MongooseModel
     >,
-    protected readonly fieldSchema: FieldItemSchema[] = []
+    protected readonly entityLabels: string[] = [],
+    protected readonly getFieldSchemaService?: GetFieldSchemaService
   ) {
     super();
+    this.init();
+  }
+
+  private async init() {
+    if (!this.entityLabels.length || !this.getFieldSchemaService) return;
+    this.logger.log(`Initializing service '${this.entityLabels[0]}'...`);
+
+    this.fieldSchema = await this.getFieldSchemaService.search(
+      this.entityLabels
+    );
+    this.logger.log(`Service '${this.entityLabels[0]}' finished`);
   }
 
   protected async convertRelation(

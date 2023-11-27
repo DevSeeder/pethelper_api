@@ -6,6 +6,7 @@ import { AnimalResponse } from '../../dto/response/animal.response';
 import { SearchAnimalDto } from '../../dto/search/search-animal.dto';
 import { GetAnimalGroupService } from '../animal-groups/get-animal-group.service';
 import { AnimalFieldSchema } from 'src/microservice/adapter/field-schemas/animal-field.schema';
+import { GetFieldSchemaService } from '../field-schemas/get-field-schemas.service';
 
 @Injectable()
 export class GetAnimalService extends AbstractGetService<
@@ -16,8 +17,9 @@ export class GetAnimalService extends AbstractGetService<
 > {
   constructor(
     protected readonly repository: AnimalsRepository,
-    protected readonly animalGroupsService: GetAnimalGroupService
+    protected readonly animalGroupsService: GetAnimalGroupService,
+    protected readonly getFieldSchemaService: GetFieldSchemaService
   ) {
-    super(repository, 'Animal', AnimalFieldSchema);
+    super(repository, 'Animal', ['animals', 'config'], getFieldSchemaService);
   }
 }

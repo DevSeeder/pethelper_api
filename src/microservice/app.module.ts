@@ -26,8 +26,7 @@ import { FieldSchemasModule } from './application/module/field-schemas.module';
     PetsModule,
     ExpensesModule,
     ExpenseCategoriesModule,
-    AnimalsModule,
-    FieldSchemasModule
+    AnimalsModule
   ],
   controllers: [],
   providers: []

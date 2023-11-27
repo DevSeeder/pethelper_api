@@ -5,7 +5,7 @@ import { AbstractUpdateService } from '../abstract/abstract-update.service';
 import { AnimalResponse } from '../../dto/response/animal.response';
 import { AnimalBodyDto } from '../../dto/body/animal-body.dto';
 import { GetAnimalGroupService } from '../animal-groups/get-animal-group.service';
-import { AnimalFieldSchema } from 'src/microservice/adapter/field-schemas/animal-field.schema';
+import { GetFieldSchemaService } from '../field-schemas/get-field-schemas.service';
 
 @Injectable()
 export class UpdateAnimalService extends AbstractUpdateService<
@@ -16,8 +16,9 @@ export class UpdateAnimalService extends AbstractUpdateService<
 > {
   constructor(
     protected readonly repository: AnimalsRepository,
-    protected readonly animalGroupsService: GetAnimalGroupService
+    protected readonly animalGroupsService: GetAnimalGroupService,
+    protected readonly getFieldSchemaService: GetFieldSchemaService
   ) {
-    super(repository, 'Animal', AnimalFieldSchema);
+    super(repository, 'Animal', ['animals', 'config'], getFieldSchemaService);
   }
 }

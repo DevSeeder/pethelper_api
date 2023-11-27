@@ -28,7 +28,7 @@ export class ExpensesController extends AbstractController<
   ) {
     super(
       'Expense',
-      'expenses',
+      ['expenses'],
       'pets',
       [],
       getService,

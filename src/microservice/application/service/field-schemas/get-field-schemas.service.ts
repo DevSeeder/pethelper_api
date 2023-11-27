@@ -1,21 +1,26 @@
 import { Injectable } from '@nestjs/common';
-import { AbstractGetService } from '../abstract/abstract-get.service';
-import {
-  FieldSchema,
-  FieldSchemaDocument
-} from '../../../domain/schemas/field-schemas.schema';
 import { FieldSchemasRepository } from 'src/microservice/adapter/repository/field-schemas.repository';
-import { Search } from '@devseeder/nestjs-microservices-commons';
+import { GLOBAL_ENTITY, PROJECT_KEY } from '../../app.constants';
+import { AbstractService } from '@devseeder/nestjs-microservices-commons';
 import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.interface';
 
 @Injectable()
-export class GetFieldSchemaService extends AbstractGetService<
-  FieldSchema,
-  FieldSchemaDocument,
-  FieldItemSchema,
-  any
-> {
+export class GetFieldSchemaService extends AbstractService {
   constructor(protected readonly repository: FieldSchemasRepository) {
-    super(repository);
+    super();
+  }
+
+  async search(entityLabels: string[]): Promise<FieldItemSchema[]> {
+    return this.repository.find(
+      {
+        projectKey: PROJECT_KEY,
+        entity: {
+          $in: [...entityLabels, GLOBAL_ENTITY]
+        }
+      },
+      { all: 0 },
+      {},
+      false
+    );
   }
 }

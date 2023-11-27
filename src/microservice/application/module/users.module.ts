@@ -12,16 +12,18 @@ import { GetUserValidationService } from '../service/users/get-user-validation.s
 import { UpdateUserService } from '../../application/service/users/update-user.service';
 import { AuthJwtModule } from './auth-jwt.module';
 import { GetUserService } from '../service/users/get-user.service';
+import { FieldSchemasModule } from './field-schemas.module';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: User.name, schema: UsersSchema }])
+    MongooseModule.forFeature([{ name: User.name, schema: UsersSchema }]),
     // ConfigModule.forRoot({
     //   isGlobal: true,
     //   load: [configuration]
     // }),
     // AuthJwtModule,
-    // HttpModule
+    // HttpModule,
+    FieldSchemasModule
   ],
   controllers: [
     // UsersController

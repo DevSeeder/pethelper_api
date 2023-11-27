@@ -8,6 +8,7 @@ import { AbstractUpdateService } from '../abstract/abstract-update.service';
 import { PetResponse } from '../../dto/response/pet.response';
 import { PetBodyDto } from '../../dto/body/pet-body.dto';
 import { PetFieldSchema } from 'src/microservice/adapter/field-schemas/pet-field.schema';
+import { GetFieldSchemaService } from '../field-schemas/get-field-schemas.service';
 
 @Injectable()
 export class UpdatePetService extends AbstractUpdateService<
@@ -20,8 +21,9 @@ export class UpdatePetService extends AbstractUpdateService<
     protected readonly repository: PetsRepository,
     protected readonly colorsService: GetColorService,
     protected readonly animalsService: GetAnimalService,
-    protected readonly racesService: GetRaceService
+    protected readonly racesService: GetRaceService,
+    protected readonly getFieldSchemaService: GetFieldSchemaService
   ) {
-    super(repository, 'Pet', PetFieldSchema);
+    super(repository, 'Pet', ['pets'], getFieldSchemaService);
   }
 }

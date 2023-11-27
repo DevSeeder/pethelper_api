@@ -28,7 +28,7 @@ export class AnimalsController extends AbstractController<
   ) {
     super(
       'Animal',
-      'animals',
+      ['animals', 'config'],
       'idGroup',
       [],
       getService,

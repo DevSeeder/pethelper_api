@@ -6,6 +6,7 @@ import { AbstractBodyDto } from '../../dto/body/abtract-body.dto';
 import { AbstractSchema } from 'src/microservice/domain/schemas/abstract.schema';
 import { Search } from '../../dto/search/search.dto';
 import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.interface';
+import { GetFieldSchemaService } from '../field-schemas/get-field-schemas.service';
 
 @Injectable()
 export abstract class AbstractUpdateService<
@@ -20,9 +21,10 @@ export abstract class AbstractUpdateService<
       MongooseModel
     >,
     protected readonly itemLabel: string = '',
-    protected readonly fieldSchema: FieldItemSchema[] = []
+    protected readonly entityLabels: string[] = [],
+    protected readonly getFieldSchemaService?: GetFieldSchemaService
   ) {
-    super(repository, fieldSchema);
+    super(repository, entityLabels, getFieldSchemaService);
   }
 
   async updateById(
