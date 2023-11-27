@@ -3,6 +3,8 @@ import { Injectable, forwardRef, Inject } from '@nestjs/common';
 import { Search } from 'src/microservice/application/dto/search/search.dto';
 import { AbstractDBService } from './abstract-db.service';
 import { GetFieldSchemaService } from '../field-schemas/get-field-schemas.service';
+import { FieldSchemaResponse } from 'src/microservice/domain/interface/field-schema.interface';
+import { FieldSchemaBuilder } from '../../helper/field-schema.builder';
 
 @Injectable()
 export abstract class AbstractGetService<
@@ -29,7 +31,10 @@ export abstract class AbstractGetService<
     super(repository, entityLabels, getFieldSchemaService);
   }
 
-  async search(searchParams: SearchParams = null): Promise<ResponseModel[]> {
+  async search(
+    searchParams: SearchParams = null,
+    select = {}
+  ): Promise<ResponseModel[]> {
     await this.convertRelation(
       searchParams as unknown as Partial<MongooseModel>
     );
@@ -45,7 +50,7 @@ export abstract class AbstractGetService<
     this.logger.log(`Pagination ${JSON.stringify({ page, pageSize })}...`);
     const responseItems = await this.repository.find(
       searchWhere,
-      { all: 0 },
+      select ? select : { all: 0 },
       {},
       false,
       pageSize,
@@ -61,6 +66,30 @@ export abstract class AbstractGetService<
   async getById(id: string): Promise<ResponseModel> {
     const item = await this.repository.findById(id, { all: 0 });
     return this.convertRelation(item);
+  }
+
+  async getForm(page: string): Promise<FieldSchemaResponse> {
+    console.log(this.fieldSchema);
+    const fields = this.fieldSchema.filter((field) =>
+      FieldSchemaBuilder.getFormFilterCondition(page, field)
+    );
+
+    const arrayResponse = [];
+
+    for await (const field of fields) {
+      const objectItem = { ...field };
+
+      if (field.type === 'externalId' && !field.hidden)
+        objectItem['values'] = await this[
+          `${field.externalRelation.service}Service`
+        ].search({ pageSize: 50 }, { _id: 1, name: 1 });
+
+      arrayResponse.push(objectItem);
+    }
+
+    return {
+      fields: arrayResponse
+    };
   }
 
   private getPagination(

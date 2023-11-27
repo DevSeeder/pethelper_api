@@ -11,7 +11,7 @@ export class GetFieldSchemaService extends AbstractService {
   }
 
   async search(entityLabels: string[]): Promise<FieldItemSchema[]> {
-    return this.repository.find(
+    const itens = await this.repository.find(
       {
         projectKey: PROJECT_KEY,
         entity: {
@@ -22,5 +22,7 @@ export class GetFieldSchemaService extends AbstractService {
       {},
       false
     );
+
+    return itens;
   }
 }

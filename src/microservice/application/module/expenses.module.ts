@@ -13,6 +13,7 @@ import { ExpenseCategoriesModule } from './expense-categories.module';
 import { UpdateExpenseService } from '../service/expenses/update-expense.service';
 import { CreateExpenseService } from '../service/expenses/create-expense.service';
 import { FieldSchemasModule } from './field-schemas.module';
+import { importAsyncService } from '../helper/init-service-module.helper';
 
 @Module({
   imports: [
@@ -25,9 +26,9 @@ import { FieldSchemasModule } from './field-schemas.module';
   controllers: [ExpensesController],
   providers: [
     ExpensesRepository,
-    GetExpenseService,
-    UpdateExpenseService,
-    CreateExpenseService
+    importAsyncService(GetExpenseService),
+    importAsyncService(UpdateExpenseService),
+    importAsyncService(CreateExpenseService)
   ],
   exports: [
     ExpensesRepository,

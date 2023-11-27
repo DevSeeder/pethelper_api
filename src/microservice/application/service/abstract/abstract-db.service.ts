@@ -9,7 +9,6 @@ import { AbstractDocument } from 'src/microservice/domain/schemas/abstract.schem
 import { SchemaValidator } from '../../helper/schema-validator.helper';
 import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.interface';
 import { GetFieldSchemaService } from '../field-schemas/get-field-schemas.service';
-import { GLOBAL_ENTITY, PROJECT_KEY } from '../../app.constants';
 
 export class AbstractDBService<
   Collection,
@@ -31,14 +30,23 @@ export class AbstractDBService<
     this.init();
   }
 
-  private async init() {
+  async init() {
     if (!this.entityLabels.length || !this.getFieldSchemaService) return;
-    this.logger.log(`Initializing service '${this.entityLabels[0]}'...`);
+    try {
+      this.logger.log(`Initializing service for '${this.entityLabels[0]}'...`);
 
-    this.fieldSchema = await this.getFieldSchemaService.search(
-      this.entityLabels
-    );
-    this.logger.log(`Service '${this.entityLabels[0]}' finished`);
+      this.fieldSchema = await this.getFieldSchemaService.search(
+        this.entityLabels
+      );
+      this.logger.log(`Service '${this.entityLabels[0]}' finished`);
+    } catch (err) {
+      this.logger.error(
+        `Error loading service for '${this.entityLabels[0]}': ${JSON.stringify(
+          err
+        )}`
+      );
+      throw err;
+    }
   }
 
   protected async convertRelation(

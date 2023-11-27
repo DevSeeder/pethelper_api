@@ -20,8 +20,11 @@ import { PetBodyDto } from 'src/microservice/application/dto/body/pet-body.dto';
 import { AbstractCreateService } from 'src/microservice/application/service/abstract/abstract-create.service';
 import { AbstractBodyDto } from 'src/microservice/application/dto/body/abtract-body.dto';
 import { ObjectId } from 'mongoose';
-import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.interface';
-import { BuildFieldSchemaHelper } from 'src/microservice/application/helper/build-field-schema.helper';
+import {
+  FieldItemSchema,
+  FieldSchemaResponse
+} from 'src/microservice/domain/interface/field-schema.interface';
+import { FieldSchemaBuilder } from 'src/microservice/application/helper/field-schema.builder';
 import { GetFieldSchemaService } from 'src/microservice/application/service/field-schemas/get-field-schemas.service';
 import {
   GLOBAL_ENTITY,
@@ -69,13 +72,22 @@ export abstract class AbstractController<
   private async init() {
     if (!this.getFieldSchemaService) return;
 
-    this.logger.log(`Initializing controller '${this.entityLabels}'...`);
+    try {
+      this.logger.log(`Initializing controller for '${this.itemLabel}'...`);
 
-    const fieldSchemaDb = await this.getFieldSchemaService.search(
-      this.entityLabels
-    );
-    this.inputSchema = BuildFieldSchemaHelper.buildSchemas(fieldSchemaDb);
-    this.logger.log(`Controller '${this.entityLabels}' finished`);
+      const fieldSchemaDb = await this.getFieldSchemaService.search(
+        this.entityLabels
+      );
+      this.inputSchema = FieldSchemaBuilder.buildSchemas(fieldSchemaDb);
+      this.logger.log(`Controller for '${this.itemLabel}' finished`);
+    } catch (err) {
+      this.logger.error(
+        `Error loading controller for '${this.itemLabel}': ${JSON.stringify(
+          err
+        )}`
+      );
+      throw err;
+    }
   }
 
   // @UseGuards(MyJwtAuthGuard)
@@ -141,6 +153,11 @@ export abstract class AbstractController<
     this.isMethodAllowed('create');
     SchemaValidator.validateSchema(this.inputSchema.create, body);
     return this.createService.create(body as unknown as BodyDto);
+  }
+
+  @Get(`/form/:page`)
+  getForm(@Param('page') page: string): Promise<FieldSchemaResponse> {
+    return this.getService.getForm(page);
   }
 
   private isMethodAllowed(method: string) {

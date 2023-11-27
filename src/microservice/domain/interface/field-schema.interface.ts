@@ -1,7 +1,7 @@
 import { SearchEgineOperators } from './search-engine.interface';
 
 export interface FieldSchemaResponse {
-  fields: FieldItemSchema[];
+  fields: Array<FieldItemSchema & FormFieldResponse>;
 }
 
 export interface FieldItemSchema {
@@ -25,4 +25,13 @@ export interface FieldItemSchema {
   alias?: {
     search?: string;
   };
+}
+
+export interface FormFieldResponse {
+  values?: FieldValue[];
+}
+
+export interface FieldValue {
+  id: string;
+  value: any;
 }

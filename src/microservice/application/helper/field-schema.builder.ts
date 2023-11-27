@@ -6,13 +6,14 @@ import { SchemaValidator } from './schema-validator.helper';
 import { InternalServerErrorException } from '@nestjs/common';
 import { commonSearchSchema } from 'src/microservice/adapter/field-schemas/abstract-input.schema';
 import { SearchEgineOperators } from 'src/microservice/domain/interface/search-engine.interface';
+import { InvalidDataException } from '@devseeder/microservices-exceptions';
 
-export class BuildFieldSchemaHelper {
+export class FieldSchemaBuilder {
   static buildSchemas(fieldSchema: FieldItemSchema[]): InputSchema {
     return {
-      search: BuildFieldSchemaHelper.buildSearchSchema(fieldSchema),
-      update: BuildFieldSchemaHelper.buildUpdateSchema(fieldSchema),
-      create: BuildFieldSchemaHelper.buildCreateSchema(fieldSchema)
+      search: FieldSchemaBuilder.buildSearchSchema(fieldSchema),
+      update: FieldSchemaBuilder.buildUpdateSchema(fieldSchema),
+      create: FieldSchemaBuilder.buildCreateSchema(fieldSchema)
     };
   }
 
@@ -22,10 +23,9 @@ export class BuildFieldSchemaHelper {
     fieldSchema
       .filter((field) => field.allowed.search)
       .forEach((schema) => {
-        if (BuildFieldSchemaHelper.buildSearchEngine(schema, objectSchema))
-          return;
+        if (FieldSchemaBuilder.buildSearchEngine(schema, objectSchema)) return;
 
-        const joiSchema = BuildFieldSchemaHelper.getType(
+        const joiSchema = FieldSchemaBuilder.getType(
           Joi,
           schema.type,
           schema?.itensType,
@@ -48,7 +48,7 @@ export class BuildFieldSchemaHelper {
       .forEach((schema) => {
         // console.log(schema.key);
 
-        const joiSchema = BuildFieldSchemaHelper.getType(
+        const joiSchema = FieldSchemaBuilder.getType(
           Joi,
           schema.type,
           schema?.itensType,
@@ -68,7 +68,7 @@ export class BuildFieldSchemaHelper {
     const objectSchema: SchemaMap = {};
 
     fieldSchema.forEach((schema) => {
-      let joiSchema = BuildFieldSchemaHelper.getType(
+      let joiSchema = FieldSchemaBuilder.getType(
         Joi,
         schema.type,
         schema?.itensType,
@@ -126,13 +126,13 @@ export class BuildFieldSchemaHelper {
       schema?.searchEgines &&
       schema?.searchEgines.includes(SearchEgineOperators.BETWEEN)
     ) {
-      const start = BuildFieldSchemaHelper.getType(
+      const start = FieldSchemaBuilder.getType(
         Joi,
         schema.type,
         schema?.itensType,
         true
       );
-      const end = BuildFieldSchemaHelper.getType(
+      const end = FieldSchemaBuilder.getType(
         Joi,
         schema.type,
         schema?.itensType,
@@ -143,5 +143,18 @@ export class BuildFieldSchemaHelper {
       return true;
     }
     return false;
+  }
+
+  static getFormFilterCondition(page: string, field: FieldItemSchema): boolean {
+    switch (page) {
+      case 'search':
+        return field.allowed.search;
+      case 'update':
+        return field.allowed.update;
+      case 'create':
+        return true;
+      default:
+        throw new InvalidDataException('page', page);
+    }
   }
 }
