@@ -6,11 +6,11 @@ import {
   Animal,
   AnimalDocument
 } from 'src/microservice/domain/schemas/animals.schema';
-import { AnimalInputSchema } from '../schemas/Animal-input.schema';
 import { UpdateAnimalService } from 'src/microservice/application/service/animals/update-animal.service';
 import { AnimalBodyDto } from 'src/microservice/application/dto/body/Animal-body.dto';
 import { CreateAnimalService } from 'src/microservice/application/service/animals/create-animal.service';
 import { SearchAnimalDto } from 'src/microservice/application/dto/search/search-animal.dto';
+import { AnimalFieldSchema } from '../schemas/animal-field.schema';
 
 @Controller('animals')
 export class AnimalsController extends AbstractController<
@@ -29,7 +29,7 @@ export class AnimalsController extends AbstractController<
       getService,
       'idGroup',
       null,
-      AnimalInputSchema,
+      AnimalFieldSchema,
       'Animal',
       [],
       updateService,

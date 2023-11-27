@@ -1,3 +1,5 @@
+import { SearchEgineOperators } from './search-engine.interface';
+
 export interface FieldSchema {
   fields: FieldItemSchema[];
 }
@@ -13,6 +15,7 @@ export interface FieldItemSchema {
   array?: boolean;
   enumValues?: Array<string | number>;
   itensType?: 'string' | 'number';
+  searchEgines?: SearchEgineOperators[];
   max?: number;
   min?: number;
   hidden?: boolean;

@@ -4,3 +4,16 @@ export const commonSearchSchema = {
   page: Joi.number().min(1).optional(),
   pageSize: Joi.number().min(1).optional()
 };
+
+export const commonFieldSchema = [
+  {
+    key: 'active',
+    required: false,
+    type: 'boolean',
+    hidden: true,
+    allowed: {
+      search: true,
+      update: false
+    }
+  }
+];

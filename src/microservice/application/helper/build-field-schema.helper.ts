@@ -4,6 +4,8 @@ import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.
 import { InputSchema } from 'src/microservice/domain/interface/input-schema.interface';
 import { SchemaValidator } from './schema-validator.helper';
 import { InternalServerErrorException } from '@nestjs/common';
+import { commonSearchSchema } from 'src/microservice/adapter/schemas/abstract-input.schema';
+import { SearchEgineOperators } from 'src/microservice/domain/interface/search-engine.interface';
 
 export class BuildFieldSchemaHelper {
   static buildSchemas(fieldSchema: FieldItemSchema[]): InputSchema {
@@ -20,6 +22,9 @@ export class BuildFieldSchemaHelper {
     fieldSchema
       .filter((field) => field.allowed.search)
       .forEach((schema) => {
+        if (BuildFieldSchemaHelper.buildSearchEngine(schema, objectSchema))
+          return;
+
         const joiSchema = BuildFieldSchemaHelper.getType(
           Joi,
           schema.type,
@@ -32,7 +37,7 @@ export class BuildFieldSchemaHelper {
             .custom(SchemaValidator.validateEnum(schema.enumValues));
         else objectSchema[schema.key] = joiSchema.optional();
       });
-    return Joi.object(objectSchema);
+    return Joi.object({ ...commonSearchSchema, ...objectSchema });
   }
 
   static buildUpdateSchema(fieldSchema: FieldItemSchema[]): ObjectSchema {
@@ -93,8 +98,6 @@ export class BuildFieldSchemaHelper {
       case 'string':
         return Joi.string();
       case 'externalId':
-        console.log(array);
-        console.log(array ? Joi.array().type : Joi.string().type);
         return array ? Joi.array() : Joi.string();
       case 'enum':
         return itensType === 'string' ? Joi.string() : Joi.number();
@@ -113,5 +116,32 @@ export class BuildFieldSchemaHelper {
           `Schema type ${type} not implemented`
         );
     }
+  }
+
+  static buildSearchEngine(
+    schema: FieldItemSchema,
+    objectSchema: SchemaMap
+  ): boolean {
+    if (
+      schema?.searchEgines &&
+      schema?.searchEgines.includes(SearchEgineOperators.BETWEEN)
+    ) {
+      const start = BuildFieldSchemaHelper.getType(
+        Joi,
+        schema.type,
+        schema?.itensType,
+        true
+      );
+      const end = BuildFieldSchemaHelper.getType(
+        Joi,
+        schema.type,
+        schema?.itensType,
+        true
+      );
+      objectSchema[`${schema.key}_start`] = start.optional();
+      objectSchema[`${schema.key}_end`] = end.optional();
+      return true;
+    }
+    return false;
   }
 }

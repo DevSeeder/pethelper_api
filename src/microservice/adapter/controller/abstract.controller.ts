@@ -20,6 +20,8 @@ import { PetBodyDto } from 'src/microservice/application/dto/body/pet-body.dto';
 import { AbstractCreateService } from 'src/microservice/application/service/abstract/abstract-create.service';
 import { AbstractBodyDto } from 'src/microservice/application/dto/body/abtract-body.dto';
 import { ObjectId } from 'mongoose';
+import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.interface';
+import { BuildFieldSchemaHelper } from 'src/microservice/application/helper/build-field-schema.helper';
 
 export abstract class AbstractController<
   Collection,
@@ -28,6 +30,7 @@ export abstract class AbstractController<
   SearchParams extends Search,
   BodyDto extends AbstractBodyDto
 > {
+  protected inputSchema: InputSchema;
   constructor(
     protected readonly getService: AbstractGetService<
       Collection,
@@ -37,7 +40,7 @@ export abstract class AbstractController<
     >,
     protected readonly searchKey: string,
     protected readonly transformation: AbstractTransformation<SearchParams>,
-    protected readonly inputSchema: InputSchema,
+    fieldSchema: FieldItemSchema[],
     protected readonly itemLabel: string,
     protected readonly forbbidenMethods: string[] = [],
     protected readonly updateService?: AbstractUpdateService<
@@ -52,7 +55,9 @@ export abstract class AbstractController<
       GetResponse,
       BodyDto
     >
-  ) {}
+  ) {
+    this.inputSchema = BuildFieldSchemaHelper.buildSchemas(fieldSchema);
+  }
 
   // @UseGuards(MyJwtAuthGuard)
   // @Scopes(EnumScopes.USER)

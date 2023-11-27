@@ -2,7 +2,7 @@ import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.
 import { SearchEgineOperators } from 'src/microservice/domain/interface/search-engine.interface';
 import { commonFieldSchema } from './abstract-input.schema';
 
-export const PetFieldSchema: FieldItemSchema[] = [
+export const ExpenseFieldSchema: FieldItemSchema[] = [
   ...commonFieldSchema,
   {
     key: 'name',
@@ -16,11 +16,22 @@ export const PetFieldSchema: FieldItemSchema[] = [
     searchEgines: [SearchEgineOperators.LIKE]
   },
   {
-    key: 'idAnimal',
+    key: 'description',
+    required: false,
+    type: 'text',
+    hidden: false,
+    allowed: {
+      search: true,
+      update: true
+    },
+    searchEgines: [SearchEgineOperators.LIKE]
+  },
+  {
+    key: 'idCategory',
     required: true,
     type: 'externalId',
     externalRelation: {
-      service: 'animals'
+      service: 'expenseCategories'
     },
     hidden: false,
     allowed: {
@@ -30,13 +41,13 @@ export const PetFieldSchema: FieldItemSchema[] = [
     searchEgines: [SearchEgineOperators.IN]
   },
   {
-    key: 'races',
+    key: 'pets',
     required: false,
     array: true,
     type: 'externalId',
     itensType: 'string',
     externalRelation: {
-      service: 'races'
+      service: 'pets'
     },
     hidden: false,
     allowed: {
@@ -46,33 +57,7 @@ export const PetFieldSchema: FieldItemSchema[] = [
     searchEgines: [SearchEgineOperators.IN]
   },
   {
-    key: 'color',
-    required: false,
-    type: 'externalId',
-    externalRelation: {
-      service: 'colors'
-    },
-    hidden: false,
-    allowed: {
-      search: true,
-      update: true
-    },
-    searchEgines: [SearchEgineOperators.IN]
-  },
-  {
-    key: 'sex',
-    required: false,
-    enumValues: ['M', 'F'],
-    type: 'enum',
-    itensType: 'string',
-    hidden: false,
-    allowed: {
-      search: true,
-      update: true
-    }
-  },
-  {
-    key: 'weight',
+    key: 'cost',
     required: false,
     type: 'double',
     hidden: false,
@@ -82,9 +67,9 @@ export const PetFieldSchema: FieldItemSchema[] = [
     }
   },
   {
-    key: 'height',
+    key: 'qtd',
     required: false,
-    type: 'double',
+    type: 'integer',
     hidden: false,
     allowed: {
       search: false,
@@ -92,14 +77,15 @@ export const PetFieldSchema: FieldItemSchema[] = [
     }
   },
   {
-    key: 'birthDate',
+    key: 'date',
     required: false,
     type: 'date',
     hidden: false,
     allowed: {
-      search: false,
+      search: true,
       update: true
-    }
+    },
+    searchEgines: [SearchEgineOperators.BETWEEN]
   },
   {
     key: 'userId',

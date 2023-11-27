@@ -2,11 +2,7 @@ import { MongooseRepository } from '@devseeder/nestjs-microservices-commons';
 import { Injectable } from '@nestjs/common';
 import { Search } from 'src/microservice/application/dto/search/search.dto';
 import { Relation } from '../../../domain/interface/relation.interface';
-import {
-  SearchEgineOperators,
-  SearchEngine
-} from 'src/microservice/domain/interface/search-engine.interface';
-import { SchemaValidator } from '../../helper/schema-validator.helper';
+import { SearchEngine } from 'src/microservice/domain/interface/search-engine.interface';
 import { AbstractDBService } from './abstract-db.service';
 
 @Injectable()
