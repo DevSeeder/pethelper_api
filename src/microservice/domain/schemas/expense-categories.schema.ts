@@ -2,11 +2,6 @@
 import { Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { AbstractConfig } from './config.schema';
-import {
-  SearchEgineOperators,
-  SearchEngine
-} from '../interface/search-engine.interface';
-
 export type ExpenseCategoryDocument = ExpenseCategory & Document;
 
 @Schema({ timestamps: true, collection: 'expenseCategories' })

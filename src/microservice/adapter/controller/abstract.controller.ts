@@ -4,6 +4,7 @@ import {
   Body,
   ForbiddenException,
   Get,
+  Logger,
   Param,
   Patch,
   Post,
@@ -21,6 +22,11 @@ import { AbstractBodyDto } from 'src/microservice/application/dto/body/abtract-b
 import { ObjectId } from 'mongoose';
 import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.interface';
 import { BuildFieldSchemaHelper } from 'src/microservice/application/helper/build-field-schema.helper';
+import { GetFieldSchemaService } from 'src/microservice/application/service/field-schemas/get-field-schemas.service';
+import {
+  GLOBAL_ENTITY,
+  PROJECT_KEY
+} from 'src/microservice/application/app.constants';
 
 export abstract class AbstractController<
   Collection,
@@ -29,18 +35,20 @@ export abstract class AbstractController<
   SearchParams extends Search,
   BodyDto extends AbstractBodyDto
 > {
+  protected readonly logger: Logger = new Logger(AbstractController.name);
   protected inputSchema: InputSchema;
+
   constructor(
-    protected readonly getService: AbstractGetService<
+    protected readonly itemLabel: string,
+    protected readonly entityLabel: string,
+    protected readonly searchKey: string = '',
+    protected readonly forbbidenMethods: string[] = [],
+    protected readonly getService?: AbstractGetService<
       Collection,
       MongooseModel,
       GetResponse,
       SearchParams
     >,
-    protected readonly searchKey: string,
-    fieldSchema: FieldItemSchema[],
-    protected readonly itemLabel: string,
-    protected readonly forbbidenMethods: string[] = [],
     protected readonly updateService?: AbstractUpdateService<
       Collection,
       MongooseModel,
@@ -52,9 +60,25 @@ export abstract class AbstractController<
       MongooseModel,
       GetResponse,
       BodyDto
-    >
+    >,
+    protected readonly getFieldSchemaService?: GetFieldSchemaService
   ) {
-    this.inputSchema = BuildFieldSchemaHelper.buildSchemas(fieldSchema);
+    this.init();
+  }
+
+  private async init() {
+    if (!this.getFieldSchemaService) return;
+
+    this.logger.log(`Initializing controller '${this.entityLabel}'...`);
+
+    const fieldSchemaDb = await this.getFieldSchemaService.search({
+      projectKey: PROJECT_KEY,
+      entity: {
+        $in: [this.entityLabel, GLOBAL_ENTITY]
+      }
+    });
+    this.inputSchema = BuildFieldSchemaHelper.buildSchemas(fieldSchemaDb);
+    this.logger.log(`Controller '${this.entityLabel}' finished`);
   }
 
   // @UseGuards(MyJwtAuthGuard)

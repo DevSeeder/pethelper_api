@@ -10,7 +10,7 @@ import { UpdateAnimalService } from 'src/microservice/application/service/animal
 import { AnimalBodyDto } from 'src/microservice/application/dto/body/Animal-body.dto';
 import { CreateAnimalService } from 'src/microservice/application/service/animals/create-animal.service';
 import { SearchAnimalDto } from 'src/microservice/application/dto/search/search-animal.dto';
-import { AnimalFieldSchema } from '../field-schemas/animal-field.schema';
+import { GetFieldSchemaService } from 'src/microservice/application/service/field-schemas/get-field-schemas.service';
 
 @Controller('animals')
 export class AnimalsController extends AbstractController<
@@ -23,16 +23,18 @@ export class AnimalsController extends AbstractController<
   constructor(
     protected readonly getService: GetAnimalService,
     protected readonly updateService: UpdateAnimalService,
-    protected readonly createService: CreateAnimalService
+    protected readonly createService: CreateAnimalService,
+    protected readonly getFieldSchemaService: GetFieldSchemaService
   ) {
     super(
-      getService,
-      'idGroup',
-      AnimalFieldSchema,
       'Animal',
+      'animals',
+      'idGroup',
       [],
+      getService,
       updateService,
-      createService
+      createService,
+      getFieldSchemaService
     );
   }
 }

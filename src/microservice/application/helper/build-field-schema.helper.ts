@@ -46,7 +46,7 @@ export class BuildFieldSchemaHelper {
     fieldSchema
       .filter((field) => field.allowed.update)
       .forEach((schema) => {
-        console.log(schema.key);
+        // console.log(schema.key);
 
         const joiSchema = BuildFieldSchemaHelper.getType(
           Joi,

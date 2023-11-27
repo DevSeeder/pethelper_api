@@ -6,6 +6,7 @@ import { PetsModule } from './application/module/pets.module';
 import { ExpensesModule } from './application/module/expenses.module';
 import { ExpenseCategoriesModule } from './application/module/expense-categories.module';
 import { AnimalsModule } from './application/module/animals.module';
+import { FieldSchemasModule } from './application/module/field-schemas.module';
 
 @Module({
   imports: [
@@ -25,7 +26,8 @@ import { AnimalsModule } from './application/module/animals.module';
     PetsModule,
     ExpensesModule,
     ExpenseCategoriesModule,
-    AnimalsModule
+    AnimalsModule,
+    FieldSchemasModule
   ],
   controllers: [],
   providers: []

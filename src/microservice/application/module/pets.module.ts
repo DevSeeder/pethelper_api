@@ -14,6 +14,7 @@ import { ExpensesModule } from './expenses.module';
 import { ExpensesController } from 'src/microservice/adapter/controller/expenses.controller';
 import { GetExpenseService } from '../service/expenses/get-Expense.service';
 import { ExpenseCategoriesModule } from './expense-categories.module';
+import { FieldSchemasModule } from './field-schemas.module';
 
 @Module({
   imports: [
@@ -23,7 +24,8 @@ import { ExpenseCategoriesModule } from './expense-categories.module';
     RacesModule,
     UsersModule,
     forwardRef(() => ExpensesModule),
-    ExpenseCategoriesModule
+    ExpenseCategoriesModule,
+    FieldSchemasModule
   ],
   controllers: [PetsController, ExpensesController],
   providers: [

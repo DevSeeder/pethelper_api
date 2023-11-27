@@ -1,6 +1,6 @@
 import { SearchEgineOperators } from './search-engine.interface';
 
-export interface FieldSchema {
+export interface FieldSchemaResponse {
   fields: FieldItemSchema[];
 }
 

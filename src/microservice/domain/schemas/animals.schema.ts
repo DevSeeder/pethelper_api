@@ -2,11 +2,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { AbstractConfig } from './config.schema';
-import { Relation } from '../interface/relation.interface';
-import {
-  SearchEgineOperators,
-  SearchEngine
-} from '../interface/search-engine.interface';
 
 export type AnimalDocument = Animal & Document;
 

@@ -10,7 +10,7 @@ import {
 import { UpdateExpenseService } from 'src/microservice/application/service/expenses/update-expense.service';
 import { ExpenseBodyDto } from 'src/microservice/application/dto/body/expense-body.dto';
 import { CreateExpenseService } from 'src/microservice/application/service/expenses/create-expense.service';
-import { ExpenseFieldSchema } from '../field-schemas/expense-field.schema';
+import { GetFieldSchemaService } from 'src/microservice/application/service/field-schemas/get-field-schemas.service';
 
 @Controller('expenses')
 export class ExpensesController extends AbstractController<
@@ -23,16 +23,18 @@ export class ExpensesController extends AbstractController<
   constructor(
     protected readonly getService: GetExpenseService,
     protected readonly updateService: UpdateExpenseService,
-    protected readonly createService: CreateExpenseService
+    protected readonly createService: CreateExpenseService,
+    protected readonly getFieldSchemaService: GetFieldSchemaService
   ) {
     super(
-      getService,
-      'pets',
-      ExpenseFieldSchema,
       'Expense',
+      'expenses',
+      'pets',
       [],
+      getService,
       updateService,
-      createService
+      createService,
+      getFieldSchemaService
     );
   }
 }

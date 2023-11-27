@@ -10,11 +10,13 @@ import { AnimalsController } from 'src/microservice/adapter/controller/animals.c
 import { AnimalGroupsModule } from './animal-group.module';
 import { UpdateAnimalService } from '../service/animals/update-animal.service';
 import { CreateAnimalService } from '../service/animals/create-animal.service';
+import { FieldSchemasModule } from './field-schemas.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Animal.name, schema: AnimalsSchema }]),
-    AnimalGroupsModule
+    AnimalGroupsModule,
+    FieldSchemasModule
   ],
   controllers: [AnimalsController],
   providers: [

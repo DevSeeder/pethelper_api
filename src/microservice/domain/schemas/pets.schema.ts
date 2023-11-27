@@ -1,11 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { Relation } from '../interface/relation.interface';
-import {
-  SearchEgineOperators,
-  SearchEngine
-} from '../interface/search-engine.interface';
 import { AbstractSchema } from './abstract.schema';
 
 export type PetDocument = Pet & Document;

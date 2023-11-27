@@ -12,13 +12,15 @@ import { PetsModule } from './pets.module';
 import { ExpenseCategoriesModule } from './expense-categories.module';
 import { UpdateExpenseService } from '../service/expenses/update-expense.service';
 import { CreateExpenseService } from '../service/expenses/create-expense.service';
+import { FieldSchemasModule } from './field-schemas.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Expense.name, schema: ExpensesSchema }]),
     forwardRef(() => PetsModule),
     UsersModule,
-    ExpenseCategoriesModule
+    ExpenseCategoriesModule,
+    FieldSchemasModule
   ],
   controllers: [ExpensesController],
   providers: [
