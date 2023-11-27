@@ -4,14 +4,14 @@ import { ExpensesRepository } from 'src/microservice/adapter/repository/expenses
 import {
   Expense,
   ExpenseDocument,
-  ExpenseRelations,
-  ExpenseSearchEngine
+  ExpenseRelations
 } from '../../../domain/schemas/expenses.schema';
 import { ExpenseResponse } from 'src/microservice/application/dto/response/expense.response';
 import { SearchExpenseDto } from 'src/microservice/application/dto/search/search-expense.dto';
 import { GetUserService } from '../users/get-user.service';
 import { GetPetService } from '../pets/get-pet.service';
 import { GetExpenseCategoriesService } from '../expense-categories/get-expense-category.service';
+import { ExpenseFieldSchema } from 'src/microservice/adapter/schemas/expense-field.schema';
 
 @Injectable()
 export class GetExpenseService extends AbstractGetService<
@@ -26,6 +26,6 @@ export class GetExpenseService extends AbstractGetService<
     protected readonly usersService: GetUserService,
     protected readonly expenseCategoriesService: GetExpenseCategoriesService
   ) {
-    super(repository, 'Expense', ExpenseRelations, ExpenseSearchEngine);
+    super(repository, 'Expense', ExpenseRelations, ExpenseFieldSchema);
   }
 }

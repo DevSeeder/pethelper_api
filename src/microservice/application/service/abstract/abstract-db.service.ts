@@ -4,12 +4,10 @@ import {
   MongooseRepository
 } from '@devseeder/nestjs-microservices-commons';
 import { Relation } from 'src/microservice/domain/interface/relation.interface';
-import {
-  SearchEgineOperators,
-  SearchEngine
-} from 'src/microservice/domain/interface/search-engine.interface';
+import { SearchEgineOperators } from 'src/microservice/domain/interface/search-engine.interface';
 import { AbstractDocument } from 'src/microservice/domain/schemas/abstract.schema';
 import { SchemaValidator } from '../../helper/schema-validator.helper';
+import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.interface';
 
 export class AbstractDBService<
   Collection,
@@ -23,7 +21,7 @@ export class AbstractDBService<
       MongooseModel
     >,
     protected readonly relations: Relation[] = [],
-    protected readonly searchEngines: SearchEngine[] = []
+    protected readonly fieldSchema: FieldItemSchema[] = []
   ) {
     super();
   }
@@ -69,7 +67,6 @@ export class AbstractDBService<
 
     let objValue;
     try {
-      this.logger.log(`Calling getById(${value}) from '${rel.service}Service'`);
       objValue = await this[`${rel.service}Service`].getById(value);
     } catch (err) {
       this.logger.error(`Error searching id: ${JSON.stringify(err)}`);
@@ -87,41 +84,57 @@ export class AbstractDBService<
   protected buildSearchEgines(item: SearchParams): Partial<SearchParams> {
     if (!item) return null;
 
-    const itemResponse = { ...item } as unknown as any;
-    for (const rel of this.searchEngines) {
-      const value = item[rel.key];
+    const itemResponse = { ...item };
+    const searchEngines = this.fieldSchema.filter(
+      (schema) => schema.searchEgines && schema.searchEgines.length
+    );
 
-      if (value === undefined && rel.operator !== SearchEgineOperators.BETWEEN)
-        continue;
-
-      switch (rel.operator) {
-        case SearchEgineOperators.LIKE:
-          itemResponse[rel.key] = {
-            $regex: new RegExp(`${value}`),
-            $options: 'i'
-          };
-          break;
-        case SearchEgineOperators.IN:
-          itemResponse[rel.key] = {
-            $in: value.split(',')
-          };
-          break;
-
-        case SearchEgineOperators.BETWEEN:
-          const betweenQuery = {};
-          if (item[`${rel.key}_start`])
-            betweenQuery['$gte'] = item[`${rel.key}_start`];
-          if (item[`${rel.key}_end`])
-            betweenQuery['$lte'] = item[`${rel.key}_end`];
-
-          if (Object.keys(betweenQuery).length)
-            itemResponse[rel.key] = betweenQuery;
-
-          delete itemResponse[`${rel.key}_start`];
-          delete itemResponse[`${rel.key}_end`];
-          break;
-      }
+    for (const schema of searchEngines) {
+      const value = item[schema.key];
+      schema.searchEgines.forEach((eng) => {
+        this.buildSearchEgineItem(value, schema, eng, itemResponse);
+      });
     }
-    return SchemaValidator.removeUndefined<SearchParams>(itemResponse);
+    return SchemaValidator.removeUndefined<SearchParams>(
+      itemResponse as object
+    );
+  }
+
+  private buildSearchEgineItem(
+    value: any,
+    schema: FieldItemSchema,
+    operator: SearchEgineOperators,
+    itemResponse: SearchParams
+  ) {
+    if (value === undefined && operator !== SearchEgineOperators.BETWEEN)
+      return;
+
+    switch (operator) {
+      case SearchEgineOperators.LIKE:
+        itemResponse[schema.key] = {
+          $regex: new RegExp(`${value}`),
+          $options: 'i'
+        };
+        break;
+      case SearchEgineOperators.IN:
+        itemResponse[schema.key] = {
+          $in: value.split(',')
+        };
+        break;
+
+      case SearchEgineOperators.BETWEEN:
+        const betweenQuery = {};
+        if (itemResponse[`${schema.key}_start`])
+          betweenQuery['$gte'] = itemResponse[`${schema.key}_start`];
+        if (itemResponse[`${schema.key}_end`])
+          betweenQuery['$lte'] = itemResponse[`${schema.key}_end`];
+
+        if (Object.keys(betweenQuery).length)
+          itemResponse[schema.key] = betweenQuery;
+
+        delete itemResponse[`${schema.key}_start`];
+        delete itemResponse[`${schema.key}_end`];
+        break;
+    }
   }
 }

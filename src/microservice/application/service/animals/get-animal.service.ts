@@ -4,12 +4,12 @@ import { AnimalsRepository } from 'src/microservice/adapter/repository/animals.r
 import {
   Animal,
   AnimalDocument,
-  AnimalRelations,
-  AnimalSearchEngine
+  AnimalRelations
 } from '../../../domain/schemas/animals.schema';
 import { AnimalResponse } from '../../dto/response/animal.response';
 import { SearchAnimalDto } from '../../dto/search/search-animal.dto';
 import { GetAnimalGroupService } from '../animal-groups/get-animal-group.service';
+import { AnimalFieldSchema } from 'src/microservice/adapter/schemas/animal-field.schema';
 
 @Injectable()
 export class GetAnimalService extends AbstractGetService<
@@ -22,6 +22,6 @@ export class GetAnimalService extends AbstractGetService<
     protected readonly repository: AnimalsRepository,
     protected readonly animalGroupsService: GetAnimalGroupService
   ) {
-    super(repository, 'Animal', AnimalRelations, AnimalSearchEngine);
+    super(repository, 'Animal', AnimalRelations, AnimalFieldSchema);
   }
 }

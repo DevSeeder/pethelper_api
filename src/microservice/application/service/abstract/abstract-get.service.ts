@@ -2,8 +2,8 @@ import { MongooseRepository } from '@devseeder/nestjs-microservices-commons';
 import { Injectable } from '@nestjs/common';
 import { Search } from 'src/microservice/application/dto/search/search.dto';
 import { Relation } from '../../../domain/interface/relation.interface';
-import { SearchEngine } from 'src/microservice/domain/interface/search-engine.interface';
 import { AbstractDBService } from './abstract-db.service';
+import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.interface';
 
 @Injectable()
 export abstract class AbstractGetService<
@@ -24,7 +24,7 @@ export abstract class AbstractGetService<
     >,
     protected readonly itemLabel: string = '',
     protected readonly relations: Relation[] = [],
-    protected readonly searchEngines: SearchEngine[] = []
+    protected readonly fieldSchema: FieldItemSchema[] = []
   ) {
     super(repository, relations);
   }

@@ -2,11 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { AbstractGetService } from '../abstract/abstract-get.service';
 import { ExpenseCategoriesRepository } from 'src/microservice/adapter/repository/expense-categories.repository';
 import {
-  ConfigSearchEngine,
   ExpenseCategory,
   ExpenseCategoryDocument
 } from '../../../domain/schemas/expense-categories.schema';
 import { SearchConfigDto } from '../../dto/search/search-config.dto';
+import { ConfigFieldSchema } from 'src/microservice/adapter/schemas/config-field.schema';
 
 @Injectable()
 export class GetExpenseCategoriesService extends AbstractGetService<
@@ -16,6 +16,6 @@ export class GetExpenseCategoriesService extends AbstractGetService<
   SearchConfigDto
 > {
   constructor(protected readonly repository: ExpenseCategoriesRepository) {
-    super(repository, 'Expense Category', [], ConfigSearchEngine);
+    super(repository, 'Expense Category', [], ConfigFieldSchema);
   }
 }
