@@ -42,22 +42,3 @@ export class Pet extends AbstractSchema {
 
 const schema = SchemaFactory.createForClass(Pet);
 export const PetsSchema = schema;
-
-export const PetRelations: Relation[] = [
-  {
-    key: 'color',
-    service: 'colors'
-  },
-  {
-    key: 'idAnimal',
-    service: 'animals'
-  },
-  {
-    key: 'races',
-    service: 'races'
-  },
-  {
-    key: 'userId',
-    service: 'users'
-  }
-];

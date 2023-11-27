@@ -23,10 +23,3 @@ const schema = SchemaFactory.createForClass(Animal);
 schema.index({ name: 1 }, { unique: true });
 schema.index({ key: 1 }, { unique: true });
 export const AnimalsSchema = schema;
-
-export const AnimalRelations: Relation[] = [
-  {
-    key: 'idGroup',
-    service: 'animalGroups'
-  }
-];

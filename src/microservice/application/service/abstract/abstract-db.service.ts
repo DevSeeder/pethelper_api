@@ -20,7 +20,6 @@ export class AbstractDBService<
       Collection,
       MongooseModel
     >,
-    protected readonly relations: Relation[] = [],
     protected readonly fieldSchema: FieldItemSchema[] = []
   ) {
     super();
@@ -31,32 +30,49 @@ export class AbstractDBService<
   ): Promise<ResponseModel> {
     if (!item) return null;
 
+    const relations = this.fieldSchema.filter(
+      (schema) => schema.type === 'externalId'
+    );
+
     const itemResponse = { ...item } as unknown as ResponseModel;
-    for await (const rel of this.relations) {
-      let value = item[rel.key];
-
-      if (value === undefined) continue;
-
-      if (!Array.isArray(value) && value.split(',').length > 1)
-        value = value.split(',');
-
-      if (Array.isArray(value) && value.length) {
-        const relPromises = value.map(async (val) => {
-          return {
-            id: val,
-            value: await this.convertValueRelation(rel, val)
-          };
-        });
-        itemResponse[rel.key] = await Promise.all(relPromises);
-        continue;
-      }
-
-      itemResponse[rel.key] = {
-        id: value,
-        value: await this.convertValueRelation(rel, value)
-      };
+    for await (const schema of relations) {
+      await this.convertRelationItem(schema, item, itemResponse);
     }
     return itemResponse;
+  }
+
+  private async convertRelationItem(
+    schema: FieldItemSchema,
+    item: Partial<MongooseModel> | Partial<AbstractDocument>,
+    itemResponse: ResponseModel
+  ) {
+    const rel: Relation = {
+      key: schema.key,
+      service: schema.externalRelation.service
+    };
+
+    let value = item[rel.key];
+
+    if (value === undefined) return;
+
+    if (!Array.isArray(value) && value.split(',').length > 1)
+      value = value.split(',');
+
+    if (Array.isArray(value) && value.length) {
+      const relPromises = value.map(async (val) => {
+        return {
+          id: val,
+          value: await this.convertValueRelation(rel, val)
+        };
+      });
+      itemResponse[rel.key] = await Promise.all(relPromises);
+      return;
+    }
+
+    itemResponse[rel.key] = {
+      id: value,
+      value: await this.convertValueRelation(rel, value)
+    };
   }
 
   protected async convertValueRelation(

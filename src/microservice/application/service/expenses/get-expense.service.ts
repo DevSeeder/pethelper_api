@@ -3,8 +3,7 @@ import { AbstractGetService } from '../abstract/abstract-get.service';
 import { ExpensesRepository } from 'src/microservice/adapter/repository/expenses.repository';
 import {
   Expense,
-  ExpenseDocument,
-  ExpenseRelations
+  ExpenseDocument
 } from '../../../domain/schemas/expenses.schema';
 import { ExpenseResponse } from 'src/microservice/application/dto/response/expense.response';
 import { SearchExpenseDto } from 'src/microservice/application/dto/search/search-expense.dto';
@@ -26,6 +25,6 @@ export class GetExpenseService extends AbstractGetService<
     protected readonly usersService: GetUserService,
     protected readonly expenseCategoriesService: GetExpenseCategoriesService
   ) {
-    super(repository, 'Expense', ExpenseRelations, ExpenseFieldSchema);
+    super(repository, 'Expense', ExpenseFieldSchema);
   }
 }

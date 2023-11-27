@@ -1,13 +1,13 @@
 import { MongooseRepository } from '@devseeder/nestjs-microservices-commons';
 import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { AbstractDBService } from './abstract-db.service';
-import { Relation } from 'src/microservice/domain/interface/relation.interface';
 import { Search } from '../../dto/search/search.dto';
 import {
   InvalidDataException,
   MongoDBException
 } from '@devseeder/microservices-exceptions';
 import { ObjectId } from 'mongoose';
+import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.interface';
 
 @Injectable()
 export abstract class AbstractCreateService<
@@ -22,9 +22,9 @@ export abstract class AbstractCreateService<
       MongooseModel
     >,
     protected readonly itemLabel: string = '',
-    protected readonly relations: Relation[] = []
+    protected readonly fieldSchema: FieldItemSchema[] = []
   ) {
-    super(repository, relations);
+    super(repository, fieldSchema);
   }
 
   async create(body: BodyDto): Promise<{ _id: ObjectId }> {

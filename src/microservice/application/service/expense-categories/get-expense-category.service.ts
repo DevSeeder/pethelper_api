@@ -16,6 +16,6 @@ export class GetExpenseCategoriesService extends AbstractGetService<
   SearchConfigDto
 > {
   constructor(protected readonly repository: ExpenseCategoriesRepository) {
-    super(repository, 'Expense Category', [], ConfigFieldSchema);
+    super(repository, 'Expense Category', ConfigFieldSchema);
   }
 }

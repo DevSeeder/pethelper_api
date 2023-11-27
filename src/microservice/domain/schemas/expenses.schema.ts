@@ -39,18 +39,3 @@ export class Expense extends AbstractSchema {
 
 const schema = SchemaFactory.createForClass(Expense);
 export const ExpensesSchema = schema;
-
-export const ExpenseRelations: Relation[] = [
-  {
-    key: 'idCategory',
-    service: 'expenseCategories'
-  },
-  {
-    key: 'pets',
-    service: 'pets'
-  },
-  {
-    key: 'userId',
-    service: 'users'
-  }
-];

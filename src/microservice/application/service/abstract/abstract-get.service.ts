@@ -1,7 +1,6 @@
 import { MongooseRepository } from '@devseeder/nestjs-microservices-commons';
 import { Injectable } from '@nestjs/common';
 import { Search } from 'src/microservice/application/dto/search/search.dto';
-import { Relation } from '../../../domain/interface/relation.interface';
 import { AbstractDBService } from './abstract-db.service';
 import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.interface';
 
@@ -23,10 +22,9 @@ export abstract class AbstractGetService<
       MongooseModel
     >,
     protected readonly itemLabel: string = '',
-    protected readonly relations: Relation[] = [],
     protected readonly fieldSchema: FieldItemSchema[] = []
   ) {
-    super(repository, relations);
+    super(repository, fieldSchema);
   }
 
   async search(searchParams: SearchParams = null): Promise<ResponseModel[]> {
