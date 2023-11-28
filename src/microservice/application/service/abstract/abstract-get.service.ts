@@ -37,7 +37,7 @@ export abstract class AbstractGetService<
 
   async search(
     searchParams: SearchParams = null,
-    select = {},
+    select = null,
     orderBy = null
   ): Promise<ResponseModel[]> {
     await this.convertRelation(

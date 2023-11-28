@@ -4,7 +4,8 @@ export const commonSearchSchema = {
   page: Joi.number().min(1).optional(),
   pageSize: Joi.number().min(1).optional(),
   orderBy: Joi.string().optional(),
-  orderMode: Joi.string().optional()
+  orderMode: Joi.string().optional(),
+  select: Joi.string().optional()
 };
 
 export const commonFieldSchema = [

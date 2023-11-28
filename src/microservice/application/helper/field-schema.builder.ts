@@ -7,7 +7,7 @@ import {
 import { InputSchema } from 'src/microservice/domain/interface/input-schema.interface';
 import { SchemaValidator } from './schema-validator.helper';
 import { InternalServerErrorException } from '@nestjs/common';
-import { commonSearchSchema } from 'src/microservice/adapter/field-schemas/abstract-input.schema';
+import { commonSearchSchema } from 'src/microservice/domain/field-schemas/abstract-input.schema';
 import { SearchEgineOperators } from 'src/microservice/domain/interface/search-engine.interface';
 import { InvalidDataException } from '@devseeder/microservices-exceptions';
 
@@ -50,7 +50,6 @@ export class FieldSchemaBuilder {
       .filter((field) => field.allowed.update)
       .forEach((schema) => {
         // console.log(schema.key);
-
         const joiSchema = FieldSchemaBuilder.getType(
           Joi,
           schema.type,
