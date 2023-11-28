@@ -8,6 +8,7 @@ import {
   FieldSchemaResponse
 } from 'src/microservice/domain/interface/field-schema.interface';
 import { FieldSchemaBuilder } from '../../helper/field-schema.builder';
+import { ResponseOrderHelper } from '../../helper/response-order.helper';
 
 @Injectable()
 export abstract class AbstractGetService<
@@ -47,7 +48,7 @@ export abstract class AbstractGetService<
     const active = params && params.active !== undefined ? params.active : true;
     const searchWhere = { ...params, active };
     const { page, pageSize } = this.getPagination(searchParams, searchWhere);
-    const sort = this.validateOrderField(
+    const { sort, sortExternal, hasExternal } = this.validateOrderField(
       searchWhere,
       params?.orderBy,
       params?.orderMode | 1
@@ -68,7 +69,12 @@ export abstract class AbstractGetService<
     const arrMap = await responseItems.map((item) =>
       this.convertRelation(item)
     );
-    return Promise.all(arrMap);
+    return ResponseOrderHelper.orderBy(
+      await Promise.all(arrMap),
+      this.fieldSchema,
+      sortExternal,
+      hasExternal
+    );
   }
 
   async getById(id: string): Promise<ResponseModel> {

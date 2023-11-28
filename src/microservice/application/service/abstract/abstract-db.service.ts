@@ -183,24 +183,34 @@ export class AbstractDBService<
     item: Partial<SearchParams>,
     orderBy = null,
     orderMode = 1
-  ): object {
-    if (!orderBy) return {};
+  ): { sort: object; sortExternal: object; hasExternal: boolean } {
+    if (!orderBy) return { sort: {}, sortExternal: {}, hasExternal: false };
 
     const sortObj = {};
+    const sortExternal = {};
+    let hasExternal = false;
     const orderKeys = orderBy.split(',');
     orderKeys.forEach((key) => {
       const isFieldOrder = this.fieldSchema.filter(
-        (field) => field.key === key && field.order
+        (field) => field.key === key.trim() && field.orderBy
       );
       if (!isFieldOrder.length)
-        throw new BadRequestException(`Invalid order field '${key}'`);
-      sortObj[key] = orderMode;
+        throw new BadRequestException(`Invalid order field '${key.trim()}'`);
+
+      if (isFieldOrder[0].type === 'externalId') {
+        hasExternal = true;
+        sortExternal[key.trim()] = orderMode;
+        return;
+      }
+
+      sortObj[key.trim()] = orderMode;
+      sortExternal[key.trim()] = orderMode;
     });
 
     delete item['orderBy'];
     delete item['orderMode'];
 
     this.logger.log(`Sorting ${JSON.stringify(sortObj)}...`);
-    return sortObj;
+    return { sort: sortObj, sortExternal, hasExternal };
   }
 }
