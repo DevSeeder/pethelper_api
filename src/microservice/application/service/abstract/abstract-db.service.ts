@@ -9,6 +9,7 @@ import { AbstractDocument } from 'src/microservice/domain/schemas/abstract.schem
 import { SchemaValidator } from '../../helper/schema-validator.helper';
 import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.interface';
 import { GetFieldSchemaService } from '../field-schemas/get-field-schemas.service';
+import { BadRequestException } from '@nestjs/common';
 
 export class AbstractDBService<
   Collection,
@@ -176,5 +177,30 @@ export class AbstractDBService<
         delete itemResponse[`${schema.key}_end`];
         break;
     }
+  }
+
+  protected validateOrderField(
+    item: Partial<SearchParams>,
+    orderBy = null,
+    orderMode = 1
+  ): object {
+    if (!orderBy) return {};
+
+    const sortObj = {};
+    const orderKeys = orderBy.split(',');
+    orderKeys.forEach((key) => {
+      const isFieldOrder = this.fieldSchema.filter(
+        (field) => field.key === key && field.order
+      );
+      if (!isFieldOrder.length)
+        throw new BadRequestException(`Invalid order field '${key}'`);
+      sortObj[key] = orderMode;
+    });
+
+    delete item['orderBy'];
+    delete item['orderMode'];
+
+    this.logger.log(`Sorting ${JSON.stringify(sortObj)}...`);
+    return sortObj;
   }
 }

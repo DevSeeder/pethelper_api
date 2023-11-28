@@ -36,7 +36,8 @@ export abstract class AbstractGetService<
 
   async search(
     searchParams: SearchParams = null,
-    select = {}
+    select = {},
+    orderBy = null
   ): Promise<ResponseModel[]> {
     await this.convertRelation(
       searchParams as unknown as Partial<MongooseModel>
@@ -46,15 +47,19 @@ export abstract class AbstractGetService<
     const active = params && params.active !== undefined ? params.active : true;
     const searchWhere = { ...params, active };
     const { page, pageSize } = this.getPagination(searchParams, searchWhere);
+    const sort = this.validateOrderField(
+      searchWhere,
+      params?.orderBy,
+      params?.orderMode | 1
+    );
 
     this.logger.log(
       `Searching '${this.itemLabel}' ${JSON.stringify(searchWhere)}...`
     );
-    this.logger.log(`Pagination ${JSON.stringify({ page, pageSize })}...`);
     const responseItems = await this.repository.find(
       searchWhere,
       select ? select : { all: 0 },
-      {},
+      sort,
       false,
       pageSize,
       page
@@ -118,9 +123,11 @@ export abstract class AbstractGetService<
 
     const limit = search?.pageSize | 0;
 
-    return {
+    const returnPagination = {
       pageSize: search?.pageSize | 0,
       page: limit && search?.page ? search.page * limit : 0
     };
+    this.logger.log(`Pagination ${JSON.stringify(returnPagination)}...`);
+    return returnPagination;
   }
 }
