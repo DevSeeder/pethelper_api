@@ -1,6 +1,9 @@
 import { AnySchema, ObjectSchema, Root, SchemaMap } from 'joi';
 import * as Joi from 'joi';
-import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.interface';
+import {
+  FieldItemSchema,
+  FieldSchemaPage
+} from 'src/microservice/domain/interface/field-schema.interface';
 import { InputSchema } from 'src/microservice/domain/interface/input-schema.interface';
 import { SchemaValidator } from './schema-validator.helper';
 import { InternalServerErrorException } from '@nestjs/common';
@@ -147,11 +150,11 @@ export class FieldSchemaBuilder {
 
   static getFormFilterCondition(page: string, field: FieldItemSchema): boolean {
     switch (page) {
-      case 'search':
+      case FieldSchemaPage.SEARCH:
         return field.allowed.search;
-      case 'update':
+      case FieldSchemaPage.UPDATE:
         return field.allowed.update;
-      case 'create':
+      case FieldSchemaPage.CREATE:
         return true;
       default:
         throw new InvalidDataException('page', page);

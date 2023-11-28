@@ -3,7 +3,10 @@ import { Injectable, forwardRef, Inject } from '@nestjs/common';
 import { Search } from 'src/microservice/application/dto/search/search.dto';
 import { AbstractDBService } from './abstract-db.service';
 import { GetFieldSchemaService } from '../field-schemas/get-field-schemas.service';
-import { FieldSchemaResponse } from 'src/microservice/domain/interface/field-schema.interface';
+import {
+  FieldSchemaPage,
+  FieldSchemaResponse
+} from 'src/microservice/domain/interface/field-schema.interface';
 import { FieldSchemaBuilder } from '../../helper/field-schema.builder';
 
 @Injectable()
@@ -72,7 +75,7 @@ export abstract class AbstractGetService<
     const fields = this.fieldSchema.filter((field) =>
       FieldSchemaBuilder.getFormFilterCondition(page, field)
     );
-
+    const orderFields = this.fieldSchema.filter((fields) => fields.orderBy);
     const arrayResponse = [];
 
     for await (const field of fields) {
@@ -86,9 +89,19 @@ export abstract class AbstractGetService<
       arrayResponse.push(objectItem);
     }
 
-    return {
+    const response: FieldSchemaResponse = {
       fields: arrayResponse
     };
+
+    if (page === FieldSchemaPage.SEARCH)
+      response.filterOptions = {
+        orderBy: orderFields.map((field) => ({
+          key: field.key,
+          label: field.label
+        }))
+      };
+
+    return response;
   }
 
   private getPagination(

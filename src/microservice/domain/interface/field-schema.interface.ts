@@ -2,6 +2,9 @@ import { SearchEgineOperators } from './search-engine.interface';
 
 export interface FieldSchemaResponse {
   fields: Array<FieldItemSchema & FormFieldResponse>;
+  filterOptions?: {
+    orderBy?: FieldOrder[];
+  };
 }
 
 export interface FieldItemSchema {
@@ -39,4 +42,15 @@ export interface FormFieldResponse {
 export interface FieldValue {
   id: string;
   value: any;
+}
+
+export interface FieldOrder {
+  label: string;
+  key: string;
+}
+
+export enum FieldSchemaPage {
+  SEARCH = 'search',
+  UPDATE = 'update',
+  CREATE = 'create'
 }
