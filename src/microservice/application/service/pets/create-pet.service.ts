@@ -8,7 +8,6 @@ import { PetResponse } from '../../dto/response/pet.response';
 import { AbstractCreateService } from '../abstract/abstract-create.service';
 import { PetBodyDto } from '../../dto/body/pet-body.dto';
 import { GetUserService } from '../users/get-user.service';
-import { PetFieldSchema } from 'src/microservice/adapter/field-schemas/pet-field.schema';
 import { GetFieldSchemaService } from '../field-schemas/get-field-schemas.service';
 
 @Injectable()
@@ -23,6 +22,7 @@ export class CreatePetService extends AbstractCreateService<
     protected readonly colorsService: GetColorService,
     protected readonly animalsService: GetAnimalService,
     protected readonly racesService: GetRaceService,
+    protected readonly usersService: GetUserService,
     protected readonly getFieldSchemaService: GetFieldSchemaService
   ) {
     super(repository, 'Pet', ['pets'], getFieldSchemaService);

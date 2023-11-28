@@ -8,7 +8,6 @@ import { GetRaceService } from '../races/get-race.service';
 import { PetResponse } from 'src/microservice/application/dto/response/pet.response';
 import { SearchPetDto } from 'src/microservice/application/dto/search/search-pet.dto';
 import { GetUserService } from '../users/get-user.service';
-import { PetFieldSchema } from 'src/microservice/adapter/field-schemas/pet-field.schema';
 import { GetFieldSchemaService } from '../field-schemas/get-field-schemas.service';
 
 @Injectable()

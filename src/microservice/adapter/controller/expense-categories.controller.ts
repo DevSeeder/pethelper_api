@@ -9,7 +9,6 @@ import { ConfigBodyDto } from 'src/microservice/application/dto/body/config-body
 import { SearchConfigDto } from 'src/microservice/application/dto/search/search-config.dto';
 import { UpdateExpenseCategoryService } from 'src/microservice/application/service/expense-categories/update-expense-category.service';
 import { CreateExpenseCategoryService } from 'src/microservice/application/service/expense-categories/create-expense-category.service';
-import { ConfigFieldSchema } from '../field-schemas/config-field.schema';
 import { GetFieldSchemaService } from 'src/microservice/application/service/field-schemas/get-field-schemas.service';
 
 @Controller('expensecategories')

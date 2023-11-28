@@ -7,7 +7,6 @@ import { GetRaceService } from '../races/get-race.service';
 import { AbstractUpdateService } from '../abstract/abstract-update.service';
 import { PetResponse } from '../../dto/response/pet.response';
 import { PetBodyDto } from '../../dto/body/pet-body.dto';
-import { PetFieldSchema } from 'src/microservice/adapter/field-schemas/pet-field.schema';
 import { GetFieldSchemaService } from '../field-schemas/get-field-schemas.service';
 
 @Injectable()

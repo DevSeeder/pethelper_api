@@ -5,7 +5,6 @@ import { Animal, AnimalDocument } from '../../../domain/schemas/animals.schema';
 import { AnimalResponse } from '../../dto/response/animal.response';
 import { SearchAnimalDto } from '../../dto/search/search-animal.dto';
 import { GetAnimalGroupService } from '../animal-groups/get-animal-group.service';
-import { AnimalFieldSchema } from 'src/microservice/adapter/field-schemas/animal-field.schema';
 import { GetFieldSchemaService } from '../field-schemas/get-field-schemas.service';
 
 @Injectable()

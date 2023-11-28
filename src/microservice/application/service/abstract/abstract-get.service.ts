@@ -69,7 +69,6 @@ export abstract class AbstractGetService<
   }
 
   async getForm(page: string): Promise<FieldSchemaResponse> {
-    console.log(this.fieldSchema);
     const fields = this.fieldSchema.filter((field) =>
       FieldSchemaBuilder.getFormFilterCondition(page, field)
     );

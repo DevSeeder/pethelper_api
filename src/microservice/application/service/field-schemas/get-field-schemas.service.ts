@@ -18,8 +18,8 @@ export class GetFieldSchemaService extends AbstractService {
           $in: [...entityLabels, GLOBAL_ENTITY]
         }
       },
-      { all: 0 },
-      {},
+      { projectKey: 0 },
+      { order: 1 },
       false
     );
 

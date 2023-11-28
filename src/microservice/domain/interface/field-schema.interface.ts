@@ -25,9 +25,14 @@ export interface FieldItemSchema {
   alias?: {
     search?: string;
   };
+  label: string;
+  order?: number;
+  orderBy?: boolean;
 }
 
 export interface FormFieldResponse {
+  projectKey?: string;
+  entity?: string;
   values?: FieldValue[];
 }
 

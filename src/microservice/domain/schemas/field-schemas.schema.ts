@@ -30,6 +30,9 @@ export class FieldSchema extends AbstractSchema {
   @Prop({ required: true })
   required: boolean;
 
+  @Prop({ required: true })
+  label: string;
+
   @Prop({ required: false })
   array?: boolean;
 
@@ -54,12 +57,19 @@ export class FieldSchema extends AbstractSchema {
   @Prop({ required: false, type: Object })
   externalRelation?: {
     service: string;
+    filterCondition?: object;
   };
 
   @Prop({ required: false, type: Object })
   alias?: {
     search?: string;
   };
+
+  @Prop({ required: false })
+  order?: number;
+
+  @Prop({ required: false })
+  orderBy?: boolean;
 }
 
 const schema = SchemaFactory.createForClass(FieldSchema);
