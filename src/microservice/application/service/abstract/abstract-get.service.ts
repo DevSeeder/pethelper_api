@@ -8,7 +8,7 @@ import {
   FieldSchemaResponse
 } from 'src/microservice/domain/interface/field-schema.interface';
 import { FieldSchemaBuilder } from '../../helper/field-schema.builder';
-import { ResponseOrderHelper } from '../../helper/response-order.helper';
+import { SortHelper } from '../../helper/sort.helper';
 
 @Injectable()
 export abstract class AbstractGetService<
@@ -69,7 +69,7 @@ export abstract class AbstractGetService<
     const arrMap = await responseItems.map((item) =>
       this.convertRelation(item)
     );
-    return ResponseOrderHelper.orderBy(
+    return SortHelper.orderBy(
       await Promise.all(arrMap),
       this.fieldSchema,
       sortExternal,
