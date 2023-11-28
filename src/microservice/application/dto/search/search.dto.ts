@@ -4,4 +4,5 @@ export class Search {
   pageSize?: number = 0;
   orderBy?: string;
   orderMode?: 1 | -1;
+  select?: string | undefined;
 }

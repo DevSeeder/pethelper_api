@@ -1,5 +1,10 @@
 import { MongooseRepository } from '@devseeder/nestjs-microservices-commons';
-import { Injectable, forwardRef, Inject } from '@nestjs/common';
+import {
+  Injectable,
+  forwardRef,
+  Inject,
+  BadRequestException
+} from '@nestjs/common';
 import { Search } from 'src/microservice/application/dto/search/search.dto';
 import { AbstractDBService } from './abstract-db.service';
 import { GetFieldSchemaService } from '../field-schemas/get-field-schemas.service';
@@ -35,11 +40,7 @@ export abstract class AbstractGetService<
     super(repository, entityLabels, getFieldSchemaService);
   }
 
-  async search(
-    searchParams: SearchParams = null,
-    select = null,
-    orderBy = null
-  ): Promise<ResponseModel[]> {
+  async search(searchParams: SearchParams = null): Promise<ResponseModel[]> {
     await this.convertRelation(
       searchParams as unknown as Partial<MongooseModel>
     );
@@ -59,7 +60,7 @@ export abstract class AbstractGetService<
     );
     const responseItems = await this.repository.find(
       searchWhere,
-      select ? select : { all: 0 },
+      this.getSelectFields(params),
       sort,
       false,
       pageSize,
@@ -95,7 +96,7 @@ export abstract class AbstractGetService<
       if (field.type === 'externalId' && !field.hidden)
         objectItem['values'] = await this[
           `${field.externalRelation.service}Service`
-        ].search({ pageSize: 50 }, { _id: 1, name: 1 });
+        ].search({ pageSize: 50, select: 'name' });
 
       arrayResponse.push(objectItem);
     }
@@ -135,5 +136,20 @@ export abstract class AbstractGetService<
     };
     this.logger.log(`Pagination ${JSON.stringify(returnPagination)}...`);
     return returnPagination;
+  }
+
+  private getSelectFields(params: Partial<SearchParams>): {
+    [key: string]: number;
+  } {
+    if (!params.select) return { all: 0 };
+
+    const selectParam = {};
+    params.select.split(',').forEach((key) => {
+      if (!this.fieldSchema.find((schema) => schema.key === key))
+        throw new BadRequestException(`Invalid select field '${key}'`);
+      selectParam[key] = 1;
+    });
+
+    return { ...selectParam, _id: 1 };
   }
 }
