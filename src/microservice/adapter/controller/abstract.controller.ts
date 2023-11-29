@@ -147,6 +147,7 @@ export abstract class AbstractController<
     @Body() body: BodyDto
   ): Promise<void> {
     this.isMethodAllowed('updateBy');
+    SchemaValidator.validateSchema(this.inputSchema.search, params);
     SchemaValidator.validateSchema(this.inputSchema.update, body);
     await this.updateService.updateBy(params, body);
   }

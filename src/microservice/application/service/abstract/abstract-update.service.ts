@@ -68,6 +68,8 @@ export abstract class AbstractUpdateService<
 
     this.logger.log(`Body: ${JSON.stringify(body)}`);
 
+    await this.convertRelation(body);
+
     try {
       await this.repository.updateMany(searchWhere, body);
     } catch (err) {

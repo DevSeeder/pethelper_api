@@ -61,7 +61,13 @@ export class AbstractDBService<
     );
 
     const itemResponse = { ...item } as unknown as ResponseModel;
+
     for await (const schema of relations) {
+      this.logger.log(
+        `Converting relation '${schema.externalRelation.service}' from '${
+          schema.key
+        }' by '${itemResponse[schema.key]}'...`
+      );
       await this.convertRelationItem(schema, item, itemResponse);
     }
     return itemResponse;
@@ -78,6 +84,8 @@ export class AbstractDBService<
     };
 
     let value = item[rel.key];
+
+    console.log(value);
 
     if (value === undefined) return;
 
@@ -115,6 +123,9 @@ export class AbstractDBService<
       throw new InvalidDataException(rel.key, value);
     }
 
+    console.log('objValue');
+    console.log(objValue);
+
     const objKey = rel.repoKey ? rel.repoKey : 'name';
 
     if (objValue === null || objValue === undefined)
@@ -123,7 +134,9 @@ export class AbstractDBService<
     return objValue[objKey];
   }
 
-  protected buildSearchEgines(item: SearchParams): Partial<SearchParams> {
+  protected async buildSearchEgines(
+    item: SearchParams
+  ): Promise<Partial<SearchParams>> {
     if (!item) return null;
 
     const itemResponse = { ...item };
@@ -137,9 +150,35 @@ export class AbstractDBService<
         this.buildSearchEgineItem(value, schema, eng, itemResponse);
       });
     }
+
+    if (item['_ids']) {
+      itemResponse['_id'] = await this.validateIdsSearch(item['_ids']);
+      delete itemResponse['_ids'];
+    }
+
     return SchemaValidator.removeUndefined<SearchParams>(
       itemResponse as object
     );
+  }
+
+  private async validateIdsSearch(
+    idsValue: string
+  ): Promise<object | undefined> {
+    const ids = idsValue.split(',');
+
+    for await (const id of ids) {
+      let res;
+      try {
+        res = await this.repository.find({ _id: ids }, { name: 1 });
+      } catch (err) {
+        throw new InvalidDataException('Id', id);
+      }
+      if (!res.length) throw new InvalidDataException('Id', id);
+    }
+
+    return {
+      $in: ids
+    };
   }
 
   private buildSearchEgineItem(
@@ -221,7 +260,7 @@ export class AbstractDBService<
     await this.convertRelation(
       searchParams as unknown as Partial<MongooseModel>
     );
-    const params = this.buildSearchEgines(searchParams);
+    const params = await this.buildSearchEgines(searchParams);
     const active = params && params.active !== undefined ? params.active : true;
     return { ...params, active };
   }
