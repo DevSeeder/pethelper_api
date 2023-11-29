@@ -10,6 +10,7 @@ import { InternalServerErrorException } from '@nestjs/common';
 import { commonSearchSchema } from 'src/microservice/domain/field-schemas/abstract-input.schema';
 import { SearchEgineOperators } from 'src/microservice/domain/interface/search-engine.interface';
 import { InvalidDataException } from '@devseeder/microservices-exceptions';
+import { SKIP_ENUMS, SKIP_ENUMS_ALIAS } from '../app.constants';
 
 export class FieldSchemaBuilder {
   static buildSchemas(fieldSchema: FieldItemSchema[]): InputSchema {
@@ -45,7 +46,6 @@ export class FieldSchemaBuilder {
     fieldSchema
       .filter((field) => field.allowed.update)
       .forEach((schema) => {
-        // console.log(schema.key);
         const joiSchema = FieldSchemaBuilder.getType(
           Joi,
           schema,
@@ -120,17 +120,26 @@ export class FieldSchemaBuilder {
     schema: FieldItemSchema,
     objectSchema: SchemaMap
   ): boolean {
-    if (
-      schema?.searchEgines &&
-      schema?.searchEgines.includes(SearchEgineOperators.BETWEEN)
-    ) {
+    if (!schema?.searchEgines) return false;
+
+    let ignoreOriginalKey = false;
+
+    if (schema?.searchEgines.includes(SearchEgineOperators.BETWEEN)) {
       const start = FieldSchemaBuilder.getType(Joi, schema, true);
       const end = FieldSchemaBuilder.getType(Joi, schema, true);
       objectSchema[`${schema.key}_start`] = start.optional();
       objectSchema[`${schema.key}_end`] = end.optional();
-      return true;
+      ignoreOriginalKey = true;
     }
-    return false;
+
+    Object.values(SearchEgineOperators).forEach((op) => {
+      if (SKIP_ENUMS.includes(op)) return;
+      ignoreOriginalKey = false;
+      const joiSchema = FieldSchemaBuilder.getType(Joi, schema, true);
+      objectSchema[`${schema.key}_${op}`] = joiSchema.optional();
+    });
+
+    return ignoreOriginalKey;
   }
 
   static getFormFilterCondition(page: string, field: FieldItemSchema): boolean {
@@ -144,5 +153,22 @@ export class FieldSchemaBuilder {
       default:
         throw new InvalidDataException('page', page);
     }
+  }
+
+  static checkUndefinedValue(
+    value: any,
+    schema: FieldItemSchema,
+    itemResponse: any,
+    operator: SearchEgineOperators
+  ): boolean {
+    if (value === undefined && SKIP_ENUMS_ALIAS.includes(operator)) return true;
+
+    if (
+      itemResponse[`${schema.key}_${operator}`] === undefined &&
+      !SKIP_ENUMS_ALIAS.includes(operator)
+    )
+      return true;
+
+    return false;
   }
 }

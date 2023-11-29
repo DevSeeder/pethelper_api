@@ -6,9 +6,11 @@ export interface SearchEngine {
 export enum SearchEgineOperators {
   LIKE = 'like',
   IN = 'in',
+  NOT_IN = 'nin',
   BETWEEN = 'between',
-  GT = 'gt',
-  LT = 'lt',
-  GE = 'ge',
-  LE = 'le'
+  GREATER_THEN = 'gt',
+  LOWER_THEN = 'lt',
+  GREATER_THEN_EQUAL = 'gte',
+  LOWER_THEN_EQUAL = 'lte',
+  NOT_EQUAL = 'ne'
 }

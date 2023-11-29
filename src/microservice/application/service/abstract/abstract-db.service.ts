@@ -11,6 +11,12 @@ import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.
 import { GetFieldSchemaService } from '../field-schemas/get-field-schemas.service';
 import { BadRequestException } from '@nestjs/common';
 import { Search } from '../../dto/search/search.dto';
+import {
+  SKIP_ENUMS,
+  SKIP_ENUMS_ALIAS,
+  VALIDATE_ID_ENUMS
+} from '../../app.constants';
+import { FieldSchemaBuilder } from '../../helper/field-schema.builder';
 
 export class AbstractDBService<
   Collection,
@@ -83,11 +89,51 @@ export class AbstractDBService<
       service: schema.externalRelation.service
     };
 
-    let value = item[rel.key];
+    let keys: Array<SearchEgineOperators | ''> = [''];
 
-    console.log(value);
+    if (
+      schema.searchEgines &&
+      schema.searchEgines.find((op) =>
+        Object.values(VALIDATE_ID_ENUMS).includes(op)
+      )
+    ) {
+      keys = ['', ...Object.values(VALIDATE_ID_ENUMS)];
+    }
 
-    if (value === undefined) return;
+    const value = item[rel.key];
+    let isNormalValidation = true;
+    for await (const key of keys) {
+      const validationRes = await this.validateOperatorFields(
+        key.length ? `${rel.key}_${key}` : rel.key,
+        item,
+        itemResponse,
+        rel,
+        key
+      );
+
+      if (!validationRes) isNormalValidation = false;
+    }
+
+    if (!isNormalValidation || value === undefined) return;
+
+    itemResponse[rel.key] = {
+      id: value,
+      value: await this.convertValueRelation(rel, value)
+    };
+  }
+
+  private async validateOperatorFields(
+    key: string,
+    item: Partial<MongooseModel> | Partial<AbstractDocument>,
+    itemResponse: ResponseModel,
+    relation: Relation,
+    operator: SearchEgineOperators | ''
+  ): Promise<boolean> {
+    let value = item[key];
+
+    if (value === undefined) return true;
+
+    console.log(key);
 
     if (!Array.isArray(value) && value.split(',').length > 1)
       value = value.split(',');
@@ -96,17 +142,23 @@ export class AbstractDBService<
       const relPromises = value.map(async (val) => {
         return {
           id: val,
-          value: await this.convertValueRelation(rel, val)
+          value: await this.convertValueRelation(relation, val)
         };
       });
-      itemResponse[rel.key] = await Promise.all(relPromises);
-      return;
+
+      itemResponse[key] = await Promise.all(relPromises);
+      return false;
     }
 
-    itemResponse[rel.key] = {
-      id: value,
-      value: await this.convertValueRelation(rel, value)
-    };
+    if (
+      operator !== '' &&
+      Object.values(VALIDATE_ID_ENUMS).includes(operator)
+    ) {
+      await this.convertValueRelation(relation, value);
+      return false;
+    }
+    console.log('true');
+    return true;
   }
 
   protected async convertValueRelation(
@@ -122,9 +174,6 @@ export class AbstractDBService<
       this.logger.error(`Error searching id: ${JSON.stringify(err)}`);
       throw new InvalidDataException(rel.key, value);
     }
-
-    console.log('objValue');
-    console.log(objValue);
 
     const objKey = rel.repoKey ? rel.repoKey : 'name';
 
@@ -187,7 +236,14 @@ export class AbstractDBService<
     operator: SearchEgineOperators,
     itemResponse: SearchParams
   ) {
-    if (value === undefined && operator !== SearchEgineOperators.BETWEEN)
+    if (
+      FieldSchemaBuilder.checkUndefinedValue(
+        value,
+        schema,
+        itemResponse,
+        operator
+      )
+    )
       return;
 
     switch (operator) {
@@ -203,6 +259,13 @@ export class AbstractDBService<
         };
         break;
 
+      case SearchEgineOperators.NOT_IN:
+        itemResponse[schema.key] = {
+          $nin: itemResponse[`${schema.key}_nin`].split(',')
+        };
+        delete itemResponse[`${schema.key}_nin`];
+        break;
+
       case SearchEgineOperators.BETWEEN:
         const betweenQuery = {};
         if (itemResponse[`${schema.key}_start`])
@@ -215,6 +278,18 @@ export class AbstractDBService<
 
         delete itemResponse[`${schema.key}_start`];
         delete itemResponse[`${schema.key}_end`];
+        break;
+
+      default:
+        const operatorQuery = {};
+        if (itemResponse[`${schema.key}_${operator}`])
+          operatorQuery[`$${operator}`] =
+            itemResponse[`${schema.key}_${operator}`];
+
+        if (Object.keys(operatorQuery).length)
+          itemResponse[schema.key] = operatorQuery;
+
+        delete itemResponse[`${schema.key}_${operator}`];
         break;
     }
   }
