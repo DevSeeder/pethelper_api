@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { MongooseRepository } from '@devseeder/nestjs-microservices-commons';
 import { User, UserDocument } from '../../domain/schemas/users.schema';
+import { AbstractRepository } from './abstract.repository';
 
 @Injectable()
-export class UsersRepository extends MongooseRepository<User, UserDocument> {
+export class UsersRepository extends AbstractRepository<User, UserDocument> {
   constructor(
     @InjectModel(User.name)
     model: Model<UserDocument>

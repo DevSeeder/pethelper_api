@@ -31,7 +31,7 @@ export abstract class AbstractUpdateService<
     protected readonly entityLabels: string[] = [],
     protected readonly getFieldSchemaService?: GetFieldSchemaService
   ) {
-    super(repository, entityLabels, getFieldSchemaService);
+    super(repository, entityLabels, itemLabel, getFieldSchemaService);
   }
 
   async updateById(
@@ -77,15 +77,5 @@ export abstract class AbstractUpdateService<
         'The records are already updated with this values'
       );
     }
-  }
-
-  private async validateId(id: string): Promise<void> {
-    let item;
-    try {
-      item = await this.repository.findById(id);
-    } catch (err) {
-      throw new NotFoundException(this.itemLabel);
-    }
-    if (!item) throw new NotFoundException(this.itemLabel);
   }
 }

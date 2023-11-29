@@ -1,4 +1,7 @@
-import { InvalidDataException } from '@devseeder/microservices-exceptions';
+import {
+  InvalidDataException,
+  NotFoundException
+} from '@devseeder/microservices-exceptions';
 import {
   AbstractService,
   MongooseRepository
@@ -11,11 +14,7 @@ import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.
 import { GetFieldSchemaService } from '../field-schemas/get-field-schemas.service';
 import { BadRequestException } from '@nestjs/common';
 import { Search } from '../../dto/search/search.dto';
-import {
-  SKIP_ENUMS,
-  SKIP_ENUMS_ALIAS,
-  VALIDATE_ID_ENUMS
-} from '../../app.constants';
+import { VALIDATE_ID_ENUMS } from '../../app.constants';
 import { FieldSchemaBuilder } from '../../helper/field-schema.builder';
 
 export class AbstractDBService<
@@ -32,6 +31,7 @@ export class AbstractDBService<
       MongooseModel
     >,
     protected readonly entityLabels: string[] = [],
+    protected readonly itemLabel: string = '',
     protected readonly getFieldSchemaService?: GetFieldSchemaService
   ) {
     super();
@@ -133,8 +133,6 @@ export class AbstractDBService<
 
     if (value === undefined) return true;
 
-    console.log(key);
-
     if (!Array.isArray(value) && value.split(',').length > 1)
       value = value.split(',');
 
@@ -157,7 +155,6 @@ export class AbstractDBService<
       await this.convertValueRelation(relation, value);
       return false;
     }
-    console.log('true');
     return true;
   }
 
@@ -338,5 +335,16 @@ export class AbstractDBService<
     const params = await this.buildSearchEgines(searchParams);
     const active = params && params.active !== undefined ? params.active : true;
     return { ...params, active };
+  }
+
+  protected async validateId(id: string): Promise<MongooseModel> {
+    let item;
+    try {
+      item = await this.repository.findById(id);
+    } catch (err) {
+      throw new NotFoundException(this.itemLabel);
+    }
+    if (!item) throw new NotFoundException(this.itemLabel);
+    return item;
   }
 }

@@ -1,4 +1,3 @@
-import { MongooseRepository } from '@devseeder/nestjs-microservices-commons';
 import {
   Injectable,
   forwardRef,
@@ -14,6 +13,7 @@ import {
 } from 'src/microservice/domain/interface/field-schema.interface';
 import { FieldSchemaBuilder } from '../../helper/field-schema.builder';
 import { SortHelper } from '../../helper/sort.helper';
+import { AbstractRepository } from 'src/microservice/adapter/repository/abstract.repository';
 
 @Injectable()
 export abstract class AbstractGetService<
@@ -28,7 +28,7 @@ export abstract class AbstractGetService<
   SearchParams
 > {
   constructor(
-    protected readonly repository: MongooseRepository<
+    protected readonly repository: AbstractRepository<
       Collection,
       MongooseModel
     >,
@@ -37,7 +37,7 @@ export abstract class AbstractGetService<
     @Inject(forwardRef(() => GetFieldSchemaService))
     protected readonly getFieldSchemaService?: GetFieldSchemaService
   ) {
-    super(repository, entityLabels, getFieldSchemaService);
+    super(repository, entityLabels, itemLabel, getFieldSchemaService);
   }
 
   async search(searchParams: SearchParams = null): Promise<ResponseModel[]> {
@@ -48,6 +48,8 @@ export abstract class AbstractGetService<
       searchParams?.orderBy,
       searchParams?.orderMode | 1
     );
+
+    console.log(await this.repository.getIndexes());
 
     this.logger.log(
       `Searching '${this.itemLabel}' ${JSON.stringify(searchWhere)}...`

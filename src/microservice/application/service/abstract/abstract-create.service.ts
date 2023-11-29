@@ -1,14 +1,10 @@
-import { MongooseRepository } from '@devseeder/nestjs-microservices-commons';
 import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { AbstractDBService } from './abstract-db.service';
 import { Search } from '../../dto/search/search.dto';
-import {
-  InvalidDataException,
-  MongoDBException
-} from '@devseeder/microservices-exceptions';
+import { MongoDBException } from '@devseeder/microservices-exceptions';
 import { ObjectId } from 'mongoose';
-import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.interface';
 import { GetFieldSchemaService } from '../field-schemas/get-field-schemas.service';
+import { AbstractRepository } from 'src/microservice/adapter/repository/abstract.repository';
 
 @Injectable()
 export abstract class AbstractCreateService<
@@ -18,7 +14,7 @@ export abstract class AbstractCreateService<
   BodyDto
 > extends AbstractDBService<Collection, MongooseModel, ResponseModel, Search> {
   constructor(
-    protected readonly repository: MongooseRepository<
+    protected readonly repository: AbstractRepository<
       Collection,
       MongooseModel
     >,
@@ -26,7 +22,7 @@ export abstract class AbstractCreateService<
     protected readonly entityLabels: string[] = [],
     protected readonly getFieldSchemaService?: GetFieldSchemaService
   ) {
-    super(repository, entityLabels, getFieldSchemaService);
+    super(repository, entityLabels, itemLabel, getFieldSchemaService);
   }
 
   async create(body: BodyDto): Promise<{ _id: ObjectId }> {
@@ -52,5 +48,40 @@ export abstract class AbstractCreateService<
         }
       }
     }
+  }
+
+  async clone(id: string): Promise<{ _id: ObjectId }> {
+    this.logger.log(`Cloning ${this.itemLabel} '${id}'...`);
+
+    const cloneTarget = await this.validateId(id);
+
+    const bodyCreate = {
+      ...cloneTarget,
+      active: true
+    };
+
+    await this.getUniqueIndexToClone(bodyCreate);
+
+    const insertedId = await this.repository.insertOne(
+      bodyCreate as Collection,
+      this.itemLabel
+    );
+    return { _id: insertedId };
+  }
+
+  private async getUniqueIndexToClone(bodyCreate: MongooseModel) {
+    const objIndexes = await this.repository.getIndexes();
+    delete objIndexes['_id_'];
+    const mapKeys = Object.values(objIndexes).map((key) => key[0][0]);
+
+    mapKeys.forEach((key) => {
+      if (typeof bodyCreate[key] == 'string')
+        bodyCreate[key] = `${bodyCreate[key]} copy`;
+    });
+
+    delete bodyCreate['_id'];
+    delete bodyCreate['createdAt'];
+    delete bodyCreate['updatedAt'];
+    delete bodyCreate['inactivationDate'];
   }
 }

@@ -168,4 +168,10 @@ export abstract class AbstractController<
     const notAllowed = this.forbbidenMethods.filter((m) => m === method);
     if (notAllowed.length) throw new ForbiddenException('Method not allowed');
   }
+
+  @Post(`/clone/:id`)
+  async clone(@Param('id') id: string): Promise<{ _id: ObjectId }> {
+    this.isMethodAllowed('clone');
+    return this.createService.clone(id);
+  }
 }

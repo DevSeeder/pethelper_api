@@ -7,9 +7,6 @@ export type ExpenseDocument = Expense & Document;
 
 @Schema({ timestamps: true, collection: 'expenses' })
 export class Expense extends AbstractSchema {
-  @Prop({ required: true })
-  name: string;
-
   @Prop({ required: false })
   description: string;
 

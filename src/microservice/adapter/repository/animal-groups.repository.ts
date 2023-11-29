@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { MongooseRepository } from '@devseeder/nestjs-microservices-commons';
 import {
   AnimalGroup,
   AnimalGroupDocument
 } from 'src/microservice/domain/schemas/animal-group.schema';
+import { AbstractRepository } from './abstract.repository';
 
 @Injectable()
-export class AnimalGroupsRepository extends MongooseRepository<
+export class AnimalGroupsRepository extends AbstractRepository<
   AnimalGroup,
   AnimalGroupDocument
 > {
