@@ -10,12 +10,13 @@ import { SchemaValidator } from '../../helper/schema-validator.helper';
 import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.interface';
 import { GetFieldSchemaService } from '../field-schemas/get-field-schemas.service';
 import { BadRequestException } from '@nestjs/common';
+import { Search } from '../../dto/search/search.dto';
 
 export class AbstractDBService<
   Collection,
   MongooseModel,
   ResponseModel,
-  SearchParams
+  SearchParams extends Search
 > extends AbstractService {
   protected fieldSchema: FieldItemSchema[] = [];
 
@@ -212,5 +213,16 @@ export class AbstractDBService<
 
     this.logger.log(`Sorting ${JSON.stringify(sortObj)}...`);
     return { sort: sortObj, sortExternal, hasExternal };
+  }
+
+  protected async buildSearchParams(
+    searchParams: SearchParams
+  ): Promise<Partial<SearchParams>> {
+    await this.convertRelation(
+      searchParams as unknown as Partial<MongooseModel>
+    );
+    const params = this.buildSearchEgines(searchParams);
+    const active = params && params.active !== undefined ? params.active : true;
+    return { ...params, active };
   }
 }

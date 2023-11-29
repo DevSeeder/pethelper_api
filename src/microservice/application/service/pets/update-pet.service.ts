@@ -8,13 +8,15 @@ import { AbstractUpdateService } from '../abstract/abstract-update.service';
 import { PetResponse } from '../../dto/response/pet.response';
 import { PetBodyDto } from '../../dto/body/pet-body.dto';
 import { GetFieldSchemaService } from '../field-schemas/get-field-schemas.service';
+import { SearchPetDto } from '../../dto/search/search-pet.dto';
 
 @Injectable()
 export class UpdatePetService extends AbstractUpdateService<
   Pet,
   PetDocument,
   PetResponse,
-  PetBodyDto
+  PetBodyDto,
+  SearchPetDto
 > {
   constructor(
     protected readonly repository: PetsRepository,

@@ -11,13 +11,15 @@ import { GetPetService } from '../pets/get-pet.service';
 import { GetExpenseCategoriesService } from '../expense-categories/get-expense-category.service';
 import { GetUserService } from '../users/get-user.service';
 import { GetFieldSchemaService } from '../field-schemas/get-field-schemas.service';
+import { SearchExpenseDto } from '../../dto/search/search-Expense.dto';
 
 @Injectable()
 export class UpdateExpenseService extends AbstractUpdateService<
   Expense,
   ExpenseDocument,
   ExpenseResponse,
-  ExpenseBodyDto
+  ExpenseBodyDto,
+  SearchExpenseDto
 > {
   constructor(
     protected readonly repository: ExpensesRepository,

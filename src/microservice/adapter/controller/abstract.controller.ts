@@ -16,20 +16,12 @@ import { SchemaValidator } from 'src/microservice/application/helper/schema-vali
 import { AbstractGetService } from 'src/microservice/application/service/abstract/abstract-get.service';
 import { AbstractUpdateService } from 'src/microservice/application/service/abstract/abstract-update.service';
 import { InputSchema } from 'src/microservice/domain/interface/input-schema.interface';
-import { PetBodyDto } from 'src/microservice/application/dto/body/pet-body.dto';
 import { AbstractCreateService } from 'src/microservice/application/service/abstract/abstract-create.service';
 import { AbstractBodyDto } from 'src/microservice/application/dto/body/abtract-body.dto';
 import { ObjectId } from 'mongoose';
-import {
-  FieldItemSchema,
-  FieldSchemaResponse
-} from 'src/microservice/domain/interface/field-schema.interface';
+import { FieldSchemaResponse } from 'src/microservice/domain/interface/field-schema.interface';
 import { FieldSchemaBuilder } from 'src/microservice/application/helper/field-schema.builder';
 import { GetFieldSchemaService } from 'src/microservice/application/service/field-schemas/get-field-schemas.service';
-import {
-  GLOBAL_ENTITY,
-  PROJECT_KEY
-} from 'src/microservice/application/app.constants';
 
 export abstract class AbstractController<
   Collection,
@@ -56,7 +48,8 @@ export abstract class AbstractController<
       Collection,
       MongooseModel,
       GetResponse,
-      BodyDto
+      BodyDto,
+      SearchParams
     >,
     protected readonly createService?: AbstractCreateService<
       Collection,
@@ -139,17 +132,27 @@ export abstract class AbstractController<
   }
 
   @Patch(`/:id`)
-  async update(
+  async updateById(
     @Param('id') id: string,
-    @Body() body: PetBodyDto
+    @Body() body: BodyDto
   ): Promise<void> {
-    this.isMethodAllowed('update');
+    this.isMethodAllowed('updateById');
     SchemaValidator.validateSchema(this.inputSchema.update, body);
     await this.updateService.updateById(id, body as unknown as BodyDto);
   }
 
+  @Patch(`/`)
+  async updateBy(
+    @Query() params: SearchParams,
+    @Body() body: BodyDto
+  ): Promise<void> {
+    this.isMethodAllowed('updateBy');
+    SchemaValidator.validateSchema(this.inputSchema.update, body);
+    await this.updateService.updateBy(params, body);
+  }
+
   @Post(`/`)
-  async create(@Body() body: PetBodyDto): Promise<{ _id: ObjectId }> {
+  async create(@Body() body: BodyDto): Promise<{ _id: ObjectId }> {
     this.isMethodAllowed('create');
     SchemaValidator.validateSchema(this.inputSchema.create, body);
     return this.createService.create(body as unknown as BodyDto);

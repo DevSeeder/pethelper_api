@@ -6,13 +6,15 @@ import { AnimalResponse } from '../../dto/response/animal.response';
 import { AnimalBodyDto } from '../../dto/body/animal-body.dto';
 import { GetAnimalGroupService } from '../animal-groups/get-animal-group.service';
 import { GetFieldSchemaService } from '../field-schemas/get-field-schemas.service';
+import { SearchAnimalDto } from '../../dto/search/search-animal.dto';
 
 @Injectable()
 export class UpdateAnimalService extends AbstractUpdateService<
   Animal,
   AnimalDocument,
   AnimalResponse,
-  AnimalBodyDto
+  AnimalBodyDto,
+  SearchAnimalDto
 > {
   constructor(
     protected readonly repository: AnimalsRepository,

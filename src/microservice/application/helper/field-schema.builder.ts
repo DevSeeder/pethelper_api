@@ -1,4 +1,4 @@
-import { AnySchema, ObjectSchema, Root, SchemaMap } from 'joi';
+import { AnySchema, NumberSchema, ObjectSchema, Root, SchemaMap } from 'joi';
 import * as Joi from 'joi';
 import {
   FieldItemSchema,
@@ -28,12 +28,8 @@ export class FieldSchemaBuilder {
       .forEach((schema) => {
         if (FieldSchemaBuilder.buildSearchEngine(schema, objectSchema)) return;
 
-        const joiSchema = FieldSchemaBuilder.getType(
-          Joi,
-          schema.type,
-          schema?.itensType,
-          true
-        );
+        const joiSchema = FieldSchemaBuilder.getType(Joi, schema, true);
+
         if (schema.type === 'enum')
           objectSchema[schema.key] = joiSchema
             .optional()
@@ -52,8 +48,7 @@ export class FieldSchemaBuilder {
         // console.log(schema.key);
         const joiSchema = FieldSchemaBuilder.getType(
           Joi,
-          schema.type,
-          schema?.itensType,
+          schema,
           false,
           schema?.array
         );
@@ -72,8 +67,7 @@ export class FieldSchemaBuilder {
     fieldSchema.forEach((schema) => {
       let joiSchema = FieldSchemaBuilder.getType(
         Joi,
-        schema.type,
-        schema?.itensType,
+        schema,
         false,
         schema?.array
       );
@@ -90,32 +84,34 @@ export class FieldSchemaBuilder {
 
   static getType(
     Joi: Root,
-    type: string,
-    itensType = undefined,
+    schema: FieldItemSchema,
     search = false,
     array = false
   ): AnySchema {
-    switch (type) {
+    switch (schema.type) {
       case 'text':
       case 'string':
         return Joi.string();
       case 'externalId':
         return array ? Joi.array() : Joi.string();
       case 'enum':
-        return itensType === 'string' ? Joi.string() : Joi.number();
+        return schema.itensType === 'string' ? Joi.string() : Joi.number();
       case 'boolean':
         return Joi.boolean();
       case 'number':
       case 'double':
       case 'integer':
-        return Joi.number();
+        let joiSchema = Joi.number();
+        if (schema.min !== undefined) joiSchema = joiSchema.min(schema.min);
+        if (schema.max !== undefined) joiSchema = joiSchema.max(schema.max);
+        return joiSchema;
       case 'date':
         return Joi.date();
       case 'array':
         return search ? Joi.string() : Joi.array();
       default:
         throw new InternalServerErrorException(
-          `Schema type ${type} not implemented`
+          `Schema type ${schema.type} not implemented`
         );
     }
   }
@@ -128,18 +124,8 @@ export class FieldSchemaBuilder {
       schema?.searchEgines &&
       schema?.searchEgines.includes(SearchEgineOperators.BETWEEN)
     ) {
-      const start = FieldSchemaBuilder.getType(
-        Joi,
-        schema.type,
-        schema?.itensType,
-        true
-      );
-      const end = FieldSchemaBuilder.getType(
-        Joi,
-        schema.type,
-        schema?.itensType,
-        true
-      );
+      const start = FieldSchemaBuilder.getType(Joi, schema, true);
+      const end = FieldSchemaBuilder.getType(Joi, schema, true);
       objectSchema[`${schema.key}_start`] = start.optional();
       objectSchema[`${schema.key}_end`] = end.optional();
       return true;
