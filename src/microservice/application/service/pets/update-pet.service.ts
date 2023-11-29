@@ -20,9 +20,9 @@ export class UpdatePetService extends AbstractUpdateService<
 > {
   constructor(
     protected readonly repository: PetsRepository,
-    protected readonly colorsService: GetColorService,
-    protected readonly animalsService: GetAnimalService,
-    protected readonly racesService: GetRaceService,
+    protected readonly getColorsService: GetColorService,
+    protected readonly getAnimalsService: GetAnimalService,
+    protected readonly getRacesService: GetRaceService,
     protected readonly getFieldSchemaService: GetFieldSchemaService
   ) {
     super(repository, 'Pet', ['pets'], getFieldSchemaService);

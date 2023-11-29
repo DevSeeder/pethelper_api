@@ -166,7 +166,9 @@ export class AbstractDBService<
 
     let objValue;
     try {
-      objValue = await this[`${rel.service}Service`].getById(value);
+      objValue = await this[
+        `get${rel.service.capitalizeFirstLetter()}Service`
+      ].getById(value);
     } catch (err) {
       this.logger.error(`Error searching id: ${JSON.stringify(err)}`);
       throw new InvalidDataException(rel.key, value);

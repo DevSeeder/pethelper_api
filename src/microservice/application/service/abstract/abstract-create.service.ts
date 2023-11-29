@@ -50,7 +50,12 @@ export abstract class AbstractCreateService<
     }
   }
 
-  async clone(id: string): Promise<{ _id: ObjectId }> {
+  async clone(
+    id: string,
+    changeUniqueIndex = true,
+    relationsToClone = undefined,
+    cloneBody = {}
+  ): Promise<{ _id: ObjectId }> {
     this.logger.log(`Cloning ${this.itemLabel} '${id}'...`);
 
     const cloneTarget = await this.validateId(id);
@@ -60,13 +65,58 @@ export abstract class AbstractCreateService<
       active: true
     };
 
-    await this.getUniqueIndexToClone(bodyCreate);
+    if (changeUniqueIndex) await this.getUniqueIndexToClone(bodyCreate);
+
+    this.logger.log(
+      `CloneBody ${JSON.stringify({ ...bodyCreate, ...cloneBody })}`
+    );
 
     const insertedId = await this.repository.insertOne(
-      bodyCreate as Collection,
+      { ...bodyCreate, ...cloneBody } as Collection,
       this.itemLabel
     );
+
+    await this.cloneRelations(id, insertedId.toString(), relationsToClone);
+
     return { _id: insertedId };
+  }
+
+  private async cloneRelations(
+    cloneId: string,
+    newId: string,
+    relationsToClone = undefined
+  ): Promise<void> {
+    this.logger.log('Cloning relations ');
+    const relations = await this.getFieldSchemaService.getExtRelations(
+      this.entityLabels[0],
+      relationsToClone !== undefined
+    );
+    this.logger.log(`Cloning ${relations.length} relations`);
+
+    for await (const rel of relations) {
+      this.logger.log(`Cloning relation '${rel.externalRelation.service}'...`);
+      this.logger.log(
+        `Service relation 'get${rel.entity.capitalizeFirstLetter()}Service'...`
+      );
+      const subItems = await this[
+        `get${rel.entity.capitalizeFirstLetter()}Service`
+      ].search({
+        [rel.key]: cloneId
+      });
+      this.logger.log(`${subItems.length} itens found for '${rel.entity}'...`);
+
+      for await (const item of subItems) {
+        await this[`create${rel.entity.capitalizeFirstLetter()}Service`].clone(
+          item._id,
+          false,
+          '*',
+          { [rel.key]: rel.array ? [newId] : newId }
+        );
+      }
+      this.logger.log(
+        `Relation '${rel.externalRelation.service}' successfully cloned!`
+      );
+    }
   }
 
   private async getUniqueIndexToClone(bodyCreate: MongooseModel) {

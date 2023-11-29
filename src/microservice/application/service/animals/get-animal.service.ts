@@ -16,7 +16,7 @@ export class GetAnimalService extends AbstractGetService<
 > {
   constructor(
     protected readonly repository: AnimalsRepository,
-    protected readonly animalGroupsService: GetAnimalGroupService,
+    protected readonly getAnimalGroupsService: GetAnimalGroupService,
     protected readonly getFieldSchemaService: GetFieldSchemaService
   ) {
     super(repository, 'Animal', ['animals', 'config'], getFieldSchemaService);

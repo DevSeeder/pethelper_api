@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { FieldSchemasRepository } from 'src/microservice/adapter/repository/field-schemas.repository';
 import { GLOBAL_ENTITY, PROJECT_KEY } from '../../app.constants';
 import { AbstractService } from '@devseeder/nestjs-microservices-commons';
-import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.interface';
+import {
+  FieldItemSchema,
+  FormFieldResponse
+} from 'src/microservice/domain/interface/field-schema.interface';
 
 @Injectable()
 export class GetFieldSchemaService extends AbstractService {
@@ -17,6 +20,33 @@ export class GetFieldSchemaService extends AbstractService {
         entity: {
           $in: [...entityLabels, GLOBAL_ENTITY]
         }
+      },
+      { projectKey: 0 },
+      { order: 1 },
+      false
+    );
+
+    return itens;
+  }
+
+  async getExtRelations(
+    entity: string,
+    clone = false
+  ): Promise<Array<FieldItemSchema & FormFieldResponse>> {
+    this.logger.log(
+      `Searching ${JSON.stringify({
+        projectKey: PROJECT_KEY,
+        type: 'externalId',
+        'externalRelation.service': entity,
+        'externalRelation.clone': clone
+      })}`
+    );
+    const itens = await this.repository.find(
+      {
+        projectKey: PROJECT_KEY,
+        type: 'externalId',
+        'externalRelation.service': entity,
+        'externalRelation.clone': clone
       },
       { projectKey: 0 },
       { order: 1 },

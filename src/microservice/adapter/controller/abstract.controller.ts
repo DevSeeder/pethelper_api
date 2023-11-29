@@ -22,6 +22,7 @@ import { ObjectId } from 'mongoose';
 import { FieldSchemaResponse } from 'src/microservice/domain/interface/field-schema.interface';
 import { FieldSchemaBuilder } from 'src/microservice/application/helper/field-schema.builder';
 import { GetFieldSchemaService } from 'src/microservice/application/service/field-schemas/get-field-schemas.service';
+import { singleCloneSchema } from 'src/microservice/domain/field-schemas/abstract-input.schema';
 
 export abstract class AbstractController<
   Collection,
@@ -170,8 +171,13 @@ export abstract class AbstractController<
   }
 
   @Post(`/clone/:id`)
-  async clone(@Param('id') id: string): Promise<{ _id: ObjectId }> {
-    this.isMethodAllowed('clone');
-    return this.createService.clone(id);
+  async cloneById(
+    @Param('id') id: string,
+    @Body() body: { cloneRelations: string[]; cloneBody: BodyDto }
+  ): Promise<{ _id: ObjectId }> {
+    this.isMethodAllowed('cloneById');
+    SchemaValidator.validateSchema(this.inputSchema.cloneOne, body);
+    console.log(body);
+    return this.createService.clone(id, true, body.cloneRelations);
   }
 }

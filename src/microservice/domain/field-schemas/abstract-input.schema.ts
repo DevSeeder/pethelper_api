@@ -9,6 +9,10 @@ export const commonSearchSchema = {
   _ids: Joi.string().optional()
 };
 
+export const singleCloneSchema = {
+  cloneRelations: Joi.array<string>().optional()
+};
+
 export const commonFieldSchema = [
   {
     key: 'active',

@@ -19,6 +19,11 @@ export class CreateExpenseCategoryService extends AbstractCreateService<
     protected readonly repository: ExpenseCategoriesRepository,
     protected readonly getFieldSchemaService: GetFieldSchemaService
   ) {
-    super(repository, 'Expense Category', ['config'], getFieldSchemaService);
+    super(
+      repository,
+      'Expense Category',
+      ['expenseCategories', 'config'],
+      getFieldSchemaService
+    );
   }
 }

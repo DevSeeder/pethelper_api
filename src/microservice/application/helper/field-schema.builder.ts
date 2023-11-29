@@ -7,7 +7,10 @@ import {
 import { InputSchema } from 'src/microservice/domain/interface/input-schema.interface';
 import { SchemaValidator } from './schema-validator.helper';
 import { InternalServerErrorException } from '@nestjs/common';
-import { commonSearchSchema } from 'src/microservice/domain/field-schemas/abstract-input.schema';
+import {
+  commonSearchSchema,
+  singleCloneSchema
+} from 'src/microservice/domain/field-schemas/abstract-input.schema';
 import { SearchEgineOperators } from 'src/microservice/domain/interface/search-engine.interface';
 import { InvalidDataException } from '@devseeder/microservices-exceptions';
 import { SKIP_ENUMS, SKIP_ENUMS_ALIAS } from '../app.constants';
@@ -17,7 +20,11 @@ export class FieldSchemaBuilder {
     return {
       search: FieldSchemaBuilder.buildSearchSchema(fieldSchema),
       update: FieldSchemaBuilder.buildUpdateSchema(fieldSchema),
-      create: FieldSchemaBuilder.buildCreateSchema(fieldSchema)
+      create: FieldSchemaBuilder.buildCreateSchema(fieldSchema),
+      cloneOne: FieldSchemaBuilder.buildCloneSchema(
+        fieldSchema,
+        singleCloneSchema
+      )
     };
   }
 
@@ -41,6 +48,20 @@ export class FieldSchemaBuilder {
   }
 
   static buildUpdateSchema(fieldSchema: FieldItemSchema[]): ObjectSchema {
+    return Joi.object(FieldSchemaBuilder.buildObjectUpdate(fieldSchema));
+  }
+
+  static buildCloneSchema(
+    fieldSchema: FieldItemSchema[],
+    cloneSchema: SchemaMap
+  ): ObjectSchema {
+    return Joi.object({
+      ...cloneSchema,
+      cloneBody: FieldSchemaBuilder.buildObjectUpdate(fieldSchema)
+    });
+  }
+
+  static buildObjectUpdate(fieldSchema: FieldItemSchema[]): SchemaMap {
     const objectSchema: SchemaMap = {};
 
     fieldSchema
@@ -58,7 +79,7 @@ export class FieldSchemaBuilder {
             .custom(SchemaValidator.validateEnum(schema.enumValues));
         else objectSchema[schema.key] = joiSchema.optional();
       });
-    return Joi.object(objectSchema);
+    return objectSchema;
   }
 
   static buildCreateSchema(fieldSchema: FieldItemSchema[]): ObjectSchema {

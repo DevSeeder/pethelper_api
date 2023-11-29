@@ -21,9 +21,9 @@ export class GetExpenseService extends AbstractGetService<
 > {
   constructor(
     protected readonly repository: ExpensesRepository,
-    protected readonly petsService: GetPetService,
-    protected readonly usersService: GetUserService,
-    protected readonly expenseCategoriesService: GetExpenseCategoriesService,
+    protected readonly getPetsService: GetPetService,
+    protected readonly getUsersService: GetUserService,
+    protected readonly getExpenseCategoriesService: GetExpenseCategoriesService,
     protected readonly getFieldSchemaService: GetFieldSchemaService
   ) {
     super(repository, 'Expense', ['expenses'], getFieldSchemaService);

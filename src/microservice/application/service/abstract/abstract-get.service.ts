@@ -91,7 +91,7 @@ export abstract class AbstractGetService<
 
       if (field.type === 'externalId' && !field.hidden)
         objectItem['values'] = await this[
-          `${field.externalRelation.service}Service`
+          `get${field.externalRelation.service.capitalizeFirstLetter()}Service`
         ].search({ pageSize: 50, select: 'name' });
 
       arrayResponse.push(objectItem);

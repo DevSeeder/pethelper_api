@@ -9,6 +9,8 @@ import { AbstractCreateService } from '../abstract/abstract-create.service';
 import { PetBodyDto } from '../../dto/body/pet-body.dto';
 import { GetUserService } from '../users/get-user.service';
 import { GetFieldSchemaService } from '../field-schemas/get-field-schemas.service';
+import { CreateExpenseService } from '../expenses/create-expense.service';
+import { GetExpenseService } from '../expenses/get-Expense.service';
 
 @Injectable()
 export class CreatePetService extends AbstractCreateService<
@@ -19,10 +21,12 @@ export class CreatePetService extends AbstractCreateService<
 > {
   constructor(
     protected readonly repository: PetsRepository,
-    protected readonly colorsService: GetColorService,
-    protected readonly animalsService: GetAnimalService,
-    protected readonly racesService: GetRaceService,
-    protected readonly usersService: GetUserService,
+    protected readonly getColorsService: GetColorService,
+    protected readonly getAnimalsService: GetAnimalService,
+    protected readonly getRacesService: GetRaceService,
+    protected readonly getUsersService: GetUserService,
+    protected readonly getExpensesService: GetExpenseService,
+    protected readonly createExpensesService: CreateExpenseService,
     protected readonly getFieldSchemaService: GetFieldSchemaService
   ) {
     super(repository, 'Pet', ['pets'], getFieldSchemaService);

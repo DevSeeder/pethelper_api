@@ -19,10 +19,10 @@ export class GetPetService extends AbstractGetService<
 > {
   constructor(
     protected readonly repository: PetsRepository,
-    protected readonly colorsService: GetColorService,
-    protected readonly animalsService: GetAnimalService,
-    protected readonly racesService: GetRaceService,
-    protected readonly usersService: GetUserService,
+    protected readonly getColorsService: GetColorService,
+    protected readonly getAnimalsService: GetAnimalService,
+    protected readonly getRacesService: GetRaceService,
+    protected readonly getUsersService: GetUserService,
     @Inject(forwardRef(() => GetFieldSchemaService))
     protected readonly getFieldSchemaService: GetFieldSchemaService
   ) {
