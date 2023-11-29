@@ -165,19 +165,41 @@ export abstract class AbstractController<
     return this.getService.getForm(page);
   }
 
-  private isMethodAllowed(method: string) {
-    const notAllowed = this.forbbidenMethods.filter((m) => m === method);
-    if (notAllowed.length) throw new ForbiddenException('Method not allowed');
-  }
-
   @Post(`/clone/:id`)
   async cloneById(
     @Param('id') id: string,
-    @Body() body: { cloneRelations: string[]; cloneBody: BodyDto }
+    @Body() body: { cloneRelations?: string[]; cloneBody?: BodyDto }
   ): Promise<{ _id: ObjectId }> {
     this.isMethodAllowed('cloneById');
     SchemaValidator.validateSchema(this.inputSchema.cloneOne, body);
-    console.log(body);
-    return this.createService.clone(id, true, body.cloneRelations);
+    return this.createService.clone(
+      id,
+      true,
+      body.cloneRelations,
+      body.cloneBody
+    );
+  }
+
+  @Post(`/clone`)
+  async cloneManyByIds(
+    @Body()
+    body: {
+      _ids: string[];
+      cloneRelations?: string[];
+      cloneBody?: BodyDto;
+    }
+  ): Promise<Array<ObjectId>> {
+    this.isMethodAllowed('cloneManyByIds');
+    SchemaValidator.validateSchema(this.inputSchema.cloneMany, body);
+    return this.createService.cloneByIds(
+      body._ids,
+      body.cloneRelations,
+      body.cloneBody
+    );
+  }
+
+  private isMethodAllowed(method: string) {
+    const notAllowed = this.forbbidenMethods.filter((m) => m === method);
+    if (notAllowed.length) throw new ForbiddenException('Method not allowed');
   }
 }

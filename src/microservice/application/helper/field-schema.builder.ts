@@ -1,4 +1,4 @@
-import { AnySchema, NumberSchema, ObjectSchema, Root, SchemaMap } from 'joi';
+import { AnySchema, ObjectSchema, Root, SchemaMap } from 'joi';
 import * as Joi from 'joi';
 import {
   FieldItemSchema,
@@ -9,6 +9,7 @@ import { SchemaValidator } from './schema-validator.helper';
 import { InternalServerErrorException } from '@nestjs/common';
 import {
   commonSearchSchema,
+  manyCloneSchema,
   singleCloneSchema
 } from 'src/microservice/domain/field-schemas/abstract-input.schema';
 import { SearchEgineOperators } from 'src/microservice/domain/interface/search-engine.interface';
@@ -24,6 +25,10 @@ export class FieldSchemaBuilder {
       cloneOne: FieldSchemaBuilder.buildCloneSchema(
         fieldSchema,
         singleCloneSchema
+      ),
+      cloneMany: FieldSchemaBuilder.buildCloneSchema(
+        fieldSchema,
+        manyCloneSchema
       )
     };
   }

@@ -5,6 +5,8 @@ import { MongoDBException } from '@devseeder/microservices-exceptions';
 import { ObjectId } from 'mongoose';
 import { GetFieldSchemaService } from '../field-schemas/get-field-schemas.service';
 import { AbstractRepository } from 'src/microservice/adapter/repository/abstract.repository';
+import { randomUUID } from 'crypto';
+import { StringHelper } from '../../helper/string.helper';
 
 @Injectable()
 export abstract class AbstractCreateService<
@@ -67,18 +69,38 @@ export abstract class AbstractCreateService<
 
     if (changeUniqueIndex) await this.getUniqueIndexToClone(bodyCreate);
 
-    this.logger.log(
-      `CloneBody ${JSON.stringify({ ...bodyCreate, ...cloneBody })}`
-    );
+    this.logger.log(`CloneBody ${JSON.stringify({ cloneBody })}`);
+    this.logger.log(`Body ${JSON.stringify({ ...bodyCreate, ...cloneBody })}`);
 
-    const insertedId = await this.repository.insertOne(
-      { ...bodyCreate, ...cloneBody } as Collection,
-      this.itemLabel
-    );
+    const insertedId = await this.create({
+      ...bodyCreate,
+      ...cloneBody
+    } as BodyDto);
 
     await this.cloneRelations(id, insertedId.toString(), relationsToClone);
 
-    return { _id: insertedId };
+    return insertedId;
+  }
+
+  async cloneByIds(
+    ids: string[],
+    relationsToClone = undefined,
+    cloneBody = {}
+  ): Promise<Array<ObjectId>> {
+    this.logger.log(`Cloning ${this.itemLabel} '${ids}'...`);
+    const arrClone = [];
+
+    for await (const id of ids) {
+      const insertedId = await this.clone(
+        id,
+        true,
+        relationsToClone,
+        cloneBody
+      );
+      arrClone.push(insertedId._id);
+    }
+
+    return arrClone;
   }
 
   private async cloneRelations(
@@ -123,10 +145,10 @@ export abstract class AbstractCreateService<
     const objIndexes = await this.repository.getIndexes();
     delete objIndexes['_id_'];
     const mapKeys = Object.values(objIndexes).map((key) => key[0][0]);
-
+    const randomId = StringHelper.generateRandomString(7);
     mapKeys.forEach((key) => {
       if (typeof bodyCreate[key] == 'string')
-        bodyCreate[key] = `${bodyCreate[key]} copy`;
+        bodyCreate[key] = `${bodyCreate[key]}(copy ${randomId})`;
     });
 
     delete bodyCreate['_id'];
