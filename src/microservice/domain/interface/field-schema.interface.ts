@@ -5,6 +5,7 @@ export interface FieldSchemaResponse {
   filterOptions?: {
     orderBy?: FieldOrder[];
   };
+  cloneRelations?: string[];
 }
 
 export interface FieldItemSchema {

@@ -6,6 +6,7 @@ import {
 } from '../../../../domain/schemas/animal-group.schema';
 import { AnimalGroupsRepository } from 'src/microservice/adapter/repository/animal-groups.repository';
 import { SearchConfigDto } from '../../../dto/search/search-config.dto';
+import { GetFieldSchemaService } from '../../configuration/field-schemas/get-field-schemas.service';
 
 @Injectable()
 export class GetAnimalGroupService extends AbstractGetService<
@@ -14,7 +15,15 @@ export class GetAnimalGroupService extends AbstractGetService<
   AnimalGroup,
   SearchConfigDto
 > {
-  constructor(protected readonly repository: AnimalGroupsRepository) {
-    super(repository);
+  constructor(
+    protected readonly repository: AnimalGroupsRepository,
+    protected readonly getFieldSchemaService: GetFieldSchemaService
+  ) {
+    super(
+      repository,
+      'Animal Group',
+      ['animalGroups', 'config'],
+      getFieldSchemaService
+    );
   }
 }

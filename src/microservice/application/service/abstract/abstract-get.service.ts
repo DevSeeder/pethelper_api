@@ -124,8 +124,14 @@ export abstract class AbstractGetService<
       arrayResponse.push(objectItem);
     }
 
+    const cloneRelations = await this.getFieldSchemaService.getExtRelations(
+      this.entityLabels[0],
+      true
+    );
+
     const response: FieldSchemaResponse = {
-      fields: arrayResponse
+      fields: arrayResponse,
+      cloneRelations: cloneRelations.map((rel) => rel.entity)
     };
 
     if (page === FieldSchemaPage.SEARCH)
