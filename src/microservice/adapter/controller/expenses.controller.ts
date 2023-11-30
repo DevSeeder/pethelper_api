@@ -48,4 +48,12 @@ export class ExpensesController extends AbstractController<
     SchemaValidator.validateSchema(this.inputSchema.search, params);
     return this.getService.groupByPetsAndCategory(params);
   }
+
+  @Get(`/groupby/pets`)
+  groupByPets(
+    @Query() params: SearchExpenseDto
+  ): Promise<GroupExpensesByPetAndCategoryResponse[]> {
+    SchemaValidator.validateSchema(this.inputSchema.search, params);
+    return this.getService.groupByPets(params);
+  }
 }

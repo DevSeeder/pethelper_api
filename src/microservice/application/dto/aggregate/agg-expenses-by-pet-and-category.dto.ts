@@ -3,6 +3,8 @@ export interface AggExpensesByPetAndCategoryDto {
   categories: Array<{
     category: string;
     totalCost: number;
+    avgCost: number;
+    count: number;
   }>;
   pet: string[];
   petsId: string[];

@@ -110,7 +110,9 @@ export class ExpensesRepository extends AbstractRepository<
           },
           name: { $first: '$petsObjects.name' },
           petsId: { $first: '$petsObjects._id' },
-          totalCost: { $sum: '$cost' }
+          totalCost: { $sum: '$cost' },
+          avgCost: { $avg: '$cost' },
+          count: { $sum: 1 }
         }
       },
       {
@@ -119,7 +121,9 @@ export class ExpensesRepository extends AbstractRepository<
           categories: {
             $push: {
               category: '$_id.category',
-              totalCost: '$totalCost'
+              totalCost: '$totalCost',
+              avgCost: '$avgCost',
+              count: '$count'
             }
           },
           pet: { $first: '$name' },

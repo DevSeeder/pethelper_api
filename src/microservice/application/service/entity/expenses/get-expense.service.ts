@@ -45,6 +45,7 @@ export class GetExpenseService extends AbstractGetService<
 
     for await (const agg of aggResponse) {
       let totalPet = 0;
+      let countPet = 0;
       const arrCategories: GroupedCostByCategory[] = [];
       const pet = await this.getPetsService.getById(agg.petsId[0]);
       for await (const aggCategory of agg.categories) {
@@ -56,9 +57,14 @@ export class GetExpenseService extends AbstractGetService<
             id: category._id,
             value: category.name
           },
-          totalCost: aggCategory.totalCost
+          groupResult: {
+            totalSum: aggCategory.totalCost,
+            avg: aggCategory.avgCost,
+            count: aggCategory.count
+          }
         });
         totalPet += aggCategory.totalCost;
+        countPet += aggCategory.count;
       }
       arrResponse.push({
         pet: {
@@ -66,7 +72,32 @@ export class GetExpenseService extends AbstractGetService<
           value: pet.name
         },
         categories: arrCategories,
-        totalCost: totalPet
+        groupResult: {
+          totalSum: totalPet,
+          avg: Number((totalPet / countPet).toFixed(2)),
+          count: countPet
+        }
+      });
+    }
+
+    return arrResponse;
+  }
+
+  async groupByPets(searchParams: SearchExpenseDto = {}): Promise<any[]> {
+    const searchWhere = await this.buildSearchParams(searchParams);
+    const aggResponse = await this.repository.groupBy(searchWhere);
+
+    const arrResponse: any[] = [];
+
+    for await (const agg of aggResponse) {
+      const arrCategories: GroupedCostByCategory[] = [];
+      const pet = await this.getPetsService.getById(agg.petsId[0]);
+      arrResponse.push({
+        pet: {
+          id: pet._id,
+          value: pet.name
+        },
+        totalCost: 0
       });
     }
 
