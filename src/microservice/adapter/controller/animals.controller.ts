@@ -1,16 +1,16 @@
 import { Controller } from '@nestjs/common';
-import { GetAnimalService } from 'src/microservice/application/service/animals/get-animal.service';
+import { GetAnimalService } from 'src/microservice/application/service/entity/animals/get-animal.service';
 import { AbstractController } from './abstract.controller';
 import { AnimalResponse } from 'src/microservice/application/dto/response/animal.response';
 import {
   Animal,
   AnimalDocument
 } from 'src/microservice/domain/schemas/animals.schema';
-import { UpdateAnimalService } from 'src/microservice/application/service/animals/update-animal.service';
+import { UpdateAnimalService } from 'src/microservice/application/service/entity/animals/update-animal.service';
 import { AnimalBodyDto } from 'src/microservice/application/dto/body/Animal-body.dto';
-import { CreateAnimalService } from 'src/microservice/application/service/animals/create-animal.service';
+import { CreateAnimalService } from 'src/microservice/application/service/entity/animals/create-animal.service';
 import { SearchAnimalDto } from 'src/microservice/application/dto/search/search-animal.dto';
-import { GetFieldSchemaService } from 'src/microservice/application/service/field-schemas/get-field-schemas.service';
+import { GetFieldSchemaService } from 'src/microservice/application/service/configuration/field-schemas/get-field-schemas.service';
 
 @Controller('animals')
 export class AnimalsController extends AbstractController<

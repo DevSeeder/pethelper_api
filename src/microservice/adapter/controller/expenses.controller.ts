@@ -1,16 +1,16 @@
 import { Controller } from '@nestjs/common';
 import { SearchExpenseDto } from 'src/microservice/application/dto/search/search-Expense.dto';
-import { GetExpenseService } from 'src/microservice/application/service/expenses/get-Expense.service';
 import { AbstractController } from './abstract.controller';
 import { ExpenseResponse } from 'src/microservice/application/dto/response/expense.response';
 import {
   Expense,
   ExpenseDocument
 } from 'src/microservice/domain/schemas/expenses.schema';
-import { UpdateExpenseService } from 'src/microservice/application/service/expenses/update-expense.service';
+import { UpdateExpenseService } from 'src/microservice/application/service/entity/expenses/update-expense.service';
 import { ExpenseBodyDto } from 'src/microservice/application/dto/body/expense-body.dto';
-import { CreateExpenseService } from 'src/microservice/application/service/expenses/create-expense.service';
-import { GetFieldSchemaService } from 'src/microservice/application/service/field-schemas/get-field-schemas.service';
+import { CreateExpenseService } from 'src/microservice/application/service/entity/expenses/create-expense.service';
+import { GetFieldSchemaService } from 'src/microservice/application/service/configuration/field-schemas/get-field-schemas.service';
+import { GetExpenseService } from 'src/microservice/application/service/entity/expenses/get-Expense.service';
 
 @Controller('expenses')
 export class ExpensesController extends AbstractController<

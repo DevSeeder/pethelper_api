@@ -11,11 +11,12 @@ import { SearchEgineOperators } from 'src/microservice/domain/interface/search-e
 import { AbstractDocument } from 'src/microservice/domain/schemas/abstract.schema';
 import { SchemaValidator } from '../../helper/schema-validator.helper';
 import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.interface';
-import { GetFieldSchemaService } from '../field-schemas/get-field-schemas.service';
+import { GetFieldSchemaService } from '../configuration/field-schemas/get-field-schemas.service';
 import { BadRequestException } from '@nestjs/common';
 import { Search } from '../../dto/search/search.dto';
 import { VALIDATE_ID_ENUMS } from '../../app.constants';
 import { FieldSchemaBuilder } from '../../helper/field-schema.builder';
+import { GetDynamicValueService } from '../dynamic/get-dynamic-value.service';
 
 export class AbstractDBService<
   Collection,
@@ -24,6 +25,7 @@ export class AbstractDBService<
   SearchParams extends Search
 > extends AbstractService {
   protected fieldSchema: FieldItemSchema[] = [];
+  protected getDynamicValueService: GetDynamicValueService;
 
   constructor(
     protected readonly repository: MongooseRepository<
@@ -39,6 +41,8 @@ export class AbstractDBService<
   }
 
   async init() {
+    this.getDynamicValueService = new GetDynamicValueService();
+
     if (!this.entityLabels.length || !this.getFieldSchemaService) return;
     try {
       this.logger.log(`Initializing service for '${this.entityLabels[0]}'...`);
@@ -61,22 +65,14 @@ export class AbstractDBService<
     item: Partial<MongooseModel> | Partial<AbstractDocument>
   ): Promise<ResponseModel> {
     if (!item) return null;
-
     const relations = this.fieldSchema.filter(
       (schema) => schema.type === 'externalId'
     );
-
     const itemResponse = { ...item } as unknown as ResponseModel;
-
     for await (const schema of relations) {
-      this.logger.log(
-        `Converting relation '${schema.externalRelation.service}' from '${
-          schema.key
-        }' by '${itemResponse[schema.key]}'...`
-      );
       await this.convertRelationItem(schema, item, itemResponse);
     }
-    return itemResponse;
+    return this.getDynamicValues(itemResponse) as ResponseModel;
   }
 
   private async convertRelationItem(
@@ -334,9 +330,15 @@ export class AbstractDBService<
     await this.convertRelation(
       searchParams as unknown as Partial<MongooseModel>
     );
-    const params = await this.buildSearchEgines(searchParams);
+    const params = await this.buildSearchEgines(
+      this.getDynamicValues(searchParams) as any
+    );
     const active = params && params.active !== undefined ? params.active : true;
-    return { ...params, active };
+
+    return {
+      ...params,
+      active
+    };
   }
 
   protected async validateId(id: string): Promise<MongooseModel> {
@@ -347,6 +349,22 @@ export class AbstractDBService<
       throw new NotFoundException(this.itemLabel);
     }
     if (!item) throw new NotFoundException(this.itemLabel);
+    return item;
+  }
+
+  protected getDynamicValues(
+    item: Partial<MongooseModel> | Partial<AbstractDocument>
+  ): Partial<MongooseModel> | Partial<AbstractDocument> {
+    Object.keys(item)
+      .filter(
+        (key) => typeof item[key] == 'string' && item[key].startsWith('@')
+      )
+      .forEach((key) => {
+        item[key] = this.getDynamicValueService.getDynamicValue(
+          item[key],
+          item[key]
+        );
+      });
     return item;
   }
 }

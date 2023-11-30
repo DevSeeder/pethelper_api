@@ -7,7 +7,7 @@ import {
 import { AbstractDBService } from './abstract-db.service';
 import { AbstractBodyDto } from '../../dto/body/abtract-body.dto';
 import { AbstractSchema } from 'src/microservice/domain/schemas/abstract.schema';
-import { GetFieldSchemaService } from '../field-schemas/get-field-schemas.service';
+import { GetFieldSchemaService } from '../configuration/field-schemas/get-field-schemas.service';
 
 @Injectable()
 export abstract class AbstractUpdateService<

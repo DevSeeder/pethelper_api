@@ -2,10 +2,10 @@ import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { MyJwtAuthGuard } from '../../../core/auth/jwt.auth';
 import { EnumScopes } from '../../domain/enum/enum-scopes.enum';
 import { User } from '../../domain/schemas/users.schema';
-import { GetUserValidationService } from '../../application/service/users/get-user-validation.service';
-import { UpdateUserService } from '../../application/service/users/update-user.service';
+import { GetUserValidationService } from '../../application/service/entity/users/get-user-validation.service';
+import { UpdateUserService } from '../../application/service/entity/users/update-user.service';
 import { UpdateUserDTO, UserDTO } from '../../domain/model/dto/users/user.dto';
-import { CreateUserService } from '../../application/service/users/create-user.service';
+import { CreateUserService } from '../../application/service/entity/users/create-user.service';
 import { Scopes } from '@devseeder/nestjs-microservices-core';
 import { GetUser } from '../../domain/decorators/get-user.decorator';
 

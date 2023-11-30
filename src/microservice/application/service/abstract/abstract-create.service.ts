@@ -3,7 +3,7 @@ import { AbstractDBService } from './abstract-db.service';
 import { Search } from '../../dto/search/search.dto';
 import { MongoDBException } from '@devseeder/microservices-exceptions';
 import { ObjectId } from 'mongoose';
-import { GetFieldSchemaService } from '../field-schemas/get-field-schemas.service';
+import { GetFieldSchemaService } from '../configuration/field-schemas/get-field-schemas.service';
 import { AbstractRepository } from 'src/microservice/adapter/repository/abstract.repository';
 import { randomUUID } from 'crypto';
 import { StringHelper } from '../../helper/string.helper';

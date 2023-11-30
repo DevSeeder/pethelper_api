@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Search } from 'src/microservice/application/dto/search/search.dto';
 import { AbstractDBService } from './abstract-db.service';
-import { GetFieldSchemaService } from '../field-schemas/get-field-schemas.service';
+import { GetFieldSchemaService } from '../configuration/field-schemas/get-field-schemas.service';
 import {
   FieldSchemaPage,
   FieldSchemaResponse
@@ -48,8 +48,6 @@ export abstract class AbstractGetService<
       searchParams?.orderBy,
       searchParams?.orderMode | 1
     );
-
-    console.log(await this.repository.getIndexes());
 
     this.logger.log(
       `Searching '${this.itemLabel}' ${JSON.stringify(searchWhere)}...`

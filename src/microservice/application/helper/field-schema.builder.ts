@@ -132,7 +132,10 @@ export class FieldSchemaBuilder {
         if (schema.max !== undefined) joiSchema = joiSchema.max(schema.max);
         return joiSchema;
       case 'date':
-        return Joi.date();
+        return Joi.alternatives().try(
+          Joi.date().iso(),
+          Joi.string().regex(/^@/)
+        );
       case 'array':
         return search ? Joi.string() : Joi.array();
       default:
@@ -188,13 +191,11 @@ export class FieldSchemaBuilder {
     operator: SearchEgineOperators
   ): boolean {
     if (value === undefined && SKIP_ENUMS_ALIAS.includes(operator)) return true;
-
     if (
       itemResponse[`${schema.key}_${operator}`] === undefined &&
-      !SKIP_ENUMS_ALIAS.includes(operator)
+      !SKIP_ENUMS.includes(operator)
     )
       return true;
-
     return false;
   }
 }

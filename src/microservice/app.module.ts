@@ -2,11 +2,11 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import configuration from '../config/configuration';
-import { PetsModule } from './application/module/pets.module';
-import { ExpensesModule } from './application/module/expenses.module';
-import { ExpenseCategoriesModule } from './application/module/expense-categories.module';
-import { AnimalsModule } from './application/module/animals.module';
-import { FieldSchemasModule } from './application/module/field-schemas.module';
+import { PetsModule } from './application/module/entity/pets.module';
+import { ExpensesModule } from './application/module/entity/expenses.module';
+import { ExpenseCategoriesModule } from './application/module/entity/expense-categories.module';
+import { AnimalsModule } from './application/module/entity/animals.module';
+import { FieldSchemasModule } from './application/module/configuration/field-schemas.module';
 
 @Module({
   imports: [
