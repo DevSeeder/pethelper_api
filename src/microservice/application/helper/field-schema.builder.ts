@@ -62,7 +62,7 @@ export class FieldSchemaBuilder {
   ): ObjectSchema {
     return Joi.object({
       ...cloneSchema,
-      cloneBody: FieldSchemaBuilder.buildObjectUpdate(fieldSchema)
+      replaceBody: FieldSchemaBuilder.buildObjectUpdate(fieldSchema)
     });
   }
 

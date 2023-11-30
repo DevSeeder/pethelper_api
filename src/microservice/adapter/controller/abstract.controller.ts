@@ -23,6 +23,14 @@ import { FieldSchemaResponse } from 'src/microservice/domain/interface/field-sch
 import { FieldSchemaBuilder } from 'src/microservice/application/helper/field-schema.builder';
 import { GetFieldSchemaService } from 'src/microservice/application/service/configuration/field-schemas/get-field-schemas.service';
 import { singleCloneSchema } from 'src/microservice/domain/field-schemas/abstract-input.schema';
+import {
+  ClonyManyBodyDto,
+  ClonyOneBodyDto
+} from 'src/microservice/application/dto/body/clone-body.dto';
+import {
+  CloneManyResponse,
+  CloneOneResponse
+} from 'src/microservice/application/dto/response/clone.response';
 
 export abstract class AbstractController<
   Collection,
@@ -168,33 +176,29 @@ export abstract class AbstractController<
   @Post(`/clone/:id`)
   async cloneById(
     @Param('id') id: string,
-    @Body() body: { cloneRelations?: string[]; cloneBody?: BodyDto }
-  ): Promise<{ _id: ObjectId }> {
+    @Body() body: ClonyOneBodyDto
+  ): Promise<CloneOneResponse> {
     this.isMethodAllowed('cloneById');
     SchemaValidator.validateSchema(this.inputSchema.cloneOne, body);
     return this.createService.clone(
       id,
       true,
       body.cloneRelations,
-      body.cloneBody
+      body.replaceBody
     );
   }
 
   @Post(`/clone`)
   async cloneManyByIds(
     @Body()
-    body: {
-      _ids: string[];
-      cloneRelations?: string[];
-      cloneBody?: BodyDto;
-    }
-  ): Promise<Array<ObjectId>> {
+    body: ClonyManyBodyDto
+  ): Promise<CloneManyResponse> {
     this.isMethodAllowed('cloneManyByIds');
     SchemaValidator.validateSchema(this.inputSchema.cloneMany, body);
     return this.createService.cloneByIds(
       body._ids,
       body.cloneRelations,
-      body.cloneBody
+      body.replaceBody
     );
   }
 

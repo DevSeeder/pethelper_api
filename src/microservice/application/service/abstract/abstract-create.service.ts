@@ -7,6 +7,10 @@ import { GetFieldSchemaService } from '../configuration/field-schemas/get-field-
 import { AbstractRepository } from 'src/microservice/adapter/repository/abstract.repository';
 import { randomUUID } from 'crypto';
 import { StringHelper } from '../../helper/string.helper';
+import {
+  CloneManyResponse,
+  CloneOneResponse
+} from '../../dto/response/clone.response';
 
 @Injectable()
 export abstract class AbstractCreateService<
@@ -30,12 +34,12 @@ export abstract class AbstractCreateService<
   async create(body: BodyDto): Promise<{ _id: ObjectId }> {
     await this.convertRelation(body);
 
-    this.logger.log(`Body: ${JSON.stringify(body)}`);
-
     const bodyCreate = {
-      ...body,
+      ...this.getDynamicValues(body),
       active: true
     };
+
+    this.logger.log(`Body: ${JSON.stringify(bodyCreate)}`);
 
     try {
       const insertedId = await this.repository.insertOne(
@@ -57,7 +61,7 @@ export abstract class AbstractCreateService<
     changeUniqueIndex = true,
     relationsToClone = undefined,
     cloneBody = {}
-  ): Promise<{ _id: ObjectId }> {
+  ): Promise<CloneOneResponse> {
     this.logger.log(`Cloning ${this.itemLabel} '${id}'...`);
 
     const cloneTarget = await this.validateId(id);
@@ -69,7 +73,7 @@ export abstract class AbstractCreateService<
 
     if (changeUniqueIndex) await this.getUniqueIndexToClone(bodyCreate);
 
-    this.logger.log(`CloneBody ${JSON.stringify({ cloneBody })}`);
+    this.logger.log(`CloneBody ${JSON.stringify(cloneBody)}`);
     this.logger.log(`Body ${JSON.stringify({ ...bodyCreate, ...cloneBody })}`);
 
     const insertedId = await this.create({
@@ -86,9 +90,9 @@ export abstract class AbstractCreateService<
     ids: string[],
     relationsToClone = undefined,
     cloneBody = {}
-  ): Promise<Array<ObjectId>> {
+  ): Promise<CloneManyResponse> {
     this.logger.log(`Cloning ${this.itemLabel} '${ids}'...`);
-    const arrClone = [];
+    const arrClone: ObjectId[] = [];
 
     for await (const id of ids) {
       const insertedId = await this.clone(
@@ -100,7 +104,7 @@ export abstract class AbstractCreateService<
       arrClone.push(insertedId._id);
     }
 
-    return arrClone;
+    return { _ids: arrClone };
   }
 
   private async cloneRelations(
