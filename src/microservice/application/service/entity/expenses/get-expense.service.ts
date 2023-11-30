@@ -28,4 +28,8 @@ export class GetExpenseService extends AbstractGetService<
   ) {
     super(repository, 'Expense', ['expenses'], getFieldSchemaService);
   }
+
+  async groupByPetsAndCategory(): Promise<any[]> {
+    return this.repository.groupByPetsAndCategory();
+  }
 }

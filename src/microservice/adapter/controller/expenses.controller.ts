@@ -11,6 +11,7 @@ import { ExpenseBodyDto } from 'src/microservice/application/dto/body/expense-bo
 import { CreateExpenseService } from 'src/microservice/application/service/entity/expenses/create-expense.service';
 import { GetFieldSchemaService } from 'src/microservice/application/service/configuration/field-schemas/get-field-schemas.service';
 import { GetExpenseService } from 'src/microservice/application/service/entity/expenses/get-Expense.service';
+import { Get } from '@nestjs/common';
 
 @Controller('expenses')
 export class ExpensesController extends AbstractController<
@@ -36,5 +37,10 @@ export class ExpensesController extends AbstractController<
       createService,
       getFieldSchemaService
     );
+  }
+
+  @Get(`/groupby/pets/category`)
+  groupByPetsAndCategory(): Promise<any> {
+    return this.getService.groupByPetsAndCategory();
   }
 }

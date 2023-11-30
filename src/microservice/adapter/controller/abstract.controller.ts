@@ -22,7 +22,6 @@ import { ObjectId } from 'mongoose';
 import { FieldSchemaResponse } from 'src/microservice/domain/interface/field-schema.interface';
 import { FieldSchemaBuilder } from 'src/microservice/application/helper/field-schema.builder';
 import { GetFieldSchemaService } from 'src/microservice/application/service/configuration/field-schemas/get-field-schemas.service';
-import { singleCloneSchema } from 'src/microservice/domain/field-schemas/abstract-input.schema';
 import {
   ClonyManyBodyDto,
   ClonyOneBodyDto
