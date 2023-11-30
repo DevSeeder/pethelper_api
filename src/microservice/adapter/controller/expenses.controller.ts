@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Query } from '@nestjs/common';
 import { SearchExpenseDto } from 'src/microservice/application/dto/search/search-Expense.dto';
 import { AbstractController } from './abstract.controller';
 import { ExpenseResponse } from 'src/microservice/application/dto/response/expense.response';
@@ -13,6 +13,7 @@ import { GetFieldSchemaService } from 'src/microservice/application/service/conf
 import { GetExpenseService } from 'src/microservice/application/service/entity/expenses/get-Expense.service';
 import { Get } from '@nestjs/common';
 import { GroupExpensesByPetAndCategoryResponse } from 'src/microservice/application/dto/response/groupby/group-expenses-by-pet-and-category.response';
+import { SchemaValidator } from 'src/microservice/application/helper/schema-validator.helper';
 
 @Controller('expenses')
 export class ExpensesController extends AbstractController<
@@ -41,7 +42,10 @@ export class ExpensesController extends AbstractController<
   }
 
   @Get(`/groupby/pets/category`)
-  groupByPetsAndCategory(): Promise<GroupExpensesByPetAndCategoryResponse[]> {
-    return this.getService.groupByPetsAndCategory();
+  groupByPetsAndCategory(
+    @Query() params: SearchExpenseDto
+  ): Promise<GroupExpensesByPetAndCategoryResponse[]> {
+    SchemaValidator.validateSchema(this.inputSchema.search, params);
+    return this.getService.groupByPetsAndCategory(params);
   }
 }

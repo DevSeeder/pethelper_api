@@ -7,6 +7,7 @@ import {
 } from 'src/microservice/domain/schemas/expenses.schema';
 import { AbstractRepository } from './abstract.repository';
 import { AggExpensesByPetAndCategoryDto } from 'src/microservice/application/dto/aggregate/agg-expenses-by-pet-and-category.dto';
+import { SearchExpenseDto } from 'src/microservice/application/dto/search/search-expense.dto';
 
 @Injectable()
 export class ExpensesRepository extends AbstractRepository<
@@ -66,8 +67,13 @@ export class ExpensesRepository extends AbstractRepository<
     ]);
   }
 
-  async groupByPetsAndCategory(): Promise<AggExpensesByPetAndCategoryDto[]> {
+  async groupByPetsAndCategory(
+    searchParams: SearchExpenseDto = {}
+  ): Promise<AggExpensesByPetAndCategoryDto[]> {
     return this.model.aggregate([
+      {
+        $match: searchParams
+      },
       {
         $unwind: '$pets'
       },

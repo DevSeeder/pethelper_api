@@ -33,10 +33,13 @@ export class GetExpenseService extends AbstractGetService<
     super(repository, 'Expense', ['expenses'], getFieldSchemaService);
   }
 
-  async groupByPetsAndCategory(): Promise<
-    GroupExpensesByPetAndCategoryResponse[]
-  > {
-    const aggResponse = await this.repository.groupByPetsAndCategory();
+  async groupByPetsAndCategory(
+    searchParams: SearchExpenseDto = {}
+  ): Promise<GroupExpensesByPetAndCategoryResponse[]> {
+    const searchWhere = await this.buildSearchParams(searchParams);
+    const aggResponse = await this.repository.groupByPetsAndCategory(
+      searchWhere
+    );
 
     const arrResponse: GroupExpensesByPetAndCategoryResponse[] = [];
 
