@@ -1,5 +1,6 @@
 import { MongooseRepository } from '@devseeder/nestjs-microservices-commons';
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException
@@ -38,6 +39,9 @@ export abstract class AbstractUpdateService<
     id: string,
     body: Partial<BodyDto> | Partial<AbstractSchema>
   ): Promise<void> {
+    if (!body || !Object.keys(body).length)
+      throw new BadRequestException('Empty body');
+
     this.logger.log(`Updating record by id '${id}'`);
 
     await this.validateId(id);
@@ -52,6 +56,9 @@ export abstract class AbstractUpdateService<
     search: SearchParams,
     body: Partial<BodyDto> | Partial<AbstractSchema>
   ): Promise<void> {
+    if (!body || !Object.keys(body).length)
+      throw new BadRequestException('Empty body');
+
     this.logger.log(`Updating records by '${JSON.stringify(search)}'`);
 
     const searchWhere = await this.buildSearchParams(search);

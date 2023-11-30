@@ -25,7 +25,7 @@ export class CreateUserService extends UsersService {
 
   async createLocalUser(user: UserDTO, userAuthId: string) {
     const userLocal = new User();
-    userLocal.id = (await this.usersRepository.getLastId()) + 1;
+    // userLocal.id = (await this.usersRepository.getLastId()) + 1;
     userLocal.name = user.name;
     userLocal.username = user.username;
     userLocal.idUserAuth = userAuthId;

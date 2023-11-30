@@ -9,10 +9,11 @@ import configuration from '../../../../config/configuration';
 import { HttpModule } from '@nestjs/axios';
 import { UsersController } from '../../../adapter/controller/users.controller';
 import { GetUserValidationService } from '../../service/entity/users/get-user-validation.service';
-import { UpdateUserService } from '../../service/entity/users/update-user.service';
 import { AuthJwtModule } from '../auth/auth-jwt.module';
 import { GetUserService } from '../../service/entity/users/get-user.service';
 import { FieldSchemasModule } from '../configuration/field-schemas.module';
+import { UpdateUserService } from '../../service/entity/users/update-user.service';
+import { importAsyncService } from '../../helper/init-service-module.helper';
 
 @Module({
   imports: [
@@ -25,17 +26,16 @@ import { FieldSchemasModule } from '../configuration/field-schemas.module';
     // HttpModule,
     FieldSchemasModule
   ],
-  controllers: [
-    // UsersController
-  ],
+  controllers: [UsersController],
   providers: [
     UsersRepository,
-    GetUserService
+    importAsyncService(GetUserService),
+    importAsyncService(UpdateUserService)
     // CreateUserService,
     // ClientAuthService,
     // GetUserValidationService,
     // UpdateUserService
   ],
-  exports: [GetUserService]
+  exports: [GetUserService, UpdateUserService]
 })
 export class UsersModule {}

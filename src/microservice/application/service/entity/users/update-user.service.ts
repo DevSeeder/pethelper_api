@@ -1,41 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { UsersRepository } from '../../../../adapter/repository/users.repository';
+import { UserDTO } from '../../../../domain/model/dto/users/user.dto';
+import { AbstractUpdateService } from '../../abstract/abstract-update.service';
 import {
-  UpdateUserDTO,
-  UserDTO
-} from '../../../../domain/model/dto/users/user.dto';
-import { UsersService } from './user.service';
+  User,
+  UserDocument
+} from 'src/microservice/domain/schemas/users.schema';
+import { Search } from '@devseeder/nestjs-microservices-commons';
+import { GetFieldSchemaService } from '../../configuration/field-schemas/get-field-schemas.service';
 
 @Injectable()
-export class UpdateUserService extends UsersService {
-  constructor(protected readonly usersRepository: UsersRepository) {
-    super(usersRepository);
-  }
-
-  async updateUserName(
-    id: number,
-    user: UpdateUserDTO,
-    loggedUsername: string
-  ): Promise<void> {
-    await this.validateUser(id, loggedUsername);
-    await this.usersRepository.updateOne(
-      {
-        id
-      },
-      { name: user.name }
-    );
-  }
-
-  async updateInactivateUser(
-    id: number,
-    loggedUsername: string
-  ): Promise<void> {
-    const validUser = await this.validateUser(id, loggedUsername);
-    await this.usersRepository.updateOne(
-      {
-        id
-      },
-      { active: false }
-    );
+export class UpdateUserService extends AbstractUpdateService<
+  User,
+  UserDocument,
+  User,
+  UserDTO,
+  Search
+> {
+  constructor(
+    protected readonly usersRepository: UsersRepository,
+    protected readonly getFieldSchemaService?: GetFieldSchemaService
+  ) {
+    super(usersRepository, 'User', ['users'], getFieldSchemaService);
   }
 }

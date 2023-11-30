@@ -118,6 +118,8 @@ export class FieldSchemaBuilder {
       case 'text':
       case 'string':
         return Joi.string();
+      case 'email':
+        return Joi.string().email();
       case 'externalId':
         return array ? Joi.array() : Joi.string();
       case 'enum':

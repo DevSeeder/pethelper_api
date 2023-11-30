@@ -7,9 +7,6 @@ export type UserDocument = User & Document;
 
 @Schema({ timestamps: true, collection: 'users' })
 export class User extends AbstractSchema {
-  @Prop({ required: false })
-  id: number;
-
   @Prop({ required: true })
   name: string;
 
@@ -22,7 +19,6 @@ export class User extends AbstractSchema {
 
 const schema = SchemaFactory.createForClass(User);
 schema.index({ name: 1 }, { unique: true });
-schema.index({ id: 1 }, { unique: true });
 schema.index({ idUserAuth: 1 }, { unique: true });
 
 export const UsersSchema = schema;

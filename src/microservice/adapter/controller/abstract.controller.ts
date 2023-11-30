@@ -76,7 +76,6 @@ export abstract class AbstractController<
 
     try {
       this.logger.log(`Initializing controller for '${this.itemLabel}'...`);
-
       const fieldSchemaDb = await this.getFieldSchemaService.search(
         this.entityLabels
       );
