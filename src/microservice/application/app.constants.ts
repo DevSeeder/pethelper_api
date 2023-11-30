@@ -2,13 +2,9 @@ import { SearchEgineOperators } from '../domain/interface/search-engine.interfac
 
 export const PROJECT_KEY = 'PET_HELPER';
 export const GLOBAL_ENTITY = 'global';
-export const SKIP_ENUMS_ALIAS = [
-  SearchEgineOperators.LIKE,
-  SearchEgineOperators.IN
-];
+export const SKIP_ENUMS_ALIAS = [SearchEgineOperators.IN];
 export const SKIP_ENUMS = [
   SearchEgineOperators.BETWEEN,
-  SearchEgineOperators.LIKE,
   SearchEgineOperators.IN
 ];
 export const VALIDATE_ID_ENUMS = [

@@ -244,9 +244,10 @@ export class AbstractDBService<
     switch (operator) {
       case SearchEgineOperators.LIKE:
         itemResponse[schema.key] = {
-          $regex: new RegExp(`${value}`),
+          $regex: new RegExp(`${itemResponse[`${schema.key}_like`]}`),
           $options: 'i'
         };
+        delete itemResponse[`${schema.key}_like`];
         break;
       case SearchEgineOperators.IN:
         itemResponse[schema.key] = {
