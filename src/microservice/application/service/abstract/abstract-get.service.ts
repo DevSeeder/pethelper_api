@@ -14,6 +14,10 @@ import {
 import { FieldSchemaBuilder } from '../../helper/field-schema.builder';
 import { SortHelper } from '../../helper/sort.helper';
 import { AbstractRepository } from 'src/microservice/adapter/repository/abstract.repository';
+import {
+  PaginatedMeta,
+  PaginatedResponse
+} from '../../dto/response/paginated.response';
 
 @Injectable()
 export abstract class AbstractGetService<
@@ -40,7 +44,10 @@ export abstract class AbstractGetService<
     super(repository, entityLabels, itemLabel, getFieldSchemaService);
   }
 
-  async search(searchParams: SearchParams = null): Promise<ResponseModel[]> {
+  async search(
+    searchParams: SearchParams = null,
+    paginate = true
+  ): Promise<PaginatedResponse<ResponseModel>> {
     const searchWhere = await this.buildSearchParams(searchParams);
     const { page, pageSize } = this.getPagination(searchParams, searchWhere);
     const { sort, sortExternal, hasExternal } = this.validateOrderField(
@@ -64,12 +71,25 @@ export abstract class AbstractGetService<
     const arrMap = await responseItems.map((item) =>
       this.convertRelation(item)
     );
-    return SortHelper.orderBy(
+
+    const totalSorted = SortHelper.orderBy(
       await Promise.all(arrMap),
       this.fieldSchema,
       sortExternal,
       hasExternal
     );
+
+    const response = {
+      items: totalSorted
+    };
+    if (paginate)
+      response['meta'] = await this.getPaginatedResponse(
+        totalSorted,
+        searchWhere,
+        searchParams.page,
+        pageSize
+      );
+    return response;
   }
 
   async getById(id: string): Promise<ResponseModel> {
@@ -87,10 +107,12 @@ export abstract class AbstractGetService<
     for await (const field of fields) {
       const objectItem = { ...field };
 
-      if (field.type === 'externalId' && !field.hidden)
-        objectItem['values'] = await this[
+      if (field.type === 'externalId' && !field.hidden) {
+        const values = await this[
           `get${field.externalRelation.service.capitalizeFirstLetter()}Service`
         ].search({ pageSize: 50, select: 'name' });
+        objectItem['values'] = values.data;
+      }
 
       arrayResponse.push(objectItem);
     }
@@ -123,10 +145,11 @@ export abstract class AbstractGetService<
     delete searchWhere.pageSize;
 
     const limit = search?.pageSize | 0;
+    const curPage = search?.page <= 1 ? 0 : search?.page;
 
     const returnPagination = {
       pageSize: search?.pageSize | 0,
-      page: limit && search?.page ? search.page * limit : 0
+      page: limit && curPage ? (curPage - 1) * limit + 1 : 0
     };
     this.logger.log(`Pagination ${JSON.stringify(returnPagination)}...`);
     return returnPagination;
@@ -145,5 +168,25 @@ export abstract class AbstractGetService<
     });
 
     return { ...selectParam, _id: 1 };
+  }
+
+  private async getPaginatedResponse(
+    items: ResponseModel[],
+    searchWhere: object,
+    page: number,
+    pageSize: number
+  ): Promise<PaginatedMeta> {
+    const count = await this.repository.count(searchWhere);
+    const hasNextPage = (page - 1) * pageSize + items.length < count;
+    const currentPage = page ? Number(page) : 1;
+    return {
+      currentPage,
+      nextPage: hasNextPage ? currentPage + 1 : currentPage,
+      hasNext: hasNextPage,
+      pageRecords: items.length,
+      totalRecords: count,
+      actualIndex: items.length ? (page - 1) * pageSize + items.length : 0,
+      numberOfPages: Math.ceil(count / pageSize)
+    };
   }
 }

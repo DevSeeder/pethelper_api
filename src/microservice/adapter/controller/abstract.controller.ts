@@ -31,6 +31,7 @@ import {
   CloneManyResponse,
   CloneOneResponse
 } from 'src/microservice/application/dto/response/clone.response';
+import { PaginatedResponse } from 'src/microservice/application/dto/response/paginated.response';
 
 export abstract class AbstractController<
   Collection,
@@ -104,7 +105,7 @@ export abstract class AbstractController<
   searchBy(
     @Query() params: SearchParams,
     @Param('searchId') searchId: string
-  ): Promise<GetResponse[]> {
+  ): Promise<PaginatedResponse<GetResponse>> {
     this.isMethodAllowed('searchBy');
 
     if (params[this.searchKey] !== undefined)
@@ -117,7 +118,9 @@ export abstract class AbstractController<
   }
 
   @Get(`/`)
-  searchAll(@Query() params: SearchParams): Promise<GetResponse[]> {
+  searchAll(
+    @Query() params: SearchParams
+  ): Promise<PaginatedResponse<GetResponse>> {
     SchemaValidator.validateSchema(this.inputSchema.search, params);
     return this.getService.search(params);
   }

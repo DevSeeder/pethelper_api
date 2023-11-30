@@ -124,11 +124,14 @@ export abstract class AbstractCreateService<
       this.logger.log(
         `Service relation 'get${rel.entity.capitalizeFirstLetter()}Service'...`
       );
-      const subItems = await this[
+      const { data: subItems } = await this[
         `get${rel.entity.capitalizeFirstLetter()}Service`
-      ].search({
-        [rel.key]: cloneId
-      });
+      ].search(
+        {
+          [rel.key]: cloneId
+        },
+        false
+      );
       this.logger.log(`${subItems.length} itens found for '${rel.entity}'...`);
 
       for await (const item of subItems) {
