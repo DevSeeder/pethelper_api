@@ -12,3 +12,7 @@ export interface PaginatedMeta {
   actualIndex: number;
   numberOfPages?: number;
 }
+
+export interface CountResponse {
+  totalRecords: number;
+}

@@ -31,7 +31,10 @@ import {
   CloneManyResponse,
   CloneOneResponse
 } from 'src/microservice/application/dto/response/clone.response';
-import { PaginatedResponse } from 'src/microservice/application/dto/response/paginated.response';
+import {
+  CountResponse,
+  PaginatedResponse
+} from 'src/microservice/application/dto/response/paginated.response';
 
 export abstract class AbstractController<
   Collection,
@@ -123,6 +126,12 @@ export abstract class AbstractController<
   ): Promise<PaginatedResponse<GetResponse>> {
     SchemaValidator.validateSchema(this.inputSchema.search, params);
     return this.getService.search(params);
+  }
+
+  @Get(`/meta/count`)
+  count(@Query() params: SearchParams): Promise<CountResponse> {
+    SchemaValidator.validateSchema(this.inputSchema.count, params);
+    return this.getService.count(params);
   }
 
   @Patch(`inactivate/:id`)

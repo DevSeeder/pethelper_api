@@ -19,7 +19,10 @@ import { SKIP_ENUMS, SKIP_ENUMS_ALIAS } from '../app.constants';
 export class FieldSchemaBuilder {
   static buildSchemas(fieldSchema: FieldItemSchema[]): InputSchema {
     return {
-      search: FieldSchemaBuilder.buildSearchSchema(fieldSchema),
+      search: FieldSchemaBuilder.buildSearchSchema(
+        fieldSchema,
+        commonSearchSchema
+      ),
       update: FieldSchemaBuilder.buildUpdateSchema(fieldSchema),
       create: FieldSchemaBuilder.buildCreateSchema(fieldSchema),
       cloneOne: FieldSchemaBuilder.buildCloneSchema(
@@ -29,11 +32,15 @@ export class FieldSchemaBuilder {
       cloneMany: FieldSchemaBuilder.buildCloneSchema(
         fieldSchema,
         manyCloneSchema
-      )
+      ),
+      count: FieldSchemaBuilder.buildSearchSchema(fieldSchema)
     };
   }
 
-  static buildSearchSchema(fieldSchema: FieldItemSchema[]): ObjectSchema {
+  static buildSearchSchema(
+    fieldSchema: FieldItemSchema[],
+    commons: SchemaMap = {}
+  ): ObjectSchema {
     const objectSchema: SchemaMap = {};
 
     fieldSchema
@@ -49,7 +56,7 @@ export class FieldSchemaBuilder {
             .custom(SchemaValidator.validateEnum(schema.enumValues));
         else objectSchema[schema.key] = joiSchema.optional();
       });
-    return Joi.object({ ...commonSearchSchema, ...objectSchema });
+    return Joi.object({ ...commons, ...objectSchema });
   }
 
   static buildUpdateSchema(fieldSchema: FieldItemSchema[]): ObjectSchema {

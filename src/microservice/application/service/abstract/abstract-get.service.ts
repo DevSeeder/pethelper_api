@@ -15,9 +15,11 @@ import { FieldSchemaBuilder } from '../../helper/field-schema.builder';
 import { SortHelper } from '../../helper/sort.helper';
 import { AbstractRepository } from 'src/microservice/adapter/repository/abstract.repository';
 import {
+  CountResponse,
   PaginatedMeta,
   PaginatedResponse
 } from '../../dto/response/paginated.response';
+import { InvalidDataException } from '@devseeder/microservices-exceptions';
 
 @Injectable()
 export abstract class AbstractGetService<
@@ -93,7 +95,12 @@ export abstract class AbstractGetService<
   }
 
   async getById(id: string): Promise<ResponseModel> {
-    const item = await this.repository.findById(id, { all: 0 });
+    let item;
+    try {
+      item = await this.repository.findById(id, { all: 0 });
+    } catch (err) {
+      throw new InvalidDataException('Id', id);
+    }
     return this.convertRelation(item);
   }
 
@@ -187,6 +194,16 @@ export abstract class AbstractGetService<
       totalRecords: count,
       actualIndex: items.length ? (page - 1) * pageSize + items.length : 0,
       numberOfPages: Math.ceil(count / pageSize)
+    };
+  }
+
+  async count(searchParams: SearchParams): Promise<CountResponse> {
+    const searchWhere = await this.buildSearchParams(searchParams);
+    this.logger.log(
+      `Counting '${this.itemLabel}' for: ${JSON.stringify(searchWhere)}`
+    );
+    return {
+      totalRecords: await this.repository.count(searchWhere)
     };
   }
 }
