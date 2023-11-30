@@ -6,6 +6,7 @@ import {
   ExpenseDocument
 } from 'src/microservice/domain/schemas/expenses.schema';
 import { AbstractRepository } from './abstract.repository';
+import { AggExpensesByPetAndCategoryDto } from 'src/microservice/application/dto/aggregate/agg-expenses-by-pet-and-category.dto';
 
 @Injectable()
 export class ExpensesRepository extends AbstractRepository<
@@ -65,7 +66,7 @@ export class ExpensesRepository extends AbstractRepository<
     ]);
   }
 
-  async groupByPetsAndCategory(): Promise<any[]> {
+  async groupByPetsAndCategory(): Promise<AggExpensesByPetAndCategoryDto[]> {
     return this.model.aggregate([
       {
         $unwind: '$pets'
@@ -73,7 +74,7 @@ export class ExpensesRepository extends AbstractRepository<
       {
         $lookup: {
           from: 'pets',
-          let: { pids: { $split: ['$pets', ','] } }, // Split para criar um array de IDs
+          let: { pids: { $split: ['$pets', ','] } },
           pipeline: [
             {
               $match: {
@@ -102,6 +103,7 @@ export class ExpensesRepository extends AbstractRepository<
             category: '$idCategory'
           },
           name: { $first: '$petsObjects.name' },
+          petsId: { $first: '$petsObjects._id' },
           totalCost: { $sum: '$cost' }
         }
       },
@@ -114,7 +116,8 @@ export class ExpensesRepository extends AbstractRepository<
               totalCost: '$totalCost'
             }
           },
-          name: { $first: '$name' }
+          pet: { $first: '$name' },
+          petsId: { $first: '$petsId' }
         }
       }
     ]);

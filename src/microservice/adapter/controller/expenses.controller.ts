@@ -12,6 +12,7 @@ import { CreateExpenseService } from 'src/microservice/application/service/entit
 import { GetFieldSchemaService } from 'src/microservice/application/service/configuration/field-schemas/get-field-schemas.service';
 import { GetExpenseService } from 'src/microservice/application/service/entity/expenses/get-Expense.service';
 import { Get } from '@nestjs/common';
+import { GroupExpensesByPetAndCategoryResponse } from 'src/microservice/application/dto/response/groupby/group-expenses-by-pet-and-category.response';
 
 @Controller('expenses')
 export class ExpensesController extends AbstractController<
@@ -40,7 +41,7 @@ export class ExpensesController extends AbstractController<
   }
 
   @Get(`/groupby/pets/category`)
-  groupByPetsAndCategory(): Promise<any> {
+  groupByPetsAndCategory(): Promise<GroupExpensesByPetAndCategoryResponse[]> {
     return this.getService.groupByPetsAndCategory();
   }
 }

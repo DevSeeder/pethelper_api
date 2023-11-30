@@ -12,7 +12,7 @@ import { GetFieldSchemaService } from '../../configuration/field-schemas/get-fie
 export class GetExpenseCategoriesService extends AbstractGetService<
   ExpenseCategory,
   ExpenseCategoryDocument,
-  ExpenseCategory,
+  ExpenseCategoryDocument,
   SearchConfigDto
 > {
   constructor(
