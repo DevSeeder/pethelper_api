@@ -87,6 +87,47 @@ export class GetExpenseService extends AbstractGetService<
   async groupByCategoryAndPet(
     searchParams: SearchExpenseDto = {}
   ): Promise<any[]> {
-    return this.repository.groupByCategoryAndPet(searchParams);
+    const searchWhere = await this.buildSearchParams(searchParams);
+    const aggResponse: any[] = await this.repository.groupByCategoryAndPet(
+      searchWhere
+    );
+
+    const arrResponse = [];
+
+    for await (const agg of aggResponse) {
+      let totalCat = 0;
+      let countCat = 0;
+      const category = await this.getExpenseCategoriesService.getById(agg._id);
+
+      const arrPets = [];
+      for (const aggPet of agg.pets) {
+        arrPets.push({
+          pet: {
+            id: aggPet.petsId,
+            value: aggPet.petsName
+          },
+          groupResult: {
+            totalSum: aggPet.totalCost,
+            avg: aggPet.avgCost,
+            count: aggPet.count
+          }
+        });
+        totalCat += aggPet.totalCost;
+        countCat += aggPet.count;
+      }
+      arrResponse.push({
+        category: {
+          id: category._id,
+          value: category.name
+        },
+        pets: arrPets,
+        groupResult: {
+          totalSum: totalCat,
+          avg: Number((totalCat / countCat).toFixed(2)),
+          count: countCat
+        }
+      });
+      return arrResponse;
+    }
   }
 }
