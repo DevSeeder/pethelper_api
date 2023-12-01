@@ -11,7 +11,7 @@ import { ExpenseBodyDto } from 'src/microservice/application/dto/body/expense-bo
 import { CreateExpenseService } from 'src/microservice/application/service/entity/expenses/create-expense.service';
 import { GetFieldSchemaService } from 'src/microservice/application/service/configuration/field-schemas/get-field-schemas.service';
 import { GetExpenseService } from 'src/microservice/application/service/entity/expenses/get-Expense.service';
-import { Get } from '@nestjs/common';
+import { Get, Param } from '@nestjs/common';
 import { GroupExpensesByPetAndCategoryResponse } from 'src/microservice/application/dto/response/groupby/group-expenses-by-pet-and-category.response';
 import { SchemaValidator } from 'src/microservice/application/helper/schema-validator.helper';
 
@@ -47,13 +47,5 @@ export class ExpensesController extends AbstractController<
   ): Promise<GroupExpensesByPetAndCategoryResponse[]> {
     SchemaValidator.validateSchema(this.inputSchema.search, params);
     return this.getService.groupByPetsAndCategory(params);
-  }
-
-  @Get(`/groupby/pets`)
-  groupByPets(
-    @Query() params: SearchExpenseDto
-  ): Promise<GroupExpensesByPetAndCategoryResponse[]> {
-    SchemaValidator.validateSchema(this.inputSchema.search, params);
-    return this.getService.groupByPets(params);
   }
 }

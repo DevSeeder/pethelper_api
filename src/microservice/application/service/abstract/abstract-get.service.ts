@@ -212,4 +212,61 @@ export abstract class AbstractGetService<
       totalRecords: await this.repository.count(searchWhere)
     };
   }
+
+  async groupBy(
+    groupedEntity: string,
+    searchParams: SearchParams = null
+  ): Promise<any[]> {
+    const sumField = searchParams['sumField'];
+    delete searchParams['sumField'];
+
+    const rel = this.fieldSchema.filter(
+      (schema) =>
+        schema.externalRelation &&
+        schema.externalRelation.service === groupedEntity
+    );
+
+    const sumFieldSchema = this.fieldSchema.filter(
+      (schema) =>
+        schema.key === sumField &&
+        ['number', 'double', 'integer'].includes(schema.type)
+    );
+    if (sumField && !sumFieldSchema.length)
+      throw new InvalidDataException('Sum Field', sumField);
+
+    if (!rel.length) throw new InvalidDataException('Relation', groupedEntity);
+
+    const searchWhere = await this.buildSearchParams(searchParams);
+
+    const aggResponse = await this.repository.groupByArray(
+      searchWhere,
+      rel[0].externalRelation.service,
+      rel[0].key,
+      sumField
+    );
+
+    const arrResponse: any[] = [];
+
+    for await (const agg of aggResponse) {
+      const responseObj = {};
+      responseObj[`${rel[0].key}`] = {
+        id: agg._id[0],
+        value: agg.name[0]
+      };
+      arrResponse.push({
+        ...responseObj,
+        groupResult: {
+          totalSum: sumField
+            ? agg[`total${sumField.capitalizeFirstLetter()}`]
+            : undefined,
+          avg: sumField
+            ? agg[`avg${sumField.capitalizeFirstLetter()}`]
+            : undefined,
+          count: agg.count
+        }
+      });
+    }
+
+    return arrResponse;
+  }
 }

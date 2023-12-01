@@ -34,6 +34,7 @@ import {
   CountResponse,
   PaginatedResponse
 } from 'src/microservice/application/dto/response/paginated.response';
+import { GroupByResponse } from 'src/microservice/application/dto/response/groupby/group-by.response';
 
 export abstract class AbstractController<
   Collection,
@@ -210,6 +211,16 @@ export abstract class AbstractController<
       body.cloneRelations,
       body.replaceBody
     );
+  }
+
+  @Get(`/groupby/:relation`)
+  groupBy(
+    @Param('relation') relation: string,
+    @Query() params: SearchParams
+  ): Promise<GroupByResponse[]> {
+    this.isMethodAllowed('groupby');
+    SchemaValidator.validateSchema(this.inputSchema.groupBy, params);
+    return this.getService.groupBy(relation, params);
   }
 
   private isMethodAllowed(method: string) {

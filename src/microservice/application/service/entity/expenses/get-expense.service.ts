@@ -15,6 +15,7 @@ import {
   GroupExpensesByPetAndCategoryResponse,
   GroupedCostByCategory
 } from 'src/microservice/application/dto/response/groupby/group-expenses-by-pet-and-category.response';
+import { InvalidDataException } from '@devseeder/microservices-exceptions';
 
 @Injectable()
 export class GetExpenseService extends AbstractGetService<
@@ -77,27 +78,6 @@ export class GetExpenseService extends AbstractGetService<
           avg: Number((totalPet / countPet).toFixed(2)),
           count: countPet
         }
-      });
-    }
-
-    return arrResponse;
-  }
-
-  async groupByPets(searchParams: SearchExpenseDto = {}): Promise<any[]> {
-    const searchWhere = await this.buildSearchParams(searchParams);
-    const aggResponse = await this.repository.groupBy(searchWhere);
-
-    const arrResponse: any[] = [];
-
-    for await (const agg of aggResponse) {
-      const arrCategories: GroupedCostByCategory[] = [];
-      const pet = await this.getPetsService.getById(agg.petsId[0]);
-      arrResponse.push({
-        pet: {
-          id: pet._id,
-          value: pet.name
-        },
-        totalCost: 0
       });
     }
 

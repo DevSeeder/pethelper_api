@@ -8,6 +8,7 @@ import { InputSchema } from 'src/microservice/domain/interface/input-schema.inte
 import { SchemaValidator } from './schema-validator.helper';
 import { InternalServerErrorException } from '@nestjs/common';
 import {
+  commonGroupBySchema,
   commonSearchSchema,
   manyCloneSchema,
   singleCloneSchema
@@ -33,7 +34,11 @@ export class FieldSchemaBuilder {
         fieldSchema,
         manyCloneSchema
       ),
-      count: FieldSchemaBuilder.buildSearchSchema(fieldSchema)
+      count: FieldSchemaBuilder.buildSearchSchema(fieldSchema),
+      groupBy: FieldSchemaBuilder.buildSearchSchema(
+        fieldSchema,
+        commonGroupBySchema
+      )
     };
   }
 

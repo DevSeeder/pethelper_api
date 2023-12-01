@@ -32,6 +32,7 @@ export interface FieldItemSchema {
   label: string;
   order?: number;
   orderBy?: boolean;
+  entity?: string;
 }
 
 export interface FormFieldResponse {

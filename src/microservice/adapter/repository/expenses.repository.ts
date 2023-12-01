@@ -27,46 +27,6 @@ export class ExpensesRepository extends AbstractRepository<
   //   as: 'pet'
   // },
 
-  async groupByPets(): Promise<any[]> {
-    return this.model.aggregate([
-      {
-        $unwind: '$pets'
-      },
-      {
-        $lookup: {
-          from: 'pets',
-          let: { pids: { $split: ['$pets', ','] } }, // Split para criar um array de IDs
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $in: [
-                    { $toObjectId: '$_id' },
-                    {
-                      $map: {
-                        input: '$$pids',
-                        as: 'pid',
-                        in: { $toObjectId: '$$pid' }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          ],
-          as: 'petsObjects'
-        }
-      },
-      {
-        $group: {
-          _id: '$petsObjects._id',
-          name: { $first: '$petsObjects.name' },
-          totalCost: { $sum: '$cost' }
-        }
-      }
-    ]);
-  }
-
   async groupByPetsAndCategory(
     searchParams: SearchExpenseDto = {}
   ): Promise<AggExpensesByPetAndCategoryDto[]> {

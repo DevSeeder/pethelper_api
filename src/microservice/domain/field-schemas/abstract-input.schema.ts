@@ -13,6 +13,10 @@ export const singleCloneSchema = {
   cloneRelations: Joi.array<string>().optional()
 };
 
+export const commonGroupBySchema = {
+  sumField: Joi.string().optional()
+};
+
 export const manyCloneSchema = {
   _ids: Joi.array<string>().min(1).required(),
   cloneRelations: Joi.array<string>().optional()
