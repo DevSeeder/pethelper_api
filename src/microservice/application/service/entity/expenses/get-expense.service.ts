@@ -83,4 +83,10 @@ export class GetExpenseService extends AbstractGetService<
 
     return arrResponse;
   }
+
+  async groupByCategoryAndPet(
+    searchParams: SearchExpenseDto = {}
+  ): Promise<any[]> {
+    return this.repository.groupByCategoryAndPet(searchParams);
+  }
 }

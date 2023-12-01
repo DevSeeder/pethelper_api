@@ -20,12 +20,6 @@ export class ExpensesRepository extends AbstractRepository<
   ) {
     super(model);
   }
-  // $lookupOld: {
-  //   from: 'pets',
-  //   localField: 'pets',
-  //   foreignField: '_id',
-  //   as: 'pet'
-  // },
 
   async groupByPetsAndCategory(
     searchParams: SearchExpenseDto = {}
@@ -88,6 +82,70 @@ export class ExpensesRepository extends AbstractRepository<
           },
           pet: { $first: '$name' },
           petsId: { $first: '$petsId' }
+        }
+      }
+    ]);
+  }
+
+  async groupByCategoryAndPet(
+    searchParams: SearchExpenseDto = {}
+  ): Promise<AggExpensesByPetAndCategoryDto[]> {
+    return this.model.aggregate([
+      {
+        $match: searchParams
+      },
+      {
+        $unwind: '$pets'
+      },
+      {
+        $lookup: {
+          from: 'pets',
+          let: { pids: { $split: ['$pets', ','] } },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $in: [
+                    { $toObjectId: '$_id' },
+                    {
+                      $map: {
+                        input: '$$pids',
+                        as: 'pid',
+                        in: { $toObjectId: '$$pid' }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          as: 'petsObjects'
+        }
+      },
+      {
+        $group: {
+          _id: {
+            category: '$idCategory',
+            petsName: '$petsObjects.name',
+            petsId: '$petsObjects._id'
+          },
+          totalCost: { $sum: '$cost' },
+          avgCost: { $avg: '$cost' },
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $group: {
+          _id: '$_id.category',
+          pets: {
+            $push: {
+              petsName: { $first: '$_id.petsName' },
+              petsId: { $first: '$_id.petsId' },
+              totalCost: '$totalCost',
+              avgCost: '$avgCost',
+              count: '$count'
+            }
+          }
         }
       }
     ]);
