@@ -20,6 +20,7 @@ import {
   PaginatedResponse
 } from '../../dto/response/paginated.response';
 import { InvalidDataException } from '@devseeder/microservices-exceptions';
+import { GroupByResponse } from '../../dto/response/groupby/group-by.response';
 
 @Injectable()
 export abstract class AbstractGetService<
@@ -216,7 +217,7 @@ export abstract class AbstractGetService<
   async groupBy(
     groupedEntity: string,
     searchParams: SearchParams = null
-  ): Promise<any[]> {
+  ): Promise<GroupByResponse[]> {
     const sumField = searchParams['sumField'];
     delete searchParams['sumField'];
 
@@ -238,16 +239,19 @@ export abstract class AbstractGetService<
 
     const searchWhere = await this.buildSearchParams(searchParams);
 
-    const aggResponse = await this.repository.groupByArray(
+    const aggResponse = await this.repository.groupBy(
       searchWhere,
       rel[0].externalRelation.service,
       rel[0].key,
-      sumField
+      sumField,
+      rel[0].array
     );
 
     const arrResponse: any[] = [];
 
     for await (const agg of aggResponse) {
+      if (!agg._id || !agg._id.length) continue;
+
       const responseObj = {};
       responseObj[`${rel[0].key}`] = {
         id: agg._id[0],

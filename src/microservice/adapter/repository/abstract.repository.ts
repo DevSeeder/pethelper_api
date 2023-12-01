@@ -21,11 +21,12 @@ export abstract class AbstractRepository<
     return this.model.countDocuments(searchParams);
   }
 
-  async groupByArray(
+  async groupBy(
     searchParams: Search,
     entityRel: string,
     fkField: string,
-    sumField = ''
+    sumField = '',
+    array = false
   ): Promise<AggregatedDto[]> {
     const aggGroup = { count: { $sum: 1 } };
     if (sumField) {
@@ -37,38 +38,11 @@ export abstract class AbstractRepository<
       };
     }
 
-    return this.model.aggregate([
+    const aggParam = [
       {
         $match: searchParams
       },
-      {
-        $unwind: `$${entityRel}`
-      },
-      {
-        $lookup: {
-          from: entityRel,
-          let: { pids: { $split: [`$${fkField}`, ','] } },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $in: [
-                    { $toObjectId: '$_id' },
-                    {
-                      $map: {
-                        input: '$$pids',
-                        as: 'pid',
-                        in: { $toObjectId: '$$pid' }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          ],
-          as: `${entityRel}Objects`
-        }
-      },
+      ...this.returnLookupGroupBy(entityRel, fkField, array),
       {
         $group: {
           _id: `$${entityRel}Objects._id`,
@@ -76,6 +50,65 @@ export abstract class AbstractRepository<
           ...aggGroup
         }
       }
-    ]);
+    ];
+
+    this.logger.log(`Aggregate: ${JSON.stringify(aggParam)}`);
+
+    return this.model.aggregate(aggParam);
+  }
+
+  private returnLookupGroupBy(
+    entityRel: string,
+    fkField: string,
+    array = false
+  ): any {
+    if (array)
+      return [
+        {
+          $unwind: `$${entityRel}`
+        },
+        {
+          $lookup: {
+            from: entityRel,
+            let: { pids: { $split: [`$${fkField}`, ','] } },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $in: [
+                      { $toObjectId: '$_id' },
+                      {
+                        $map: {
+                          input: '$$pids',
+                          as: 'pid',
+                          in: { $toObjectId: '$$pid' }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            as: `${entityRel}Objects`
+          }
+        }
+      ];
+
+    return [
+      {
+        $lookup: {
+          from: entityRel,
+          let: { stringValue: { $toObjectId: `$${fkField}` } },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ['$_id', '$$stringValue'] } // Compara o campo _id com a stringField
+              }
+            }
+          ],
+          as: `${entityRel}Objects`
+        }
+      }
+    ];
   }
 }
