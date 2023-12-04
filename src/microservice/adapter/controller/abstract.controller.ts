@@ -18,7 +18,7 @@ import { InputSchema } from 'src/microservice/domain/interface/input-schema.inte
 import { AbstractCreateService } from 'src/microservice/application/service/abstract/abstract-create.service';
 import { AbstractBodyDto } from 'src/microservice/application/dto/body/abtract-body.dto';
 import { ObjectId } from 'mongoose';
-import { FieldSchemaResponse } from 'src/microservice/domain/interface/field-schema.interface';
+import { FormSchemaResponse } from 'src/microservice/domain/interface/field-schema.interface';
 import { FieldSchemaBuilder } from 'src/microservice/application/helper/field-schema.builder';
 import {
   ClonyManyBodyDto,
@@ -180,7 +180,7 @@ export abstract class AbstractController<
   }
 
   @Get(`/form/:page`)
-  getForm(@Param('page') page: string): Promise<FieldSchemaResponse> {
+  getForm(@Param('page') page: string): Promise<FormSchemaResponse> {
     return this.getService.getForm(page);
   }
 
@@ -232,8 +232,8 @@ export abstract class AbstractController<
   }
 
   private isMethodAllowed(method: string) {
-    if (!this.entitySchema.forbidenMethods) return;
-    const notAllowed = this.entitySchema.forbidenMethods.filter(
+    if (!this.entitySchema.forbiddenMethods) return;
+    const notAllowed = this.entitySchema.forbiddenMethods.filter(
       (m) => m === method
     );
     if (notAllowed.length) throw new ForbiddenException('Method not allowed');

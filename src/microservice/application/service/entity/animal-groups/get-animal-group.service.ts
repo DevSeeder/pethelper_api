@@ -20,18 +20,11 @@ export class GetAnimalGroupService extends AbstractGetService<
 > {
   constructor(
     protected readonly repository: AnimalGroupsRepository,
-    protected readonly getFieldSchemaService: GetFieldSchemaService,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
     protected readonly fieldSchemaData?: FieldSchema[],
     @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
     protected readonly entitySchemaData?: EntitySchema[]
   ) {
-    super(
-      repository,
-      'animalGroups',
-      getFieldSchemaService,
-      fieldSchemaData,
-      entitySchemaData
-    );
+    super(repository, 'animalGroups', fieldSchemaData, entitySchemaData);
   }
 }

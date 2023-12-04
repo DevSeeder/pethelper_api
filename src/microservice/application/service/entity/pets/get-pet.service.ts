@@ -11,7 +11,6 @@ import { GetRaceService } from '../races/get-race.service';
 import { PetResponse } from 'src/microservice/application/dto/response/pet.response';
 import { SearchPetDto } from 'src/microservice/application/dto/search/search-pet.dto';
 import { GetUserService } from '../users/get-user.service';
-import { GetFieldSchemaService } from '../../configuration/field-schemas/get-field-schemas.service';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
@@ -29,18 +28,11 @@ export class GetPetService extends AbstractGetService<
     protected readonly getAnimalsService: GetAnimalService,
     protected readonly getUsersService: GetUserService,
     protected readonly getRacesService: GetRaceService,
-    protected readonly getFieldSchemaService: GetFieldSchemaService,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
     protected readonly fieldSchemaData: FieldSchema[] = [],
     @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
     protected readonly entitySchemaData?: EntitySchema[]
   ) {
-    super(
-      repository,
-      'pets',
-      getFieldSchemaService,
-      fieldSchemaData,
-      entitySchemaData
-    );
+    super(repository, 'pets', fieldSchemaData, entitySchemaData);
   }
 }

@@ -8,7 +8,6 @@ import {
 import { AnimalResponse } from '../../../dto/response/animal.response';
 import { SearchAnimalDto } from '../../../dto/search/search-animal.dto';
 import { GetAnimalGroupService } from '../animal-groups/get-animal-group.service';
-import { GetFieldSchemaService } from '../../configuration/field-schemas/get-field-schemas.service';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
@@ -23,18 +22,11 @@ export class GetAnimalService extends AbstractGetService<
   constructor(
     protected readonly repository: AnimalsRepository,
     protected readonly getAnimalGroupsService: GetAnimalGroupService,
-    protected readonly getFieldSchemaService: GetFieldSchemaService,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
     protected readonly fieldSchemaData?: FieldSchema[],
     @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
     protected readonly entitySchemaData?: EntitySchema[]
   ) {
-    super(
-      repository,
-      'animals',
-      getFieldSchemaService,
-      fieldSchemaData,
-      entitySchemaData
-    );
+    super(repository, 'animals', fieldSchemaData, entitySchemaData);
   }
 }

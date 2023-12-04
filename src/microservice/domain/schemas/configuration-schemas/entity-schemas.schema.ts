@@ -33,7 +33,7 @@ export class EntitySchema extends AbstractSchema {
   extendedEntities: Array<string> = [];
 
   @Prop({ required: false, default: [] })
-  forbidenMethods: Array<string> = [];
+  forbiddenMethods: Array<string> = [];
 
   @Prop({ required: true })
   itemLabel: string;

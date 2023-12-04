@@ -1,12 +1,20 @@
 import { SearchEgineOperators } from './search-engine.interface';
 import { Validation } from './validation.interface';
 
-export interface FieldSchemaResponse {
+export interface FormSchemaResponse {
   fields: Array<FieldItemSchema & FormFieldResponse>;
   filterOptions?: {
     orderBy?: FieldOrder[];
   };
-  cloneRelations?: string[];
+  cloneRelations?: Array<{
+    relation: string;
+    label: string;
+  }>;
+  entityRefs?: {
+    entity: string;
+    label: string;
+    forbiddenMethods: string[];
+  };
 }
 
 export interface FieldItemSchema {

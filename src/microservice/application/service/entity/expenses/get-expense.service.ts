@@ -10,7 +10,6 @@ import { SearchExpenseDto } from 'src/microservice/application/dto/search/search
 import { GetUserService } from '../users/get-user.service';
 import { GetPetService } from '../pets/get-pet.service';
 import { GetExpenseCategoriesService } from '../expense-categories/get-expense-category.service';
-import { GetFieldSchemaService } from '../../configuration/field-schemas/get-field-schemas.service';
 import {
   GroupExpensesByPetAndCategoryResponse,
   GroupedCostByCategory
@@ -31,19 +30,12 @@ export class GetExpenseService extends AbstractGetService<
     protected readonly getPetsService: GetPetService,
     protected readonly getUsersService: GetUserService,
     protected readonly getExpenseCategoriesService: GetExpenseCategoriesService,
-    protected readonly getFieldSchemaService: GetFieldSchemaService,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
     protected readonly fieldSchemaData?: FieldSchema[],
     @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
     protected readonly entitySchemaData?: EntitySchema[]
   ) {
-    super(
-      repository,
-      'expenses',
-      getFieldSchemaService,
-      fieldSchemaData,
-      entitySchemaData
-    );
+    super(repository, 'expenses', fieldSchemaData, entitySchemaData);
   }
 
   async groupByPetsAndCategory(

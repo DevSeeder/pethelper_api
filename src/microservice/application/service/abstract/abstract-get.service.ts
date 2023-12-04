@@ -1,9 +1,8 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { Search } from 'src/microservice/application/dto/search/search.dto';
-import { GetFieldSchemaService } from '../configuration/field-schemas/get-field-schemas.service';
 import {
   FieldSchemaPage,
-  FieldSchemaResponse
+  FormSchemaResponse
 } from 'src/microservice/domain/interface/field-schema.interface';
 import { FieldSchemaBuilder } from '../../helper/field-schema.builder';
 import { SortHelper } from '../../helper/sort.helper';
@@ -37,7 +36,6 @@ export abstract class AbstractGetService<
       MongooseModel
     >,
     protected readonly entity: string,
-    protected readonly getFieldSchemaService?: GetFieldSchemaService,
     protected readonly fieldSchemaData?: FieldSchema[],
     protected readonly entitySchemaData?: EntitySchema[]
   ) {
@@ -104,7 +102,7 @@ export abstract class AbstractGetService<
     return this.convertRelation(item);
   }
 
-  async getForm(page: string): Promise<FieldSchemaResponse> {
+  async getForm(page: string): Promise<FormSchemaResponse> {
     const fields = this.fieldSchemaDb.filter((field) =>
       FieldSchemaBuilder.getFormFilterCondition(page, field)
     );
@@ -124,14 +122,21 @@ export abstract class AbstractGetService<
       arrayResponse.push(objectItem);
     }
 
-    const cloneRelations = await this.getFieldSchemaService.getExtRelations(
-      this.entityLabels[0],
-      true
+    const cloneRelations = this.entitySchema.subRelations.filter(
+      (sub) => sub.clone
     );
 
-    const response: FieldSchemaResponse = {
+    const response: FormSchemaResponse = {
       fields: arrayResponse,
-      cloneRelations: cloneRelations.map((rel) => rel.entity)
+      cloneRelations: cloneRelations.map((rel) => ({
+        relation: rel.entity,
+        label: rel.label
+      })),
+      entityRefs: {
+        entity: this.entitySchema.entity,
+        label: this.entitySchema.label,
+        forbiddenMethods: this.entitySchema.forbiddenMethods
+      }
     };
 
     if (page === FieldSchemaPage.SEARCH)
