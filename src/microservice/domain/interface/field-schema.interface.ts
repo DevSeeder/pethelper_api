@@ -1,4 +1,5 @@
 import { SearchEgineOperators } from './search-engine.interface';
+import { Validation } from './validation.interface';
 
 export interface FieldSchemaResponse {
   fields: Array<FieldItemSchema & FormFieldResponse>;
@@ -33,6 +34,7 @@ export interface FieldItemSchema {
   order?: number;
   orderBy?: boolean;
   entity?: string;
+  validations?: Validation[];
 }
 
 export interface FormFieldResponse {

@@ -4,6 +4,7 @@ import { Document } from 'mongoose';
 import { AbstractSchema } from './abstract.schema';
 import { SearchEgineOperators } from '../interface/search-engine.interface';
 import { PROJECT_KEY } from 'src/microservice/application/app.constants';
+import { Validation } from '../interface/validation.interface';
 
 export type FieldSchemaDocument = FieldSchema & Document;
 
@@ -64,6 +65,9 @@ export class FieldSchema extends AbstractSchema {
   alias?: {
     search?: string;
   };
+
+  @Prop({ required: false })
+  validations?: Validation[];
 
   @Prop({ required: false })
   order?: number;

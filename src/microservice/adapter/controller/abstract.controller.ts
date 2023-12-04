@@ -35,6 +35,7 @@ import {
   PaginatedResponse
 } from 'src/microservice/application/dto/response/paginated.response';
 import { GroupByResponse } from 'src/microservice/application/dto/response/groupby/group-by.response';
+import { FieldSchema } from 'src/microservice/domain/schemas/field-schemas.schema';
 
 export abstract class AbstractController<
   Collection,
@@ -45,6 +46,7 @@ export abstract class AbstractController<
 > {
   protected readonly logger: Logger = new Logger(AbstractController.name);
   protected inputSchema: InputSchema;
+  protected fieldSchemaDb: FieldSchema[] = [];
 
   constructor(
     protected readonly itemLabel: string,
@@ -80,10 +82,10 @@ export abstract class AbstractController<
 
     try {
       this.logger.log(`Initializing controller for '${this.itemLabel}'...`);
-      const fieldSchemaDb = await this.getFieldSchemaService.search(
+      this.fieldSchemaDb = await this.getFieldSchemaService.search(
         this.entityLabels
       );
-      this.inputSchema = FieldSchemaBuilder.buildSchemas(fieldSchemaDb);
+      this.inputSchema = FieldSchemaBuilder.buildSchemas(this.fieldSchemaDb);
       this.logger.log(`Controller for '${this.itemLabel}' finished`);
     } catch (err) {
       this.logger.error(
@@ -157,7 +159,11 @@ export abstract class AbstractController<
     @Body() body: BodyDto
   ): Promise<void> {
     this.isMethodAllowed('updateById');
-    SchemaValidator.validateSchema(this.inputSchema.update, body);
+    SchemaValidator.validateSchema(
+      this.inputSchema.update,
+      body,
+      this.fieldSchemaDb
+    );
     await this.updateService.updateById(id, body as unknown as BodyDto);
   }
 
@@ -167,15 +173,27 @@ export abstract class AbstractController<
     @Body() body: BodyDto
   ): Promise<void> {
     this.isMethodAllowed('updateBy');
-    SchemaValidator.validateSchema(this.inputSchema.search, params);
-    SchemaValidator.validateSchema(this.inputSchema.update, body);
+    SchemaValidator.validateSchema(
+      this.inputSchema.search,
+      params,
+      this.fieldSchemaDb
+    );
+    SchemaValidator.validateSchema(
+      this.inputSchema.update,
+      body,
+      this.fieldSchemaDb
+    );
     await this.updateService.updateBy(params, body);
   }
 
   @Post(`/`)
   async create(@Body() body: BodyDto): Promise<{ _id: ObjectId }> {
     this.isMethodAllowed('create');
-    SchemaValidator.validateSchema(this.inputSchema.create, body);
+    SchemaValidator.validateSchema(
+      this.inputSchema.create,
+      body,
+      this.fieldSchemaDb
+    );
     return this.createService.create(body as unknown as BodyDto);
   }
 
@@ -190,7 +208,11 @@ export abstract class AbstractController<
     @Body() body: ClonyOneBodyDto
   ): Promise<CloneOneResponse> {
     this.isMethodAllowed('cloneById');
-    SchemaValidator.validateSchema(this.inputSchema.cloneOne, body);
+    SchemaValidator.validateSchema(
+      this.inputSchema.cloneOne,
+      body,
+      this.fieldSchemaDb
+    );
     return this.createService.clone(
       id,
       true,
@@ -205,7 +227,11 @@ export abstract class AbstractController<
     body: ClonyManyBodyDto
   ): Promise<CloneManyResponse> {
     this.isMethodAllowed('cloneManyByIds');
-    SchemaValidator.validateSchema(this.inputSchema.cloneMany, body);
+    SchemaValidator.validateSchema(
+      this.inputSchema.cloneMany,
+      body,
+      this.fieldSchemaDb
+    );
     return this.createService.cloneByIds(
       body._ids,
       body.cloneRelations,

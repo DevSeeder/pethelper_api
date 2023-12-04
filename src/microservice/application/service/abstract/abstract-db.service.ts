@@ -16,7 +16,7 @@ import { BadRequestException } from '@nestjs/common';
 import { Search } from '../../dto/search/search.dto';
 import { VALIDATE_ID_ENUMS } from '../../app.constants';
 import { FieldSchemaBuilder } from '../../helper/field-schema.builder';
-import { GetDynamicValueService } from '../dynamic/get-dynamic-value.service';
+import { DynamicValueService } from '../dynamic/get-dynamic-value.service';
 
 export class AbstractDBService<
   Collection,
@@ -25,8 +25,6 @@ export class AbstractDBService<
   SearchParams extends Search
 > extends AbstractService {
   protected fieldSchema: FieldItemSchema[] = [];
-  protected getDynamicValueService: GetDynamicValueService;
-
   constructor(
     protected readonly repository: MongooseRepository<
       Collection,
@@ -41,8 +39,6 @@ export class AbstractDBService<
   }
 
   async init() {
-    this.getDynamicValueService = new GetDynamicValueService();
-
     if (!this.entityLabels.length || !this.getFieldSchemaService) return;
     try {
       this.logger.log(`Initializing service for '${this.entityLabels[0]}'...`);
@@ -358,12 +354,15 @@ export class AbstractDBService<
   ): Partial<MongooseModel> | Partial<AbstractDocument> {
     Object.keys(item)
       .filter(
-        (key) => typeof item[key] == 'string' && item[key].startsWith('@')
+        (key) =>
+          typeof item[key] == 'string' &&
+          (item[key].startsWith('@') || item[key].startsWith('$'))
       )
       .forEach((key) => {
-        item[key] = this.getDynamicValueService.getDynamicValue(
+        item[key] = DynamicValueService.getDynamicValue(
           item[key],
-          item[key]
+          item[key],
+          item
         );
       });
     return item;
