@@ -40,6 +40,7 @@ import {
   DependecyTokens,
   GLOBAL_ENTITY
 } from 'src/microservice/application/app.constants';
+import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 
 export abstract class AbstractController<
   Collection,
@@ -51,12 +52,13 @@ export abstract class AbstractController<
   protected readonly logger: Logger = new Logger(AbstractController.name);
   protected inputSchema: InputSchema;
   protected fieldSchemaDb: FieldSchema[] = [];
+  protected entitySchema: EntitySchema;
+  protected itemLabel: string;
+  protected entityLabels: string[];
+  protected searchKey = '';
 
   constructor(
-    protected readonly itemLabel: string,
-    protected readonly entityLabels: string[],
-    protected readonly searchKey: string = '',
-    protected readonly forbiddenMethods: string[] = [],
+    protected readonly entity: string,
     protected readonly getService?: AbstractGetService<
       Collection,
       MongooseModel,
@@ -77,8 +79,20 @@ export abstract class AbstractController<
       BodyDto
     >,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
-    protected readonly fieldSchemaData?: FieldSchema[]
+    protected readonly fieldSchemaData?: FieldSchema[],
+    @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
+    protected readonly entitySchemaData?: EntitySchema[]
   ) {
+    if (true == true) return;
+    this.entitySchema = entitySchemaData.filter(
+      (ent) => ent.entity === this.entity
+    )[0];
+
+    this.entityLabels = [
+      this.entitySchema.entity,
+      ...this.entitySchema.extendedEntities
+    ];
+
     if (!this.fieldSchemaData || !this.fieldSchemaData.length) return;
     this.fieldSchemaDb = this.fieldSchemaData.filter(
       (schema) =>
@@ -93,7 +107,7 @@ export abstract class AbstractController<
   @Get(`/:id`)
   async getById(@Param('id') id: string): Promise<GetResponse> {
     const item = await this.getService.getById(id);
-    if (!item) throw new NotFoundException(this.itemLabel);
+    if (!item) throw new NotFoundException(this.entitySchema.itemLabel);
     return item;
   }
 
@@ -104,11 +118,15 @@ export abstract class AbstractController<
   ): Promise<PaginatedResponse<GetResponse>> {
     this.isMethodAllowed('searchBy');
 
-    if (params[this.searchKey] !== undefined)
-      throw new BadRequestException(`'${this.searchKey}' is not allowed.`);
+    if (params[this.entitySchema.searchKey] !== undefined)
+      throw new BadRequestException(
+        `'${this.entitySchema.searchKey}' is not allowed.`
+      );
+
     SchemaValidator.validateSchema(this.inputSchema.search, params);
 
-    if (this.searchKey) params[this.searchKey] = searchId;
+    if (this.entitySchema.searchKey)
+      params[this.entitySchema.searchKey] = searchId;
 
     return this.getService.search(params);
   }
@@ -241,7 +259,9 @@ export abstract class AbstractController<
   }
 
   private isMethodAllowed(method: string) {
-    const notAllowed = this.forbiddenMethods.filter((m) => m === method);
+    const notAllowed = this.entitySchema.forbidenMethods.filter(
+      (m) => m === method
+    );
     if (notAllowed.length) throw new ForbiddenException('Method not allowed');
   }
 }

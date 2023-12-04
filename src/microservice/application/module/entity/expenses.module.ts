@@ -13,6 +13,7 @@ import { ExpenseCategoriesModule } from './expense-categories.module';
 import { UpdateExpenseService } from '../../service/entity/expenses/update-expense.service';
 import { CreateExpenseService } from '../../service/entity/expenses/create-expense.service';
 import { FieldSchemasModule } from '../configuration/field-schemas.module';
+import { EntitySchemasModule } from '../configuration/entity-schemas.module';
 
 @Module({
   imports: [
@@ -20,7 +21,8 @@ import { FieldSchemasModule } from '../configuration/field-schemas.module';
     forwardRef(() => PetsModule),
     UsersModule,
     ExpenseCategoriesModule,
-    FieldSchemasModule
+    FieldSchemasModule,
+    EntitySchemasModule
   ],
   controllers: [ExpensesController],
   providers: [

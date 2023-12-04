@@ -14,5 +14,6 @@ export const VALIDATE_ID_ENUMS = [
 ];
 
 export enum DependecyTokens {
-  FIELD_SCHEMA_DB = 'FIELD_SCHEMA_DB'
+  FIELD_SCHEMA_DB = 'FIELD_SCHEMA_DB',
+  ENTITY_SCHEMA_DB = 'ENTITY_SCHEMA_DB'
 }

@@ -12,6 +12,7 @@ import { CreateAnimalService } from 'src/microservice/application/service/entity
 import { SearchAnimalDto } from 'src/microservice/application/dto/search/search-animal.dto';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
+import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 
 @Controller('animals')
 export class AnimalsController extends AbstractController<
@@ -26,17 +27,17 @@ export class AnimalsController extends AbstractController<
     protected readonly updateService: UpdateAnimalService,
     protected readonly createService: CreateAnimalService,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
-    protected readonly fieldSchemaData?: FieldSchema[]
+    protected readonly fieldSchemaData?: FieldSchema[],
+    @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
+    protected readonly entitySchemaData?: EntitySchema[]
   ) {
     super(
-      'Animal',
-      ['animals', 'config'],
-      'idGroup',
-      [],
+      'animals',
       getService,
       updateService,
       createService,
-      fieldSchemaData
+      fieldSchemaData,
+      entitySchemaData
     );
   }
 }

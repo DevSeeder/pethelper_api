@@ -10,13 +10,15 @@ import { UpdateExpenseCategoryService } from '../../service/entity/expense-categ
 import { CreateExpenseCategoryService } from '../../service/entity/expense-categories/create-expense-category.service';
 import { ExpenseCategoriesController } from 'src/microservice/adapter/controller/expense-categories.controller';
 import { FieldSchemasModule } from '../configuration/field-schemas.module';
+import { EntitySchemasModule } from '../configuration/entity-schemas.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: ExpenseCategory.name, schema: ExpenseCategoriesSchema }
     ]),
-    FieldSchemasModule
+    FieldSchemasModule,
+    EntitySchemasModule
   ],
   controllers: [ExpenseCategoriesController],
   providers: [

@@ -13,6 +13,7 @@ import { AuthJwtModule } from '../auth/auth-jwt.module';
 import { GetUserService } from '../../service/entity/users/get-user.service';
 import { FieldSchemasModule } from '../configuration/field-schemas.module';
 import { UpdateUserService } from '../../service/entity/users/update-user.service';
+import { EntitySchemasModule } from '../configuration/entity-schemas.module';
 
 @Module({
   imports: [
@@ -23,7 +24,8 @@ import { UpdateUserService } from '../../service/entity/users/update-user.servic
     // }),
     // AuthJwtModule,
     // HttpModule,
-    FieldSchemasModule
+    FieldSchemasModule,
+    EntitySchemasModule
   ],
   controllers: [UsersController],
   providers: [

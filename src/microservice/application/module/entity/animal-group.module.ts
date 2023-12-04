@@ -7,13 +7,15 @@ import {
 } from 'src/microservice/domain/schemas/entity/animal-group.schema';
 import { GetAnimalGroupService } from 'src/microservice/application/service/entity/animal-groups/get-animal-group.service';
 import { FieldSchemasModule } from '../configuration/field-schemas.module';
+import { EntitySchemasModule } from '../configuration/entity-schemas.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: AnimalGroup.name, schema: AnimalGroupsSchema }
     ]),
-    FieldSchemasModule
+    FieldSchemasModule,
+    EntitySchemasModule
   ],
   controllers: [],
   providers: [AnimalGroupsRepository, GetAnimalGroupService],

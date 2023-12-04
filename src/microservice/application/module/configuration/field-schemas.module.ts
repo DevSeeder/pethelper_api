@@ -6,7 +6,6 @@ import {
   FieldSchemasSchema
 } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { GetFieldSchemaService } from 'src/microservice/application/service/configuration/field-schemas/get-field-schemas.service';
-import { FieldSchemaDataService } from '../../service/configuration/field-schemas/field-schema-data.service';
 import { DependecyTokens } from '../../app.constants';
 
 @Module({
@@ -19,19 +18,17 @@ import { DependecyTokens } from '../../app.constants';
   providers: [
     FieldSchemasRepository,
     GetFieldSchemaService,
-    FieldSchemaDataService,
     {
       provide: DependecyTokens.FIELD_SCHEMA_DB,
-      useFactory: async (dataService: FieldSchemaDataService) => {
-        return await dataService.loadData(); // Método que busca os dados no banco
+      useFactory: async (dataService: GetFieldSchemaService) => {
+        return await dataService.getAll(); // Método que busca os dados no banco
       },
-      inject: [FieldSchemaDataService]
+      inject: [GetFieldSchemaService]
     }
   ],
   exports: [
     FieldSchemasRepository,
     GetFieldSchemaService,
-    FieldSchemaDataService,
     DependecyTokens.FIELD_SCHEMA_DB
   ]
 })

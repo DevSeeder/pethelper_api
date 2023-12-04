@@ -15,7 +15,7 @@ export class EntitySchema extends AbstractSchema {
   entity: string;
 
   @Prop({ required: true })
-  collection: string;
+  collectionName: string;
 
   @Prop({ required: true })
   service: string;
@@ -43,6 +43,9 @@ export class EntitySchema extends AbstractSchema {
 
   @Prop({ required: true })
   hidden: boolean;
+
+  @Prop({ required: false, default: 1000 })
+  order: number;
 }
 
 export interface SubRelation {

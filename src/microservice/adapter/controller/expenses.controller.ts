@@ -15,6 +15,7 @@ import { GroupExpensesByPetAndCategoryResponse } from 'src/microservice/applicat
 import { SchemaValidator } from 'src/microservice/application/helper/schema-validator.helper';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
+import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 
 @Controller('expenses')
 export class ExpensesController extends AbstractController<
@@ -29,17 +30,17 @@ export class ExpensesController extends AbstractController<
     protected readonly updateService: UpdateExpenseService,
     protected readonly createService: CreateExpenseService,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
-    protected readonly fieldSchemaData?: FieldSchema[]
+    protected readonly fieldSchemaData?: FieldSchema[],
+    @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
+    protected readonly entitySchemaData?: EntitySchema[]
   ) {
     super(
-      'Expense',
-      ['expenses'],
-      'pets',
-      [],
+      'expenses',
       getService,
       updateService,
       createService,
-      fieldSchemaData
+      fieldSchemaData,
+      entitySchemaData
     );
   }
 
