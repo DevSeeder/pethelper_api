@@ -12,3 +12,7 @@ export const VALIDATE_ID_ENUMS = [
   SearchEgineOperators.NOT_IN,
   SearchEgineOperators.NOT_EQUAL
 ];
+
+export enum DependecyTokens {
+  FIELD_SCHEMA_DB = 'FIELD_SCHEMA_DB'
+}

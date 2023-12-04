@@ -1,4 +1,4 @@
-import { Controller, Query } from '@nestjs/common';
+import { Controller, Inject, Query } from '@nestjs/common';
 import { SearchExpenseDto } from 'src/microservice/application/dto/search/search-Expense.dto';
 import { AbstractController } from './abstract.controller';
 import { ExpenseResponse } from 'src/microservice/application/dto/response/expense.response';
@@ -9,11 +9,12 @@ import {
 import { UpdateExpenseService } from 'src/microservice/application/service/entity/expenses/update-expense.service';
 import { ExpenseBodyDto } from 'src/microservice/application/dto/body/expense-body.dto';
 import { CreateExpenseService } from 'src/microservice/application/service/entity/expenses/create-expense.service';
-import { GetFieldSchemaService } from 'src/microservice/application/service/configuration/field-schemas/get-field-schemas.service';
 import { GetExpenseService } from 'src/microservice/application/service/entity/expenses/get-Expense.service';
-import { Get, Param } from '@nestjs/common';
+import { Get } from '@nestjs/common';
 import { GroupExpensesByPetAndCategoryResponse } from 'src/microservice/application/dto/response/groupby/group-expenses-by-pet-and-category.response';
 import { SchemaValidator } from 'src/microservice/application/helper/schema-validator.helper';
+import { DependecyTokens } from 'src/microservice/application/app.constants';
+import { FieldSchema } from 'src/microservice/domain/schemas/field-schemas.schema';
 
 @Controller('expenses')
 export class ExpensesController extends AbstractController<
@@ -27,7 +28,8 @@ export class ExpensesController extends AbstractController<
     protected readonly getService: GetExpenseService,
     protected readonly updateService: UpdateExpenseService,
     protected readonly createService: CreateExpenseService,
-    protected readonly getFieldSchemaService: GetFieldSchemaService
+    @Inject(DependecyTokens.FIELD_SCHEMA_DB)
+    protected readonly fieldSchemaData?: FieldSchema[]
   ) {
     super(
       'Expense',
@@ -37,7 +39,7 @@ export class ExpensesController extends AbstractController<
       getService,
       updateService,
       createService,
-      getFieldSchemaService
+      fieldSchemaData
     );
   }
 

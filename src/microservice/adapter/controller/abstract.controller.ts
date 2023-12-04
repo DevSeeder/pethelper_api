@@ -4,6 +4,7 @@ import {
   Body,
   ForbiddenException,
   Get,
+  Inject,
   Logger,
   Param,
   Patch,
@@ -21,7 +22,6 @@ import { AbstractBodyDto } from 'src/microservice/application/dto/body/abtract-b
 import { ObjectId } from 'mongoose';
 import { FieldSchemaResponse } from 'src/microservice/domain/interface/field-schema.interface';
 import { FieldSchemaBuilder } from 'src/microservice/application/helper/field-schema.builder';
-import { GetFieldSchemaService } from 'src/microservice/application/service/configuration/field-schemas/get-field-schemas.service';
 import {
   ClonyManyBodyDto,
   ClonyOneBodyDto
@@ -36,6 +36,10 @@ import {
 } from 'src/microservice/application/dto/response/paginated.response';
 import { GroupByResponse } from 'src/microservice/application/dto/response/groupby/group-by.response';
 import { FieldSchema } from 'src/microservice/domain/schemas/field-schemas.schema';
+import {
+  DependecyTokens,
+  GLOBAL_ENTITY
+} from 'src/microservice/application/app.constants';
 
 export abstract class AbstractController<
   Collection,
@@ -72,29 +76,16 @@ export abstract class AbstractController<
       GetResponse,
       BodyDto
     >,
-    protected readonly getFieldSchemaService?: GetFieldSchemaService
+    @Inject(DependecyTokens.FIELD_SCHEMA_DB)
+    protected readonly fieldSchemaData?: FieldSchema[]
   ) {
-    this.init();
-  }
-
-  private async init() {
-    if (!this.getFieldSchemaService) return;
-
-    try {
-      this.logger.log(`Initializing controller for '${this.itemLabel}'...`);
-      this.fieldSchemaDb = await this.getFieldSchemaService.search(
-        this.entityLabels
-      );
-      this.inputSchema = FieldSchemaBuilder.buildSchemas(this.fieldSchemaDb);
-      this.logger.log(`Controller for '${this.itemLabel}' finished`);
-    } catch (err) {
-      this.logger.error(
-        `Error loading controller for '${this.itemLabel}': ${JSON.stringify(
-          err
-        )}`
-      );
-      throw err;
-    }
+    if (!this.fieldSchemaData || !this.fieldSchemaData.length) return;
+    this.fieldSchemaDb = this.fieldSchemaData.filter(
+      (schema) =>
+        this.entityLabels.includes(schema.entity) ||
+        schema.entity === GLOBAL_ENTITY
+    );
+    this.inputSchema = FieldSchemaBuilder.buildSchemas(this.fieldSchemaDb);
   }
 
   // @UseGuards(MyJwtAuthGuard)

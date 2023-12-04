@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Inject } from '@nestjs/common';
 import { GetAnimalService } from 'src/microservice/application/service/entity/animals/get-animal.service';
 import { AbstractController } from './abstract.controller';
 import { AnimalResponse } from 'src/microservice/application/dto/response/animal.response';
@@ -10,7 +10,8 @@ import { UpdateAnimalService } from 'src/microservice/application/service/entity
 import { AnimalBodyDto } from 'src/microservice/application/dto/body/Animal-body.dto';
 import { CreateAnimalService } from 'src/microservice/application/service/entity/animals/create-animal.service';
 import { SearchAnimalDto } from 'src/microservice/application/dto/search/search-animal.dto';
-import { GetFieldSchemaService } from 'src/microservice/application/service/configuration/field-schemas/get-field-schemas.service';
+import { DependecyTokens } from 'src/microservice/application/app.constants';
+import { FieldSchema } from 'src/microservice/domain/schemas/field-schemas.schema';
 
 @Controller('animals')
 export class AnimalsController extends AbstractController<
@@ -24,7 +25,8 @@ export class AnimalsController extends AbstractController<
     protected readonly getService: GetAnimalService,
     protected readonly updateService: UpdateAnimalService,
     protected readonly createService: CreateAnimalService,
-    protected readonly getFieldSchemaService: GetFieldSchemaService
+    @Inject(DependecyTokens.FIELD_SCHEMA_DB)
+    protected readonly fieldSchemaData?: FieldSchema[]
   ) {
     super(
       'Animal',
@@ -34,7 +36,7 @@ export class AnimalsController extends AbstractController<
       getService,
       updateService,
       createService,
-      getFieldSchemaService
+      fieldSchemaData
     );
   }
 }

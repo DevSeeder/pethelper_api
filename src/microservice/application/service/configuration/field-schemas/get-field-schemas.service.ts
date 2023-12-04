@@ -27,6 +27,19 @@ export class GetFieldSchemaService extends AbstractService {
     return itens;
   }
 
+  async getAll(): Promise<FieldSchema[]> {
+    const itens = await this.repository.find(
+      {
+        projectKey: PROJECT_KEY
+      },
+      { projectKey: 0 },
+      { order: 1 },
+      false
+    );
+
+    return itens;
+  }
+
   async getExtRelations(
     entity: string,
     clone = false

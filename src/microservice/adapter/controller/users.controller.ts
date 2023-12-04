@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Inject,
+  Param,
+  Post,
+  UseGuards
+} from '@nestjs/common';
 import { MyJwtAuthGuard } from '../../../core/auth/jwt.auth';
 import { EnumScopes } from '../../domain/enum/enum-scopes.enum';
 import { User, UserDocument } from '../../domain/schemas/users.schema';
@@ -13,6 +21,8 @@ import { AbstractBodyDto } from 'src/microservice/application/dto/body/abtract-b
 import { GetUserService } from 'src/microservice/application/service/entity/users/get-user.service';
 import { UpdateUserService } from 'src/microservice/application/service/entity/users/update-user.service';
 import { GetFieldSchemaService } from 'src/microservice/application/service/configuration/field-schemas/get-field-schemas.service';
+import { FieldSchema } from 'src/microservice/domain/schemas/field-schemas.schema';
+import { DependecyTokens } from 'src/microservice/application/app.constants';
 
 @Controller('users')
 export class UsersController extends AbstractController<
@@ -25,7 +35,8 @@ export class UsersController extends AbstractController<
   constructor(
     protected readonly getUsersService: GetUserService,
     protected readonly updateUserService: UpdateUserService,
-    protected readonly getFieldSchemaService: GetFieldSchemaService
+    @Inject(DependecyTokens.FIELD_SCHEMA_DB)
+    protected readonly fieldSchemaData?: FieldSchema[]
   ) {
     super(
       'User',
@@ -43,7 +54,7 @@ export class UsersController extends AbstractController<
       getUsersService,
       updateUserService,
       null,
-      getFieldSchemaService
+      fieldSchemaData
     );
   }
 

@@ -26,9 +26,11 @@ import { FieldSchemasModule } from './application/module/configuration/field-sch
     PetsModule,
     ExpensesModule,
     ExpenseCategoriesModule,
-    AnimalsModule
+    AnimalsModule,
+    FieldSchemasModule
   ],
   controllers: [],
-  providers: []
+  providers: [],
+  exports: []
 })
 export class AppModule {}
