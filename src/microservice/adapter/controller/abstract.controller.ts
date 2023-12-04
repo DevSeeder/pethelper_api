@@ -36,10 +36,7 @@ import {
 } from 'src/microservice/application/dto/response/paginated.response';
 import { GroupByResponse } from 'src/microservice/application/dto/response/groupby/group-by.response';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
-import {
-  DependecyTokens,
-  GLOBAL_ENTITY
-} from 'src/microservice/application/app.constants';
+import { GLOBAL_ENTITY } from 'src/microservice/application/app.constants';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 
 export abstract class AbstractController<
@@ -78,27 +75,26 @@ export abstract class AbstractController<
       GetResponse,
       BodyDto
     >,
-    @Inject(DependecyTokens.FIELD_SCHEMA_DB)
     protected readonly fieldSchemaData?: FieldSchema[],
-    @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
     protected readonly entitySchemaData?: EntitySchema[]
   ) {
-    if (true == true) return;
     this.entitySchema = entitySchemaData.filter(
-      (ent) => ent.entity === this.entity
+      (ent) => ent.entity === entity
     )[0];
 
     this.entityLabels = [
       this.entitySchema.entity,
-      ...this.entitySchema.extendedEntities
+      ...(this.entitySchema.extendedEntities || [])
     ];
 
     if (!this.fieldSchemaData || !this.fieldSchemaData.length) return;
+
     this.fieldSchemaDb = this.fieldSchemaData.filter(
       (schema) =>
         this.entityLabels.includes(schema.entity) ||
         schema.entity === GLOBAL_ENTITY
     );
+
     this.inputSchema = FieldSchemaBuilder.buildSchemas(this.fieldSchemaDb);
   }
 
@@ -259,6 +255,7 @@ export abstract class AbstractController<
   }
 
   private isMethodAllowed(method: string) {
+    if (!this.entitySchema.forbidenMethods) return;
     const notAllowed = this.entitySchema.forbidenMethods.filter(
       (m) => m === method
     );

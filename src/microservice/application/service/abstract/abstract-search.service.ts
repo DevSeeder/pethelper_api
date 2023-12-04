@@ -15,7 +15,6 @@ export class AbstractSearchService<
   ResponseModel,
   SearchParams extends Search
 > extends AbstractDBService<Collection, MongooseModel, ResponseModel> {
-  protected fieldSchemaDb: FieldSchema[] = [];
   constructor(
     protected readonly repository: MongooseRepository<
       Collection,
@@ -146,14 +145,14 @@ export class AbstractSearchService<
     await this.convertRelation(
       searchParams as unknown as Partial<MongooseModel>
     );
+
     const params = await this.buildSearchEgines(
       this.getDynamicValues(searchParams) as any
     );
-    const active = params && params.active !== undefined ? params.active : true;
 
     return {
       ...params,
-      active
+      active: params && params.active !== undefined ? params.active : true
     };
   }
 

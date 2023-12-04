@@ -205,11 +205,13 @@ export class FieldSchemaBuilder {
     operator: SearchEgineOperators
   ): boolean {
     if (value === undefined && SKIP_ENUMS_ALIAS.includes(operator)) return true;
+
     if (
       itemResponse[`${schema.key}_${operator}`] === undefined &&
       !SKIP_ENUMS.includes(operator)
     )
       return true;
+
     return false;
   }
 }

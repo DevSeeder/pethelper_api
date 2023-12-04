@@ -20,7 +20,6 @@ import { Search } from 'src/microservice/application/dto/search/search.dto';
 import { AbstractBodyDto } from 'src/microservice/application/dto/body/abtract-body.dto';
 import { GetUserService } from 'src/microservice/application/service/entity/users/get-user.service';
 import { UpdateUserService } from 'src/microservice/application/service/entity/users/update-user.service';
-import { GetFieldSchemaService } from 'src/microservice/application/service/configuration/field-schemas/get-field-schemas.service';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';

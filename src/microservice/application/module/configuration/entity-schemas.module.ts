@@ -21,10 +21,10 @@ import {
     GetEntitySchemaService,
     {
       provide: DependecyTokens.ENTITY_SCHEMA_DB,
-      useFactory: () => {
-        return []; // Método que busca os dados no banco
+      useFactory: async (dataService: GetEntitySchemaService) => {
+        return await dataService.getAll(); // Método que busca os dados no banco
       },
-      inject: []
+      inject: [GetEntitySchemaService]
     }
   ],
   exports: [
