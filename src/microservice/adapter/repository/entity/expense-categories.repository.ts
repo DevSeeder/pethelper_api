@@ -5,7 +5,7 @@ import {
   ExpenseCategory,
   ExpenseCategoryDocument
 } from 'src/microservice/domain/schemas/entity/expense-categories.schema';
-import { AbstractRepository } from './abstract.repository';
+import { AbstractRepository } from '../abstract.repository';
 
 @Injectable()
 export class ExpenseCategoriesRepository extends AbstractRepository<

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ExpenseCategoriesRepository } from 'src/microservice/adapter/repository/expense-categories.repository';
+import { ExpenseCategoriesRepository } from 'src/microservice/adapter/repository/entity/expense-categories.repository';
 import {
   ExpenseCategory,
   ExpenseCategoriesSchema

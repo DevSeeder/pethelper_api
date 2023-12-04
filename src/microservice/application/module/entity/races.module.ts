@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { RacesRepository } from 'src/microservice/adapter/repository/races.repository';
+import { RacesRepository } from 'src/microservice/adapter/repository/entity/races.repository';
 import {
   Race,
   RacesSchema

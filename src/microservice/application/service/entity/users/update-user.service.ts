@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { UsersRepository } from '../../../../adapter/repository/users.repository';
+import { UsersRepository } from '../../../../adapter/repository/entity/users.repository';
 import { UserDTO } from '../../../../domain/model/dto/users/user.dto';
 import { AbstractUpdateService } from '../../abstract/abstract-update.service';
 import {

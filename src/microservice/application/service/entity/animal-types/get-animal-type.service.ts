@@ -5,7 +5,7 @@ import {
   AnimalType,
   AnimalTypeDocument
 } from 'src/microservice/domain/schemas/entity/animal-type.schema';
-import { AnimalTypesRepository } from 'src/microservice/adapter/repository/animal-types.repository';
+import { AnimalTypesRepository } from 'src/microservice/adapter/repository/entity/animal-types.repository';
 
 @Injectable()
 export class GetAnimalTypeService extends AbstractGetService<

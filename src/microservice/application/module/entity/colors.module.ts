@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ColorsRepository } from 'src/microservice/adapter/repository/colors.repository';
+import { ColorsRepository } from 'src/microservice/adapter/repository/entity/colors.repository';
 import {
   Color,
   ColorsSchema

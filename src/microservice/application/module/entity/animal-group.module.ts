@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AnimalGroupsRepository } from 'src/microservice/adapter/repository/animal-groups.repository';
+import { AnimalGroupsRepository } from 'src/microservice/adapter/repository/entity/animal-groups.repository';
 import {
   AnimalGroup,
   AnimalGroupsSchema

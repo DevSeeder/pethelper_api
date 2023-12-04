@@ -1,6 +1,6 @@
 import { Injectable, forwardRef, Inject } from '@nestjs/common';
 import { AbstractGetService } from '../../abstract/abstract-get.service';
-import { PetsRepository } from 'src/microservice/adapter/repository/pets.repository';
+import { PetsRepository } from 'src/microservice/adapter/repository/entity/pets.repository';
 import {
   Pet,
   PetDocument

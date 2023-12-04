@@ -4,7 +4,7 @@ import {
   AnimalGroup,
   AnimalGroupDocument
 } from '../../../../domain/schemas/entity/animal-group.schema';
-import { AnimalGroupsRepository } from 'src/microservice/adapter/repository/animal-groups.repository';
+import { AnimalGroupsRepository } from 'src/microservice/adapter/repository/entity/animal-groups.repository';
 import { SearchConfigDto } from '../../../dto/search/search-config.dto';
 import { GetFieldSchemaService } from '../../configuration/field-schemas/get-field-schemas.service';
 import { DependecyTokens } from 'src/microservice/application/app.constants';

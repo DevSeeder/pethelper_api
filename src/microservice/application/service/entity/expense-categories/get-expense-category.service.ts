@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { AbstractGetService } from '../../abstract/abstract-get.service';
-import { ExpenseCategoriesRepository } from 'src/microservice/adapter/repository/expense-categories.repository';
+import { ExpenseCategoriesRepository } from 'src/microservice/adapter/repository/entity/expense-categories.repository';
 import {
   ExpenseCategory,
   ExpenseCategoryDocument

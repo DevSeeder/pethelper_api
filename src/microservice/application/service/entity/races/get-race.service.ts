@@ -4,7 +4,7 @@ import {
   Race,
   RaceDocument
 } from '../../../../domain/schemas/entity/races.schema';
-import { RacesRepository } from 'src/microservice/adapter/repository/races.repository';
+import { RacesRepository } from 'src/microservice/adapter/repository/entity/races.repository';
 import { Search } from '@devseeder/nestjs-microservices-commons';
 import { GetFieldSchemaService } from '../../configuration/field-schemas/get-field-schemas.service';
 import { DependecyTokens } from 'src/microservice/application/app.constants';

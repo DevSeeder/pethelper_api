@@ -2,7 +2,7 @@ import { NotFoundException } from '@devseeder/microservices-exceptions';
 import { AbstractService } from '@devseeder/nestjs-microservices-commons';
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { ForbiddenActionException } from '../../../../../core/exceptions/forbbiden-action.exception';
-import { UsersRepository } from '../../../../adapter/repository/users.repository';
+import { UsersRepository } from '../../../../adapter/repository/entity/users.repository';
 import { User } from '../../../../domain/schemas/entity/users.schema';
 
 @Injectable()

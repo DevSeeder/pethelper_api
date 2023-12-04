@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { FieldSchemasRepository } from 'src/microservice/adapter/repository/field-schemas.repository';
+import { FieldSchemasRepository } from 'src/microservice/adapter/repository/configuration/field-schemas.repository';
 import {
   FieldSchema,
   FieldSchemasSchema

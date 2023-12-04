@@ -5,7 +5,7 @@ import {
   Color,
   ColorDocument
 } from 'src/microservice/domain/schemas/entity/colors.schema';
-import { AbstractRepository } from './abstract.repository';
+import { AbstractRepository } from '../abstract.repository';
 
 @Injectable()
 export class ColorsRepository extends AbstractRepository<Color, ColorDocument> {

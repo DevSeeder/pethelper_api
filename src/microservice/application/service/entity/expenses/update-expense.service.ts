@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ExpensesRepository } from 'src/microservice/adapter/repository/expenses.repository';
+import { ExpensesRepository } from 'src/microservice/adapter/repository/entity/expenses.repository';
 import {
   Expense,
   ExpenseDocument

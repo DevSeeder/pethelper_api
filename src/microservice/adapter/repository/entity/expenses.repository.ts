@@ -5,7 +5,7 @@ import {
   Expense,
   ExpenseDocument
 } from 'src/microservice/domain/schemas/entity/expenses.schema';
-import { AbstractRepository } from './abstract.repository';
+import { AbstractRepository } from '../abstract.repository';
 import { AggExpensesByPetAndCategoryDto } from 'src/microservice/application/dto/aggregate/agg-expenses-by-pet-and-category.dto';
 import { SearchExpenseDto } from 'src/microservice/application/dto/search/search-expense.dto';
 

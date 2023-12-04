@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { AbstractGetService } from '../../abstract/abstract-get.service';
-import { AnimalsRepository } from 'src/microservice/adapter/repository/animals.repository';
+import { AnimalsRepository } from 'src/microservice/adapter/repository/entity/animals.repository';
 import {
   Animal,
   AnimalDocument

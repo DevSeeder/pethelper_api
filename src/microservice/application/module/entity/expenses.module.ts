@@ -1,7 +1,7 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ExpensesController } from 'src/microservice/adapter/controller/expenses.controller';
-import { ExpensesRepository } from 'src/microservice/adapter/repository/expenses.repository';
+import { ExpensesRepository } from 'src/microservice/adapter/repository/entity/expenses.repository';
 import {
   Expense,
   ExpensesSchema

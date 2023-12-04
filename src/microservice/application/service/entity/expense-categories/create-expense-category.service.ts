@@ -3,7 +3,7 @@ import {
   ExpenseCategory,
   ExpenseCategoryDocument
 } from '../../../../domain/schemas/entity/expense-categories.schema';
-import { ExpenseCategoriesRepository } from 'src/microservice/adapter/repository/expense-categories.repository';
+import { ExpenseCategoriesRepository } from 'src/microservice/adapter/repository/entity/expense-categories.repository';
 import { ConfigBodyDto } from '../../../dto/body/config-body.dto';
 import { AbstractCreateService } from '../../abstract/abstract-create.service';
 import { GetFieldSchemaService } from '../../configuration/field-schemas/get-field-schemas.service';

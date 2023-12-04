@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { AnimalsRepository } from 'src/microservice/adapter/repository/animals.repository';
+import { AnimalsRepository } from 'src/microservice/adapter/repository/entity/animals.repository';
 import {
   Animal,
   AnimalDocument

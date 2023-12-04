@@ -5,7 +5,7 @@ import {
   Race,
   RaceDocument
 } from 'src/microservice/domain/schemas/entity/races.schema';
-import { AbstractRepository } from './abstract.repository';
+import { AbstractRepository } from '../abstract.repository';
 
 @Injectable()
 export class RacesRepository extends AbstractRepository<Race, RaceDocument> {

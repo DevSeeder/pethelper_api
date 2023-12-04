@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ClientAuthService } from '../../../../adapter/repository/client/client-auth.service';
-import { UsersRepository } from '../../../../adapter/repository/users.repository';
+import { UsersRepository } from '../../../../adapter/repository/entity/users.repository';
 import { EnumScopes } from '../../../../domain/enum/enum-scopes.enum';
 import { UserAuth } from '../../../../domain/model/auth/user-auth.model';
 import { UserDTO } from '../../../../domain/model/dto/users/user.dto';

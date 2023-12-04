@@ -5,7 +5,7 @@ import {
   Pet,
   PetDocument
 } from 'src/microservice/domain/schemas/entity/pets.schema';
-import { AbstractRepository } from './abstract.repository';
+import { AbstractRepository } from '../abstract.repository';
 
 @Injectable()
 export class PetsRepository extends AbstractRepository<Pet, PetDocument> {

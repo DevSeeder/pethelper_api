@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { AbstractGetService } from '../../abstract/abstract-get.service';
-import { ExpensesRepository } from 'src/microservice/adapter/repository/expenses.repository';
+import { ExpensesRepository } from 'src/microservice/adapter/repository/entity/expenses.repository';
 import {
   Expense,
   ExpenseDocument
