@@ -9,6 +9,7 @@ import {
 import { Search } from '@devseeder/nestjs-microservices-commons';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
+import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 
 @Injectable()
 export class UpdateUserService extends AbstractUpdateService<
@@ -19,10 +20,12 @@ export class UpdateUserService extends AbstractUpdateService<
   Search
 > {
   constructor(
-    protected readonly usersRepository: UsersRepository,
+    protected readonly repository: UsersRepository,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
-    protected readonly fieldSchemaData?: FieldSchema[]
+    protected readonly fieldSchemaData?: FieldSchema[],
+    @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
+    protected readonly entitySchemaData?: EntitySchema[]
   ) {
-    super(usersRepository, 'User', ['users'], fieldSchemaData);
+    super(repository, 'users', fieldSchemaData, entitySchemaData);
   }
 }

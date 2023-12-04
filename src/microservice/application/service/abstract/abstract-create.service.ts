@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotAcceptableException } from '@nestjs/common';
+import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { AbstractDBService } from './abstract-db.service';
 import { MongoDBException } from '@devseeder/microservices-exceptions';
 import { ObjectId } from 'mongoose';
@@ -10,7 +10,7 @@ import {
   CloneOneResponse
 } from '../../dto/response/clone.response';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
-import { DependecyTokens } from '../../app.constants';
+import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 
 @Injectable()
 export abstract class AbstractCreateService<
@@ -24,13 +24,12 @@ export abstract class AbstractCreateService<
       Collection,
       MongooseModel
     >,
-    protected readonly itemLabel: string = '',
-    protected readonly entityLabels: string[] = [],
+    protected readonly entity: string,
     protected readonly getFieldSchemaService?: GetFieldSchemaService,
-    @Inject(DependecyTokens.FIELD_SCHEMA_DB)
-    protected readonly fieldSchemaData?: FieldSchema[]
+    protected readonly fieldSchemaData?: FieldSchema[],
+    protected readonly entitySchemaData?: EntitySchema[]
   ) {
-    super(repository, entityLabels, itemLabel, fieldSchemaData);
+    super(repository, entity, fieldSchemaData, entitySchemaData);
   }
 
   async create(body: BodyDto): Promise<{ _id: ObjectId }> {
@@ -46,13 +45,15 @@ export abstract class AbstractCreateService<
     try {
       const insertedId = await this.repository.insertOne(
         bodyCreate as Collection,
-        this.itemLabel
+        this.entitySchema.itemLabel
       );
       return { _id: insertedId };
     } catch (err) {
       if (err instanceof MongoDBException) {
         if (err.errCode === 11000) {
-          throw new NotAcceptableException(`${this.itemLabel} already exists`);
+          throw new NotAcceptableException(
+            `${this.entitySchema.itemLabel} already exists`
+          );
         }
       }
     }
@@ -64,7 +65,7 @@ export abstract class AbstractCreateService<
     relationsToClone = undefined,
     cloneBody = {}
   ): Promise<CloneOneResponse> {
-    this.logger.log(`Cloning ${this.itemLabel} '${id}'...`);
+    this.logger.log(`Cloning ${this.entitySchema.itemLabel} '${id}'...`);
 
     const cloneTarget = await this.validateId(id);
 
@@ -93,7 +94,7 @@ export abstract class AbstractCreateService<
     relationsToClone = undefined,
     cloneBody = {}
   ): Promise<CloneManyResponse> {
-    this.logger.log(`Cloning ${this.itemLabel} '${ids}'...`);
+    this.logger.log(`Cloning ${this.entitySchema.itemLabel} '${ids}'...`);
     const arrClone: ObjectId[] = [];
 
     for await (const id of ids) {

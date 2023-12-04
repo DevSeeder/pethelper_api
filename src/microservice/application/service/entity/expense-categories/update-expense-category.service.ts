@@ -6,10 +6,10 @@ import {
 import { AbstractUpdateService } from '../../abstract/abstract-update.service';
 import { ExpenseCategoriesRepository } from 'src/microservice/adapter/repository/entity/expense-categories.repository';
 import { ConfigBodyDto } from '../../../dto/body/config-body.dto';
-import { GetFieldSchemaService } from '../../configuration/field-schemas/get-field-schemas.service';
 import { SearchConfigDto } from '../../../dto/search/search-config.dto';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
+import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 
 @Injectable()
 export class UpdateExpenseCategoryService extends AbstractUpdateService<
@@ -22,8 +22,10 @@ export class UpdateExpenseCategoryService extends AbstractUpdateService<
   constructor(
     protected readonly repository: ExpenseCategoriesRepository,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
-    protected readonly fieldSchemaData?: FieldSchema[]
+    protected readonly fieldSchemaData?: FieldSchema[],
+    @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
+    protected readonly entitySchemaData?: EntitySchema[]
   ) {
-    super(repository, 'Expense Category', ['config'], fieldSchemaData);
+    super(repository, 'expenseCategories', fieldSchemaData, entitySchemaData);
   }
 }

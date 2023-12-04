@@ -17,6 +17,7 @@ import {
 } from 'src/microservice/application/dto/response/groupby/group-expenses-by-pet-and-category.response';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
+import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 
 @Injectable()
 export class GetExpenseService extends AbstractGetService<
@@ -32,14 +33,16 @@ export class GetExpenseService extends AbstractGetService<
     protected readonly getExpenseCategoriesService: GetExpenseCategoriesService,
     protected readonly getFieldSchemaService: GetFieldSchemaService,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
-    protected readonly fieldSchemaData?: FieldSchema[]
+    protected readonly fieldSchemaData?: FieldSchema[],
+    @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
+    protected readonly entitySchemaData?: EntitySchema[]
   ) {
     super(
       repository,
-      'Expense',
-      ['expenses'],
+      'expenses',
       getFieldSchemaService,
-      fieldSchemaData
+      fieldSchemaData,
+      entitySchemaData
     );
   }
 

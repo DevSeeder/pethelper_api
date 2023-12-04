@@ -17,6 +17,7 @@ import { InvalidDataException } from '@devseeder/microservices-exceptions';
 import { GroupByResponse } from '../../dto/response/groupby/group-by.response';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { AbstractSearchService } from './abstract-search.service';
+import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 
 @Injectable()
 export abstract class AbstractGetService<
@@ -35,12 +36,12 @@ export abstract class AbstractGetService<
       Collection,
       MongooseModel
     >,
-    protected readonly itemLabel: string = '',
-    protected readonly entityLabels: string[] = [],
+    protected readonly entity: string,
     protected readonly getFieldSchemaService?: GetFieldSchemaService,
-    protected readonly fieldSchemaData?: FieldSchema[]
+    protected readonly fieldSchemaData?: FieldSchema[],
+    protected readonly entitySchemaData?: EntitySchema[]
   ) {
-    super(repository, entityLabels, itemLabel, fieldSchemaData);
+    super(repository, entity, fieldSchemaData, entitySchemaData);
   }
 
   async search(
@@ -56,7 +57,9 @@ export abstract class AbstractGetService<
     );
 
     this.logger.log(
-      `Searching '${this.itemLabel}' ${JSON.stringify(searchWhere)}...`
+      `Searching '${this.entitySchema.itemLabel}' ${JSON.stringify(
+        searchWhere
+      )}...`
     );
     const responseItems = await this.repository.find(
       searchWhere,
@@ -203,7 +206,9 @@ export abstract class AbstractGetService<
   async count(searchParams: SearchParams): Promise<CountResponse> {
     const searchWhere = await this.buildSearchParams(searchParams);
     this.logger.log(
-      `Counting '${this.itemLabel}' for: ${JSON.stringify(searchWhere)}`
+      `Counting '${this.entitySchema.itemLabel}' for: ${JSON.stringify(
+        searchWhere
+      )}`
     );
     return {
       totalRecords: await this.repository.count(searchWhere)

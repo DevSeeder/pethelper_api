@@ -2,40 +2,32 @@ import {
   InvalidDataException,
   NotFoundException
 } from '@devseeder/microservices-exceptions';
-import {
-  AbstractService,
-  MongooseRepository
-} from '@devseeder/nestjs-microservices-commons';
+import { MongooseRepository } from '@devseeder/nestjs-microservices-commons';
 import { Relation } from 'src/microservice/domain/interface/relation.interface';
 import { SearchEgineOperators } from 'src/microservice/domain/interface/search-engine.interface';
 import { AbstractDocument } from 'src/microservice/domain/schemas/abstract.schema';
 import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.interface';
-import { GLOBAL_ENTITY, VALIDATE_ID_ENUMS } from '../../app.constants';
+import { VALIDATE_ID_ENUMS } from '../../app.constants';
 import { DynamicValueService } from '../dynamic/get-dynamic-value.service';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
+import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
+import { AbstractEntityLoader } from '../../loader/abstract-entity.loader';
 
 export class AbstractDBService<
   Collection,
   MongooseModel,
   ResponseModel
-> extends AbstractService {
-  protected fieldSchemaDb: FieldSchema[] = [];
+> extends AbstractEntityLoader {
   constructor(
     protected readonly repository: MongooseRepository<
       Collection,
       MongooseModel
     >,
-    protected readonly entityLabels: string[] = [],
-    protected readonly itemLabel: string = '',
-    protected readonly fieldSchemaData?: FieldSchema[]
+    protected readonly entity: string,
+    protected readonly fieldSchemaData?: FieldSchema[],
+    protected readonly entitySchemaData?: EntitySchema[]
   ) {
-    super();
-    if (!this.fieldSchemaData || !this.fieldSchemaData.length) return;
-    this.fieldSchemaDb = this.fieldSchemaData.filter(
-      (schema) =>
-        this.entityLabels.includes(schema.entity) ||
-        schema.entity === GLOBAL_ENTITY
-    );
+    super(entity, fieldSchemaData, entitySchemaData);
   }
 
   protected async convertRelation(
@@ -160,9 +152,9 @@ export class AbstractDBService<
     try {
       item = await this.repository.findById(id);
     } catch (err) {
-      throw new NotFoundException(this.itemLabel);
+      throw new NotFoundException(this.entitySchema.itemLabel);
     }
-    if (!item) throw new NotFoundException(this.itemLabel);
+    if (!item) throw new NotFoundException(this.entitySchema.itemLabel);
     return item;
   }
 

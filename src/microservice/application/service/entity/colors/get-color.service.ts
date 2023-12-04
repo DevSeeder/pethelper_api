@@ -8,6 +8,7 @@ import { ColorsRepository } from 'src/microservice/adapter/repository/entity/col
 import { GetFieldSchemaService } from '../../configuration/field-schemas/get-field-schemas.service';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
+import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 
 @Injectable()
 export class GetColorService extends AbstractGetService<
@@ -20,14 +21,16 @@ export class GetColorService extends AbstractGetService<
     protected readonly repository: ColorsRepository,
     protected readonly getFieldSchemaService: GetFieldSchemaService,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
-    protected readonly fieldSchemaData?: FieldSchema[]
+    protected readonly fieldSchemaData?: FieldSchema[],
+    @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
+    protected readonly entitySchemaData?: EntitySchema[]
   ) {
     super(
       repository,
-      'Color',
-      ['colors', 'config'],
+      'colors',
       getFieldSchemaService,
-      fieldSchemaData
+      fieldSchemaData,
+      entitySchemaData
     );
   }
 }

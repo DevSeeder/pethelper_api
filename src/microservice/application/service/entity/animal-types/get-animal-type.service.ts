@@ -15,6 +15,6 @@ export class GetAnimalTypeService extends AbstractGetService<
   SearchConfigDto
 > {
   constructor(protected readonly repository: AnimalTypesRepository) {
-    super(repository);
+    super(repository, 'animalTypes');
   }
 }

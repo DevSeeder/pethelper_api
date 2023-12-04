@@ -9,6 +9,7 @@ import { Search } from '../../../dto/search/search.dto';
 import { GetFieldSchemaService } from '../../configuration/field-schemas/get-field-schemas.service';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
+import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 
 @Injectable()
 export class GetUserService extends AbstractGetService<
@@ -18,17 +19,19 @@ export class GetUserService extends AbstractGetService<
   Search
 > {
   constructor(
-    protected readonly usersRepository: UsersRepository,
+    protected readonly repository: UsersRepository,
     protected readonly getFieldSchemaService?: GetFieldSchemaService,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
-    protected readonly fieldSchemaData?: FieldSchema[]
+    protected readonly fieldSchemaData?: FieldSchema[],
+    @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
+    protected readonly entitySchemaData?: EntitySchema[]
   ) {
     super(
-      usersRepository,
-      'User',
-      ['users'],
+      repository,
+      'users',
       getFieldSchemaService,
-      fieldSchemaData
+      fieldSchemaData,
+      entitySchemaData
     );
   }
 }

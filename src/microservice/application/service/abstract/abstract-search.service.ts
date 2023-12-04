@@ -8,6 +8,7 @@ import { Search } from '../../dto/search/search.dto';
 import { FieldSchemaBuilder } from '../../helper/field-schema.builder';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { AbstractDBService } from './abstract-db.service';
+import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 
 export class AbstractSearchService<
   Collection,
@@ -20,11 +21,11 @@ export class AbstractSearchService<
       Collection,
       MongooseModel
     >,
-    protected readonly entityLabels: string[] = [],
-    protected readonly itemLabel: string = '',
-    protected readonly fieldSchemaData?: FieldSchema[]
+    protected readonly entity: string,
+    protected readonly fieldSchemaData?: FieldSchema[],
+    protected readonly entitySchemaData?: EntitySchema[]
   ) {
-    super(repository, entityLabels, itemLabel, fieldSchemaData);
+    super(repository, entity, fieldSchemaData, entitySchemaData);
   }
 
   protected async buildSearchEgines(

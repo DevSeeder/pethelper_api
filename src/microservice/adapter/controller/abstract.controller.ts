@@ -4,8 +4,6 @@ import {
   Body,
   ForbiddenException,
   Get,
-  Inject,
-  Logger,
   Param,
   Patch,
   Post,
@@ -36,8 +34,8 @@ import {
 } from 'src/microservice/application/dto/response/paginated.response';
 import { GroupByResponse } from 'src/microservice/application/dto/response/groupby/group-by.response';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
-import { GLOBAL_ENTITY } from 'src/microservice/application/app.constants';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
+import { AbstractEntityLoader } from './abstract-entity.loader';
 
 export abstract class AbstractController<
   Collection,
@@ -45,14 +43,8 @@ export abstract class AbstractController<
   GetResponse,
   SearchParams extends Search,
   BodyDto extends AbstractBodyDto
-> {
-  protected readonly logger: Logger = new Logger(AbstractController.name);
+> extends AbstractEntityLoader {
   protected inputSchema: InputSchema;
-  protected fieldSchemaDb: FieldSchema[] = [];
-  protected entitySchema: EntitySchema;
-  protected itemLabel: string;
-  protected entityLabels: string[];
-  protected searchKey = '';
 
   constructor(
     protected readonly entity: string,
@@ -78,22 +70,7 @@ export abstract class AbstractController<
     protected readonly fieldSchemaData?: FieldSchema[],
     protected readonly entitySchemaData?: EntitySchema[]
   ) {
-    this.entitySchema = entitySchemaData.filter(
-      (ent) => ent.entity === entity
-    )[0];
-
-    this.entityLabels = [
-      this.entitySchema.entity,
-      ...(this.entitySchema.extendedEntities || [])
-    ];
-
-    if (!this.fieldSchemaData || !this.fieldSchemaData.length) return;
-
-    this.fieldSchemaDb = this.fieldSchemaData.filter(
-      (schema) =>
-        this.entityLabels.includes(schema.entity) ||
-        schema.entity === GLOBAL_ENTITY
-    );
+    super(entity, fieldSchemaData, entitySchemaData);
 
     this.inputSchema = FieldSchemaBuilder.buildSchemas(this.fieldSchemaDb);
   }

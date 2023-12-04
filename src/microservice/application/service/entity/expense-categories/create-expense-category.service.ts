@@ -9,6 +9,7 @@ import { AbstractCreateService } from '../../abstract/abstract-create.service';
 import { GetFieldSchemaService } from '../../configuration/field-schemas/get-field-schemas.service';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
+import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 
 @Injectable()
 export class CreateExpenseCategoryService extends AbstractCreateService<
@@ -21,14 +22,16 @@ export class CreateExpenseCategoryService extends AbstractCreateService<
     protected readonly repository: ExpenseCategoriesRepository,
     protected readonly getFieldSchemaService: GetFieldSchemaService,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
-    protected readonly fieldSchemaData?: FieldSchema[]
+    protected readonly fieldSchemaData?: FieldSchema[],
+    @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
+    protected readonly entitySchemaData?: EntitySchema[]
   ) {
     super(
       repository,
-      'Expense Category',
-      ['expenseCategories', 'config'],
+      'expenseCategories',
       getFieldSchemaService,
-      fieldSchemaData
+      fieldSchemaData,
+      entitySchemaData
     );
   }
 }

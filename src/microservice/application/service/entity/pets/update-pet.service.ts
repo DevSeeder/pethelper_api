@@ -13,6 +13,7 @@ import { PetBodyDto } from '../../../dto/body/pet-body.dto';
 import { SearchPetDto } from '../../../dto/search/search-pet.dto';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
+import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 
 @Injectable()
 export class UpdatePetService extends AbstractUpdateService<
@@ -28,8 +29,10 @@ export class UpdatePetService extends AbstractUpdateService<
     protected readonly getAnimalsService: GetAnimalService,
     protected readonly getRacesService: GetRaceService,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
-    protected readonly fieldSchemaData?: FieldSchema[]
+    protected readonly fieldSchemaData?: FieldSchema[],
+    @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
+    protected readonly entitySchemaData?: EntitySchema[]
   ) {
-    super(repository, 'Pet', ['pets'], fieldSchemaData);
+    super(repository, 'pets', fieldSchemaData, entitySchemaData);
   }
 }
