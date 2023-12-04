@@ -3,7 +3,7 @@ import { ExpensesRepository } from 'src/microservice/adapter/repository/expenses
 import {
   Expense,
   ExpenseDocument
-} from '../../../../domain/schemas/expenses.schema';
+} from '../../../../domain/schemas/entity/expenses.schema';
 import { ExpenseResponse } from '../../../dto/response/expense.response';
 import { ExpenseBodyDto } from '../../../dto/body/expense-body.dto';
 import { GetPetService } from '../pets/get-pet.service';
@@ -11,7 +11,7 @@ import { GetExpenseCategoriesService } from '../expense-categories/get-expense-c
 import { GetUserService } from '../users/get-user.service';
 import { AbstractCreateService } from '../../abstract/abstract-create.service';
 import { GetFieldSchemaService } from '../../configuration/field-schemas/get-field-schemas.service';
-import { FieldSchema } from 'src/microservice/domain/schemas/field-schemas.schema';
+import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 
 @Injectable()

@@ -3,12 +3,12 @@ import { AbstractGetService } from '../../abstract/abstract-get.service';
 import {
   AnimalGroup,
   AnimalGroupDocument
-} from '../../../../domain/schemas/animal-group.schema';
+} from '../../../../domain/schemas/entity/animal-group.schema';
 import { AnimalGroupsRepository } from 'src/microservice/adapter/repository/animal-groups.repository';
 import { SearchConfigDto } from '../../../dto/search/search-config.dto';
 import { GetFieldSchemaService } from '../../configuration/field-schemas/get-field-schemas.service';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
-import { FieldSchema } from 'src/microservice/domain/schemas/field-schemas.schema';
+import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 
 @Injectable()
 export class GetAnimalGroupService extends AbstractGetService<

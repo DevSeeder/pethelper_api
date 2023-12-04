@@ -5,7 +5,7 @@ import { AbstractConfig } from './config.schema';
 
 export type AnimalTypeDocument = AnimalType & Document;
 
-@Schema({ timestamps: true, collection: 'animalType' })
+@Schema({ timestamps: true, collection: 'animalTypes' })
 export class AnimalType extends AbstractConfig {}
 
 const schema = SchemaFactory.createForClass(AnimalType);

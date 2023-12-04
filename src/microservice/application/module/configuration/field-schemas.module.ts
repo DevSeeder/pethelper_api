@@ -4,7 +4,7 @@ import { FieldSchemasRepository } from 'src/microservice/adapter/repository/fiel
 import {
   FieldSchema,
   FieldSchemasSchema
-} from 'src/microservice/domain/schemas/field-schemas.schema';
+} from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { GetFieldSchemaService } from 'src/microservice/application/service/configuration/field-schemas/get-field-schemas.service';
 import { FieldSchemaDataService } from '../../service/configuration/field-schemas/field-schema-data.service';
 import { DependecyTokens } from '../../app.constants';

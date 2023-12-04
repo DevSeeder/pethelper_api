@@ -5,13 +5,13 @@ import { AnimalResponse } from 'src/microservice/application/dto/response/animal
 import {
   Animal,
   AnimalDocument
-} from 'src/microservice/domain/schemas/animals.schema';
+} from 'src/microservice/domain/schemas/entity/animals.schema';
 import { UpdateAnimalService } from 'src/microservice/application/service/entity/animals/update-animal.service';
 import { AnimalBodyDto } from 'src/microservice/application/dto/body/Animal-body.dto';
 import { CreateAnimalService } from 'src/microservice/application/service/entity/animals/create-animal.service';
 import { SearchAnimalDto } from 'src/microservice/application/dto/search/search-animal.dto';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
-import { FieldSchema } from 'src/microservice/domain/schemas/field-schemas.schema';
+import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 
 @Controller('animals')
 export class AnimalsController extends AbstractController<

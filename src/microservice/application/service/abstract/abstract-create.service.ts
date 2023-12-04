@@ -1,6 +1,5 @@
 import { Inject, Injectable, NotAcceptableException } from '@nestjs/common';
 import { AbstractDBService } from './abstract-db.service';
-import { Search } from '../../dto/search/search.dto';
 import { MongoDBException } from '@devseeder/microservices-exceptions';
 import { ObjectId } from 'mongoose';
 import { GetFieldSchemaService } from '../configuration/field-schemas/get-field-schemas.service';
@@ -10,7 +9,7 @@ import {
   CloneManyResponse,
   CloneOneResponse
 } from '../../dto/response/clone.response';
-import { FieldSchema } from 'src/microservice/domain/schemas/field-schemas.schema';
+import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { DependecyTokens } from '../../app.constants';
 
 @Injectable()
@@ -19,7 +18,7 @@ export abstract class AbstractCreateService<
   MongooseModel,
   ResponseModel,
   BodyDto
-> extends AbstractDBService<Collection, MongooseModel, ResponseModel, Search> {
+> extends AbstractDBService<Collection, MongooseModel, ResponseModel> {
   constructor(
     protected readonly repository: AbstractRepository<
       Collection,

@@ -4,7 +4,7 @@ import { SearchConfigDto } from '../../../dto/search/search-config.dto';
 import {
   AnimalType,
   AnimalTypeDocument
-} from 'src/microservice/domain/schemas/animal-type.schema';
+} from 'src/microservice/domain/schemas/entity/animal-type.schema';
 import { AnimalTypesRepository } from 'src/microservice/adapter/repository/animal-types.repository';
 
 @Injectable()

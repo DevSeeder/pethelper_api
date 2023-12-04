@@ -4,12 +4,12 @@ import { AnimalsRepository } from 'src/microservice/adapter/repository/animals.r
 import {
   Animal,
   AnimalDocument
-} from '../../../../domain/schemas/animals.schema';
+} from '../../../../domain/schemas/entity/animals.schema';
 import { AnimalResponse } from '../../../dto/response/animal.response';
 import { SearchAnimalDto } from '../../../dto/search/search-animal.dto';
 import { GetAnimalGroupService } from '../animal-groups/get-animal-group.service';
 import { GetFieldSchemaService } from '../../configuration/field-schemas/get-field-schemas.service';
-import { FieldSchema } from 'src/microservice/domain/schemas/field-schemas.schema';
+import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 
 @Injectable()

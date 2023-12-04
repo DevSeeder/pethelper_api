@@ -4,7 +4,7 @@ import { RacesRepository } from 'src/microservice/adapter/repository/races.repos
 import {
   Race,
   RacesSchema
-} from 'src/microservice/domain/schemas/races.schema';
+} from 'src/microservice/domain/schemas/entity/races.schema';
 import { GetRaceService } from 'src/microservice/application/service/entity/races/get-race.service';
 import { FieldSchemasModule } from '../configuration/field-schemas.module';
 

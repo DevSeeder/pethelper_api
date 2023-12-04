@@ -5,9 +5,9 @@ import { AbstractUpdateService } from '../../abstract/abstract-update.service';
 import {
   User,
   UserDocument
-} from 'src/microservice/domain/schemas/users.schema';
+} from 'src/microservice/domain/schemas/entity/users.schema';
 import { Search } from '@devseeder/nestjs-microservices-commons';
-import { FieldSchema } from 'src/microservice/domain/schemas/field-schemas.schema';
+import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 
 @Injectable()

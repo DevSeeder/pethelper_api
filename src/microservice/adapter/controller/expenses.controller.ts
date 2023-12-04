@@ -5,7 +5,7 @@ import { ExpenseResponse } from 'src/microservice/application/dto/response/expen
 import {
   Expense,
   ExpenseDocument
-} from 'src/microservice/domain/schemas/expenses.schema';
+} from 'src/microservice/domain/schemas/entity/expenses.schema';
 import { UpdateExpenseService } from 'src/microservice/application/service/entity/expenses/update-expense.service';
 import { ExpenseBodyDto } from 'src/microservice/application/dto/body/expense-body.dto';
 import { CreateExpenseService } from 'src/microservice/application/service/entity/expenses/create-expense.service';
@@ -14,7 +14,7 @@ import { Get } from '@nestjs/common';
 import { GroupExpensesByPetAndCategoryResponse } from 'src/microservice/application/dto/response/groupby/group-expenses-by-pet-and-category.response';
 import { SchemaValidator } from 'src/microservice/application/helper/schema-validator.helper';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
-import { FieldSchema } from 'src/microservice/domain/schemas/field-schemas.schema';
+import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 
 @Controller('expenses')
 export class ExpensesController extends AbstractController<

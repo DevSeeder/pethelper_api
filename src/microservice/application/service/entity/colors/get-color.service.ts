@@ -1,9 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { AbstractGetService } from '../../abstract/abstract-get.service';
-import { Color, ColorDocument } from '../../../../domain/schemas/colors.schema';
+import {
+  Color,
+  ColorDocument
+} from '../../../../domain/schemas/entity/colors.schema';
 import { ColorsRepository } from 'src/microservice/adapter/repository/colors.repository';
 import { GetFieldSchemaService } from '../../configuration/field-schemas/get-field-schemas.service';
-import { FieldSchema } from 'src/microservice/domain/schemas/field-schemas.schema';
+import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 
 @Injectable()

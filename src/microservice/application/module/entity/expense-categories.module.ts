@@ -4,7 +4,7 @@ import { ExpenseCategoriesRepository } from 'src/microservice/adapter/repository
 import {
   ExpenseCategory,
   ExpenseCategoriesSchema
-} from 'src/microservice/domain/schemas/expense-categories.schema';
+} from 'src/microservice/domain/schemas/entity/expense-categories.schema';
 import { GetExpenseCategoriesService } from 'src/microservice/application/service/entity/expense-categories/get-expense-category.service';
 import { UpdateExpenseCategoryService } from '../../service/entity/expense-categories/update-expense-category.service';
 import { CreateExpenseCategoryService } from '../../service/entity/expense-categories/create-expense-category.service';

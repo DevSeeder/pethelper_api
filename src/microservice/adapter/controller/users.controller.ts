@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { MyJwtAuthGuard } from '../../../core/auth/jwt.auth';
 import { EnumScopes } from '../../domain/enum/enum-scopes.enum';
-import { User, UserDocument } from '../../domain/schemas/users.schema';
+import { User, UserDocument } from '../../domain/schemas/entity/users.schema';
 // import { UpdateUserService } from '../../application/service/entity/users/update-user-auth.service';
 import { UpdateUserDTO, UserDTO } from '../../domain/model/dto/users/user.dto';
 import { CreateUserService } from '../../application/service/entity/users/create-user.service';
@@ -21,7 +21,7 @@ import { AbstractBodyDto } from 'src/microservice/application/dto/body/abtract-b
 import { GetUserService } from 'src/microservice/application/service/entity/users/get-user.service';
 import { UpdateUserService } from 'src/microservice/application/service/entity/users/update-user.service';
 import { GetFieldSchemaService } from 'src/microservice/application/service/configuration/field-schemas/get-field-schemas.service';
-import { FieldSchema } from 'src/microservice/domain/schemas/field-schemas.schema';
+import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 
 @Controller('users')

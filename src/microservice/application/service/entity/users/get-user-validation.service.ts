@@ -1,7 +1,7 @@
 import { NotFoundException } from '@devseeder/microservices-exceptions';
 import { Injectable } from '@nestjs/common';
 import { UsersRepository } from '../../../../adapter/repository/users.repository';
-import { User } from '../../../../domain/schemas/users.schema';
+import { User } from '../../../../domain/schemas/entity/users.schema';
 import { UsersService } from './user.service';
 
 @Injectable()

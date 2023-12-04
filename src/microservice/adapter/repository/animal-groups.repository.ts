@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import {
   AnimalGroup,
   AnimalGroupDocument
-} from 'src/microservice/domain/schemas/animal-group.schema';
+} from 'src/microservice/domain/schemas/entity/animal-group.schema';
 import { AbstractRepository } from './abstract.repository';
 
 @Injectable()

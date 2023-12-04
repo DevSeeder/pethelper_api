@@ -2,7 +2,10 @@ import { Module, forwardRef } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PetsController } from 'src/microservice/adapter/controller/pets.controller';
 import { PetsRepository } from 'src/microservice/adapter/repository/pets.repository';
-import { Pet, PetsSchema } from 'src/microservice/domain/schemas/pets.schema';
+import {
+  Pet,
+  PetsSchema
+} from 'src/microservice/domain/schemas/entity/pets.schema';
 import { GetPetService } from 'src/microservice/application/service/entity/pets/get-pet.service';
 import { ColorsModule } from './colors.module';
 import { AnimalsModule } from './animals.module';

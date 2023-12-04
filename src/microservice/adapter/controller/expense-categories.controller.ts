@@ -4,13 +4,13 @@ import { GetExpenseCategoriesService } from 'src/microservice/application/servic
 import {
   ExpenseCategory,
   ExpenseCategoryDocument
-} from 'src/microservice/domain/schemas/expense-categories.schema';
+} from 'src/microservice/domain/schemas/entity/expense-categories.schema';
 import { ConfigBodyDto } from 'src/microservice/application/dto/body/config-body.dto';
 import { SearchConfigDto } from 'src/microservice/application/dto/search/search-config.dto';
 import { UpdateExpenseCategoryService } from 'src/microservice/application/service/entity/expense-categories/update-expense-category.service';
 import { CreateExpenseCategoryService } from 'src/microservice/application/service/entity/expense-categories/create-expense-category.service';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
-import { FieldSchema } from 'src/microservice/domain/schemas/field-schemas.schema';
+import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 
 @Controller('expensecategories')
 export class ExpenseCategoriesController extends AbstractController<

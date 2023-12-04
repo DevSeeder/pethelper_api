@@ -3,7 +3,7 @@ import { FieldSchemasRepository } from 'src/microservice/adapter/repository/fiel
 import { GLOBAL_ENTITY, PROJECT_KEY } from '../../../app.constants';
 import { AbstractService } from '@devseeder/nestjs-microservices-commons';
 import { FormFieldResponse } from 'src/microservice/domain/interface/field-schema.interface';
-import { FieldSchema } from 'src/microservice/domain/schemas/field-schemas.schema';
+import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 
 @Injectable()
 export class GetFieldSchemaService extends AbstractService {

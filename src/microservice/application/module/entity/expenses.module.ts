@@ -5,7 +5,7 @@ import { ExpensesRepository } from 'src/microservice/adapter/repository/expenses
 import {
   Expense,
   ExpensesSchema
-} from 'src/microservice/domain/schemas/expenses.schema';
+} from 'src/microservice/domain/schemas/entity/expenses.schema';
 import { GetExpenseService } from '../../service/entity/expenses/get-expense.service';
 import { UsersModule } from './users.module';
 import { PetsModule } from './pets.module';

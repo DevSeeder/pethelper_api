@@ -6,11 +6,11 @@ import {
   Injectable,
   NotFoundException
 } from '@nestjs/common';
-import { AbstractDBService } from './abstract-db.service';
 import { AbstractBodyDto } from '../../dto/body/abtract-body.dto';
 import { AbstractSchema } from 'src/microservice/domain/schemas/abstract.schema';
-import { FieldSchema } from 'src/microservice/domain/schemas/field-schemas.schema';
+import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { DependecyTokens } from '../../app.constants';
+import { AbstractSearchService } from './abstract-search.service';
 
 @Injectable()
 export abstract class AbstractUpdateService<
@@ -19,7 +19,7 @@ export abstract class AbstractUpdateService<
   ResponseModel,
   BodyDto extends AbstractBodyDto,
   SearchParams
-> extends AbstractDBService<
+> extends AbstractSearchService<
   Collection,
   MongooseModel,
   ResponseModel,

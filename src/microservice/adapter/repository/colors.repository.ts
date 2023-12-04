@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import {
   Color,
   ColorDocument
-} from 'src/microservice/domain/schemas/colors.schema';
+} from 'src/microservice/domain/schemas/entity/colors.schema';
 import { AbstractRepository } from './abstract.repository';
 
 @Injectable()

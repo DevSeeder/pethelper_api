@@ -5,7 +5,7 @@ import { UsersRepository } from '../../../../adapter/repository/users.repository
 import { EnumScopes } from '../../../../domain/enum/enum-scopes.enum';
 import { UserAuth } from '../../../../domain/model/auth/user-auth.model';
 import { UserDTO } from '../../../../domain/model/dto/users/user.dto';
-import { User } from '../../../../domain/schemas/users.schema';
+import { User } from '../../../../domain/schemas/entity/users.schema';
 import { UsersService } from './user.service';
 
 @Injectable()

@@ -1,11 +1,5 @@
-import {
-  Injectable,
-  forwardRef,
-  Inject,
-  BadRequestException
-} from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { Search } from 'src/microservice/application/dto/search/search.dto';
-import { AbstractDBService } from './abstract-db.service';
 import { GetFieldSchemaService } from '../configuration/field-schemas/get-field-schemas.service';
 import {
   FieldSchemaPage,
@@ -21,8 +15,8 @@ import {
 } from '../../dto/response/paginated.response';
 import { InvalidDataException } from '@devseeder/microservices-exceptions';
 import { GroupByResponse } from '../../dto/response/groupby/group-by.response';
-import { FieldSchema } from 'src/microservice/domain/schemas/field-schemas.schema';
-import { DependecyTokens } from '../../app.constants';
+import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
+import { AbstractSearchService } from './abstract-search.service';
 
 @Injectable()
 export abstract class AbstractGetService<
@@ -30,7 +24,7 @@ export abstract class AbstractGetService<
   MongooseModel,
   ResponseModel,
   SearchParams extends Search
-> extends AbstractDBService<
+> extends AbstractSearchService<
   Collection,
   MongooseModel,
   ResponseModel,

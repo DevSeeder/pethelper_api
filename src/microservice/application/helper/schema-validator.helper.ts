@@ -4,7 +4,7 @@ import { StringHelper } from './string.helper';
 import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.interface';
 import { DynamicValueService } from '../service/dynamic/get-dynamic-value.service';
 import { ComparatorHelper } from './comparator.helper';
-import { FieldSchema } from 'src/microservice/domain/schemas/field-schemas.schema';
+import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 
 export class SchemaValidator {
   static validateSchema(

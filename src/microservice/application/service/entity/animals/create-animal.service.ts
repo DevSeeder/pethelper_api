@@ -3,14 +3,14 @@ import { AnimalsRepository } from 'src/microservice/adapter/repository/animals.r
 import {
   Animal,
   AnimalDocument
-} from '../../../../domain/schemas/animals.schema';
+} from '../../../../domain/schemas/entity/animals.schema';
 import { AnimalResponse } from '../../../dto/response/animal.response';
 import { AnimalBodyDto } from '../../../dto/body/animal-body.dto';
 import { GetAnimalGroupService } from '../animal-groups/get-animal-group.service';
 import { AbstractCreateService } from '../../abstract/abstract-create.service';
 import { GetFieldSchemaService } from '../../configuration/field-schemas/get-field-schemas.service';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
-import { FieldSchema } from 'src/microservice/domain/schemas/field-schemas.schema';
+import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 
 @Injectable()
 export class CreateAnimalService extends AbstractCreateService<

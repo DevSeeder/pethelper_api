@@ -1,7 +1,10 @@
 import { Injectable, forwardRef, Inject } from '@nestjs/common';
 import { AbstractGetService } from '../../abstract/abstract-get.service';
 import { PetsRepository } from 'src/microservice/adapter/repository/pets.repository';
-import { Pet, PetDocument } from '../../../../domain/schemas/pets.schema';
+import {
+  Pet,
+  PetDocument
+} from '../../../../domain/schemas/entity/pets.schema';
 import { GetColorService } from '../colors/get-color.service';
 import { GetAnimalService } from '../animals/get-animal.service';
 import { GetRaceService } from '../races/get-race.service';
@@ -9,7 +12,7 @@ import { PetResponse } from 'src/microservice/application/dto/response/pet.respo
 import { SearchPetDto } from 'src/microservice/application/dto/search/search-pet.dto';
 import { GetUserService } from '../users/get-user.service';
 import { GetFieldSchemaService } from '../../configuration/field-schemas/get-field-schemas.service';
-import { FieldSchema } from 'src/microservice/domain/schemas/field-schemas.schema';
+import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 
 @Injectable()

@@ -4,7 +4,7 @@ import { ExpensesRepository } from 'src/microservice/adapter/repository/expenses
 import {
   Expense,
   ExpenseDocument
-} from '../../../../domain/schemas/expenses.schema';
+} from '../../../../domain/schemas/entity/expenses.schema';
 import { ExpenseResponse } from 'src/microservice/application/dto/response/expense.response';
 import { SearchExpenseDto } from 'src/microservice/application/dto/search/search-expense.dto';
 import { GetUserService } from '../users/get-user.service';
@@ -15,7 +15,7 @@ import {
   GroupExpensesByPetAndCategoryResponse,
   GroupedCostByCategory
 } from 'src/microservice/application/dto/response/groupby/group-expenses-by-pet-and-category.response';
-import { FieldSchema } from 'src/microservice/domain/schemas/field-schemas.schema';
+import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 
 @Injectable()

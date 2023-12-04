@@ -4,7 +4,7 @@ import { ColorsRepository } from 'src/microservice/adapter/repository/colors.rep
 import {
   Color,
   ColorsSchema
-} from 'src/microservice/domain/schemas/colors.schema';
+} from 'src/microservice/domain/schemas/entity/colors.schema';
 import { GetColorService } from 'src/microservice/application/service/entity/colors/get-color.service';
 import { FieldSchemasModule } from '../configuration/field-schemas.module';
 

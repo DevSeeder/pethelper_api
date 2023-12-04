@@ -4,7 +4,7 @@ import { AnimalTypesRepository } from 'src/microservice/adapter/repository/anima
 import {
   AnimalType,
   AnimalTypesSchema
-} from 'src/microservice/domain/schemas/animal-type.schema';
+} from 'src/microservice/domain/schemas/entity/animal-type.schema';
 import { GetAnimalTypeService } from '../../service/entity/animal-types/get-animal-type.service';
 
 @Module({

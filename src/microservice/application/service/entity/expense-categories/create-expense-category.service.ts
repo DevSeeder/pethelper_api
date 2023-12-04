@@ -2,13 +2,13 @@ import { Inject, Injectable } from '@nestjs/common';
 import {
   ExpenseCategory,
   ExpenseCategoryDocument
-} from '../../../../domain/schemas/expense-categories.schema';
+} from '../../../../domain/schemas/entity/expense-categories.schema';
 import { ExpenseCategoriesRepository } from 'src/microservice/adapter/repository/expense-categories.repository';
 import { ConfigBodyDto } from '../../../dto/body/config-body.dto';
 import { AbstractCreateService } from '../../abstract/abstract-create.service';
 import { GetFieldSchemaService } from '../../configuration/field-schemas/get-field-schemas.service';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
-import { FieldSchema } from 'src/microservice/domain/schemas/field-schemas.schema';
+import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 
 @Injectable()
 export class CreateExpenseCategoryService extends AbstractCreateService<

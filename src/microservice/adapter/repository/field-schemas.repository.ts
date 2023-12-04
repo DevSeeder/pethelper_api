@@ -5,7 +5,7 @@ import { Model } from 'mongoose';
 import {
   FieldSchema,
   FieldSchemaDocument
-} from 'src/microservice/domain/schemas/field-schemas.schema';
+} from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 
 @Injectable()
 export class FieldSchemasRepository extends MongooseRepository<

@@ -4,10 +4,10 @@ import { ExpenseCategoriesRepository } from 'src/microservice/adapter/repository
 import {
   ExpenseCategory,
   ExpenseCategoryDocument
-} from '../../../../domain/schemas/expense-categories.schema';
+} from '../../../../domain/schemas/entity/expense-categories.schema';
 import { SearchConfigDto } from '../../../dto/search/search-config.dto';
 import { GetFieldSchemaService } from '../../configuration/field-schemas/get-field-schemas.service';
-import { FieldSchema } from 'src/microservice/domain/schemas/field-schemas.schema';
+import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 
 @Injectable()

@@ -4,7 +4,7 @@ import { AnimalGroupsRepository } from 'src/microservice/adapter/repository/anim
 import {
   AnimalGroup,
   AnimalGroupsSchema
-} from 'src/microservice/domain/schemas/animal-group.schema';
+} from 'src/microservice/domain/schemas/entity/animal-group.schema';
 import { GetAnimalGroupService } from 'src/microservice/application/service/entity/animal-groups/get-animal-group.service';
 import { FieldSchemasModule } from '../configuration/field-schemas.module';
 

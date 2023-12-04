@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import {
   ExpenseCategory,
   ExpenseCategoryDocument
-} from 'src/microservice/domain/schemas/expense-categories.schema';
+} from 'src/microservice/domain/schemas/entity/expense-categories.schema';
 import { AbstractRepository } from './abstract.repository';
 
 @Injectable()

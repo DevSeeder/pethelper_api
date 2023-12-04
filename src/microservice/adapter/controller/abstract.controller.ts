@@ -35,7 +35,7 @@ import {
   PaginatedResponse
 } from 'src/microservice/application/dto/response/paginated.response';
 import { GroupByResponse } from 'src/microservice/application/dto/response/groupby/group-by.response';
-import { FieldSchema } from 'src/microservice/domain/schemas/field-schemas.schema';
+import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import {
   DependecyTokens,
   GLOBAL_ENTITY
@@ -56,7 +56,7 @@ export abstract class AbstractController<
     protected readonly itemLabel: string,
     protected readonly entityLabels: string[],
     protected readonly searchKey: string = '',
-    protected readonly forbbidenMethods: string[] = [],
+    protected readonly forbiddenMethods: string[] = [],
     protected readonly getService?: AbstractGetService<
       Collection,
       MongooseModel,
@@ -241,7 +241,7 @@ export abstract class AbstractController<
   }
 
   private isMethodAllowed(method: string) {
-    const notAllowed = this.forbbidenMethods.filter((m) => m === method);
+    const notAllowed = this.forbiddenMethods.filter((m) => m === method);
     if (notAllowed.length) throw new ForbiddenException('Method not allowed');
   }
 }
