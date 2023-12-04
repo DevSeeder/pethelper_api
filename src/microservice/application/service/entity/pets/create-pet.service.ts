@@ -11,7 +11,6 @@ import { PetResponse } from '../../../dto/response/pet.response';
 import { AbstractCreateService } from '../../abstract/abstract-create.service';
 import { PetBodyDto } from '../../../dto/body/pet-body.dto';
 import { GetUserService } from '../users/get-user.service';
-import { GetFieldSchemaService } from '../../configuration/field-schemas/get-field-schemas.service';
 import { CreateExpenseService } from '../expenses/create-expense.service';
 import { GetExpenseService } from '../expenses/get-Expense.service';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
@@ -33,18 +32,11 @@ export class CreatePetService extends AbstractCreateService<
     protected readonly getUsersService: GetUserService,
     protected readonly getExpensesService: GetExpenseService,
     protected readonly createExpensesService: CreateExpenseService,
-    protected readonly getFieldSchemaService: GetFieldSchemaService,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
     protected readonly fieldSchemaData?: FieldSchema[],
     @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
     protected readonly entitySchemaData?: EntitySchema[]
   ) {
-    super(
-      repository,
-      'pets',
-      getFieldSchemaService,
-      fieldSchemaData,
-      entitySchemaData
-    );
+    super(repository, 'pets', fieldSchemaData, entitySchemaData);
   }
 }

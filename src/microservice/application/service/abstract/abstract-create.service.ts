@@ -2,7 +2,6 @@ import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { AbstractDBService } from './abstract-db.service';
 import { MongoDBException } from '@devseeder/microservices-exceptions';
 import { ObjectId } from 'mongoose';
-import { GetFieldSchemaService } from '../configuration/field-schemas/get-field-schemas.service';
 import { AbstractRepository } from 'src/microservice/adapter/repository/abstract.repository';
 import { StringHelper } from '../../helper/string.helper';
 import {
@@ -25,7 +24,6 @@ export abstract class AbstractCreateService<
       MongooseModel
     >,
     protected readonly entity: string,
-    protected readonly getFieldSchemaService?: GetFieldSchemaService,
     protected readonly fieldSchemaData?: FieldSchema[],
     protected readonly entitySchemaData?: EntitySchema[]
   ) {
@@ -84,7 +82,7 @@ export abstract class AbstractCreateService<
       ...cloneBody
     } as BodyDto);
 
-    await this.cloneRelations(id, insertedId.toString(), relationsToClone);
+    await this.cloneRelations(id, insertedId._id.toString(), relationsToClone);
 
     return insertedId;
   }
@@ -116,18 +114,16 @@ export abstract class AbstractCreateService<
     relationsToClone = undefined
   ): Promise<void> {
     this.logger.log('Cloning relations ');
-    const relations = await this.getFieldSchemaService.getExtRelations(
-      this.entityLabels[0],
-      relationsToClone !== undefined
+    const relations = this.entitySchema.subRelations.filter((sub) =>
+      relationsToClone ? sub.clone : true
     );
     this.logger.log(`Cloning ${relations.length} relations`);
-
     for await (const rel of relations) {
-      this.logger.log(`Cloning relation '${rel.externalRelation.service}'...`);
+      this.logger.log(`Cloning relation '${rel.service}'...`);
       this.logger.log(
         `Service relation 'get${rel.entity.capitalizeFirstLetter()}Service'...`
       );
-      const { data: subItems } = await this[
+      const data = await this[
         `get${rel.entity.capitalizeFirstLetter()}Service`
       ].search(
         {
@@ -135,6 +131,9 @@ export abstract class AbstractCreateService<
         },
         false
       );
+
+      const { items: subItems } = data;
+
       this.logger.log(`${subItems.length} itens found for '${rel.entity}'...`);
 
       for await (const item of subItems) {
@@ -145,9 +144,7 @@ export abstract class AbstractCreateService<
           { [rel.key]: rel.array ? [newId] : newId }
         );
       }
-      this.logger.log(
-        `Relation '${rel.externalRelation.service}' successfully cloned!`
-      );
+      this.logger.log(`Relation '${rel.service}' successfully cloned!`);
     }
   }
 

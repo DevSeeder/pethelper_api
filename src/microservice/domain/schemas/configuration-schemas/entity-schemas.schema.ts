@@ -55,6 +55,7 @@ export interface SubRelation {
   nameKey?: string;
   label: string;
   clone?: boolean;
+  array?: boolean;
 }
 
 const schema = SchemaFactory.createForClass(EntitySchema);
