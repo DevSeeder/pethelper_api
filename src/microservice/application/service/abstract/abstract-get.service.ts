@@ -21,6 +21,8 @@ import {
 } from '../../dto/response/paginated.response';
 import { InvalidDataException } from '@devseeder/microservices-exceptions';
 import { GroupByResponse } from '../../dto/response/groupby/group-by.response';
+import { FieldSchema } from 'src/microservice/domain/schemas/field-schemas.schema';
+import { DependecyTokens } from '../../app.constants';
 
 @Injectable()
 export abstract class AbstractGetService<
@@ -41,10 +43,10 @@ export abstract class AbstractGetService<
     >,
     protected readonly itemLabel: string = '',
     protected readonly entityLabels: string[] = [],
-    @Inject(forwardRef(() => GetFieldSchemaService))
-    protected readonly getFieldSchemaService?: GetFieldSchemaService
+    protected readonly getFieldSchemaService?: GetFieldSchemaService,
+    protected readonly fieldSchemaData?: FieldSchema[]
   ) {
-    super(repository, entityLabels, itemLabel, getFieldSchemaService);
+    super(repository, entityLabels, itemLabel, fieldSchemaData);
   }
 
   async search(
@@ -77,7 +79,7 @@ export abstract class AbstractGetService<
 
     const totalSorted = SortHelper.orderBy(
       await Promise.all(arrMap),
-      this.fieldSchema,
+      this.fieldSchemaDb,
       sortExternal,
       hasExternal
     );
@@ -106,10 +108,10 @@ export abstract class AbstractGetService<
   }
 
   async getForm(page: string): Promise<FieldSchemaResponse> {
-    const fields = this.fieldSchema.filter((field) =>
+    const fields = this.fieldSchemaDb.filter((field) =>
       FieldSchemaBuilder.getFormFilterCondition(page, field)
     );
-    const orderFields = this.fieldSchema.filter((fields) => fields.orderBy);
+    const orderFields = this.fieldSchemaDb.filter((fields) => fields.orderBy);
     const arrayResponse = [];
 
     for await (const field of fields) {
@@ -176,7 +178,7 @@ export abstract class AbstractGetService<
 
     const selectParam = {};
     params.select.split(',').forEach((key) => {
-      if (!this.fieldSchema.find((schema) => schema.key === key))
+      if (!this.fieldSchemaDb.find((schema) => schema.key === key))
         throw new BadRequestException(`Invalid select field '${key}'`);
       selectParam[key] = 1;
     });
@@ -221,13 +223,13 @@ export abstract class AbstractGetService<
     const sumField = searchParams['sumField'];
     delete searchParams['sumField'];
 
-    const rel = this.fieldSchema.filter(
+    const rel = this.fieldSchemaDb.filter(
       (schema) =>
         schema.externalRelation &&
         schema.externalRelation.service === groupedEntity
     );
 
-    const sumFieldSchema = this.fieldSchema.filter(
+    const sumFieldSchema = this.fieldSchemaDb.filter(
       (schema) =>
         schema.key === sumField &&
         ['number', 'double', 'integer'].includes(schema.type)

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { AbstractGetService } from '../../abstract/abstract-get.service';
 import { ExpensesRepository } from 'src/microservice/adapter/repository/expenses.repository';
 import {
@@ -15,7 +15,8 @@ import {
   GroupExpensesByPetAndCategoryResponse,
   GroupedCostByCategory
 } from 'src/microservice/application/dto/response/groupby/group-expenses-by-pet-and-category.response';
-import { InvalidDataException } from '@devseeder/microservices-exceptions';
+import { FieldSchema } from 'src/microservice/domain/schemas/field-schemas.schema';
+import { DependecyTokens } from 'src/microservice/application/app.constants';
 
 @Injectable()
 export class GetExpenseService extends AbstractGetService<
@@ -29,9 +30,17 @@ export class GetExpenseService extends AbstractGetService<
     protected readonly getPetsService: GetPetService,
     protected readonly getUsersService: GetUserService,
     protected readonly getExpenseCategoriesService: GetExpenseCategoriesService,
-    protected readonly getFieldSchemaService: GetFieldSchemaService
+    protected readonly getFieldSchemaService: GetFieldSchemaService,
+    @Inject(DependecyTokens.FIELD_SCHEMA_DB)
+    protected readonly fieldSchemaData?: FieldSchema[]
   ) {
-    super(repository, 'Expense', ['expenses'], getFieldSchemaService);
+    super(
+      repository,
+      'Expense',
+      ['expenses'],
+      getFieldSchemaService,
+      fieldSchemaData
+    );
   }
 
   async groupByPetsAndCategory(

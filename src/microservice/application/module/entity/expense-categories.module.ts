@@ -10,7 +10,6 @@ import { UpdateExpenseCategoryService } from '../../service/entity/expense-categ
 import { CreateExpenseCategoryService } from '../../service/entity/expense-categories/create-expense-category.service';
 import { ExpenseCategoriesController } from 'src/microservice/adapter/controller/expense-categories.controller';
 import { FieldSchemasModule } from '../configuration/field-schemas.module';
-import { importAsyncService } from '../../helper/init-service-module.helper';
 
 @Module({
   imports: [
@@ -22,9 +21,9 @@ import { importAsyncService } from '../../helper/init-service-module.helper';
   controllers: [ExpenseCategoriesController],
   providers: [
     ExpenseCategoriesRepository,
-    importAsyncService(GetExpenseCategoriesService),
-    importAsyncService(UpdateExpenseCategoryService),
-    importAsyncService(CreateExpenseCategoryService)
+    GetExpenseCategoriesService,
+    UpdateExpenseCategoryService,
+    CreateExpenseCategoryService
   ],
   exports: [
     ExpenseCategoriesRepository,

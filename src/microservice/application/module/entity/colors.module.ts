@@ -7,7 +7,6 @@ import {
 } from 'src/microservice/domain/schemas/colors.schema';
 import { GetColorService } from 'src/microservice/application/service/entity/colors/get-color.service';
 import { FieldSchemasModule } from '../configuration/field-schemas.module';
-import { importAsyncService } from '../../helper/init-service-module.helper';
 
 @Module({
   imports: [
@@ -15,7 +14,7 @@ import { importAsyncService } from '../../helper/init-service-module.helper';
     FieldSchemasModule
   ],
   controllers: [],
-  providers: [ColorsRepository, importAsyncService(GetColorService)],
+  providers: [ColorsRepository, GetColorService],
   exports: [ColorsRepository, GetColorService]
 })
 export class ColorsModule {}

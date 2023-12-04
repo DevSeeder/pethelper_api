@@ -13,7 +13,7 @@ export function importAsyncService(useClass: Type<any>) {
       const instance: AbstractDBService<any, any, any, any> = new useClass(
         ...instances
       );
-      await instance.init(); // Inicialização assíncrona
+      // await instance.init(); // Inicialização assíncrona
       return instance;
     },
     inject: [...dependencies]

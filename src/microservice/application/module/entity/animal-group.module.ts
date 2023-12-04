@@ -7,7 +7,6 @@ import {
 } from 'src/microservice/domain/schemas/animal-group.schema';
 import { GetAnimalGroupService } from 'src/microservice/application/service/entity/animal-groups/get-animal-group.service';
 import { FieldSchemasModule } from '../configuration/field-schemas.module';
-import { importAsyncService } from '../../helper/init-service-module.helper';
 
 @Module({
   imports: [
@@ -17,10 +16,7 @@ import { importAsyncService } from '../../helper/init-service-module.helper';
     FieldSchemasModule
   ],
   controllers: [],
-  providers: [
-    AnimalGroupsRepository,
-    importAsyncService(GetAnimalGroupService)
-  ],
+  providers: [AnimalGroupsRepository, GetAnimalGroupService],
   exports: [AnimalGroupsRepository, GetAnimalGroupService]
 })
 export class AnimalGroupsModule {}

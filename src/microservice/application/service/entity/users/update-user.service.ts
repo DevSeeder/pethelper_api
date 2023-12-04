@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { UsersRepository } from '../../../../adapter/repository/users.repository';
 import { UserDTO } from '../../../../domain/model/dto/users/user.dto';
 import { AbstractUpdateService } from '../../abstract/abstract-update.service';
@@ -7,7 +7,8 @@ import {
   UserDocument
 } from 'src/microservice/domain/schemas/users.schema';
 import { Search } from '@devseeder/nestjs-microservices-commons';
-import { GetFieldSchemaService } from '../../configuration/field-schemas/get-field-schemas.service';
+import { FieldSchema } from 'src/microservice/domain/schemas/field-schemas.schema';
+import { DependecyTokens } from 'src/microservice/application/app.constants';
 
 @Injectable()
 export class UpdateUserService extends AbstractUpdateService<
@@ -19,8 +20,9 @@ export class UpdateUserService extends AbstractUpdateService<
 > {
   constructor(
     protected readonly usersRepository: UsersRepository,
-    protected readonly getFieldSchemaService?: GetFieldSchemaService
+    @Inject(DependecyTokens.FIELD_SCHEMA_DB)
+    protected readonly fieldSchemaData?: FieldSchema[]
   ) {
-    super(usersRepository, 'User', ['users'], getFieldSchemaService);
+    super(usersRepository, 'User', ['users'], fieldSchemaData);
   }
 }

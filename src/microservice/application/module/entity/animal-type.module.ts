@@ -6,7 +6,6 @@ import {
   AnimalTypesSchema
 } from 'src/microservice/domain/schemas/animal-type.schema';
 import { GetAnimalTypeService } from '../../service/entity/animal-types/get-animal-type.service';
-import { importAsyncService } from '../../helper/init-service-module.helper';
 
 @Module({
   imports: [
@@ -15,7 +14,7 @@ import { importAsyncService } from '../../helper/init-service-module.helper';
     ])
   ],
   controllers: [],
-  providers: [AnimalTypesRepository, importAsyncService(GetAnimalTypeService)],
+  providers: [AnimalTypesRepository, GetAnimalTypeService],
   exports: [AnimalTypesRepository, GetAnimalTypeService]
 })
 export class AnimalTypesModule {}

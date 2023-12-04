@@ -2,13 +2,15 @@ import { MongooseRepository } from '@devseeder/nestjs-microservices-commons';
 import {
   BadRequestException,
   ConflictException,
+  Inject,
   Injectable,
   NotFoundException
 } from '@nestjs/common';
 import { AbstractDBService } from './abstract-db.service';
 import { AbstractBodyDto } from '../../dto/body/abtract-body.dto';
 import { AbstractSchema } from 'src/microservice/domain/schemas/abstract.schema';
-import { GetFieldSchemaService } from '../configuration/field-schemas/get-field-schemas.service';
+import { FieldSchema } from 'src/microservice/domain/schemas/field-schemas.schema';
+import { DependecyTokens } from '../../app.constants';
 
 @Injectable()
 export abstract class AbstractUpdateService<
@@ -30,9 +32,10 @@ export abstract class AbstractUpdateService<
     >,
     protected readonly itemLabel: string = '',
     protected readonly entityLabels: string[] = [],
-    protected readonly getFieldSchemaService?: GetFieldSchemaService
+    @Inject(DependecyTokens.FIELD_SCHEMA_DB)
+    protected readonly fieldSchemaData?: FieldSchema[]
   ) {
-    super(repository, entityLabels, itemLabel, getFieldSchemaService);
+    super(repository, entityLabels, itemLabel, fieldSchemaData);
   }
 
   async updateById(

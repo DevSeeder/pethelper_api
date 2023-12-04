@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { AnimalsRepository } from 'src/microservice/adapter/repository/animals.repository';
 import {
   Animal,
@@ -9,6 +9,8 @@ import { AnimalBodyDto } from '../../../dto/body/animal-body.dto';
 import { GetAnimalGroupService } from '../animal-groups/get-animal-group.service';
 import { AbstractCreateService } from '../../abstract/abstract-create.service';
 import { GetFieldSchemaService } from '../../configuration/field-schemas/get-field-schemas.service';
+import { DependecyTokens } from 'src/microservice/application/app.constants';
+import { FieldSchema } from 'src/microservice/domain/schemas/field-schemas.schema';
 
 @Injectable()
 export class CreateAnimalService extends AbstractCreateService<
@@ -20,8 +22,16 @@ export class CreateAnimalService extends AbstractCreateService<
   constructor(
     protected readonly repository: AnimalsRepository,
     protected readonly getAnimalGroupsService: GetAnimalGroupService,
-    protected readonly getFieldSchemaService: GetFieldSchemaService
+    protected readonly getFieldSchemaService: GetFieldSchemaService,
+    @Inject(DependecyTokens.FIELD_SCHEMA_DB)
+    protected readonly fieldSchemaData?: FieldSchema[]
   ) {
-    super(repository, 'Animal', ['animals', 'config'], getFieldSchemaService);
+    super(
+      repository,
+      'Animal',
+      ['animals', 'config'],
+      getFieldSchemaService,
+      fieldSchemaData
+    );
   }
 }

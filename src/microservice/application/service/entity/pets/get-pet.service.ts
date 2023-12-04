@@ -9,6 +9,8 @@ import { PetResponse } from 'src/microservice/application/dto/response/pet.respo
 import { SearchPetDto } from 'src/microservice/application/dto/search/search-pet.dto';
 import { GetUserService } from '../users/get-user.service';
 import { GetFieldSchemaService } from '../../configuration/field-schemas/get-field-schemas.service';
+import { FieldSchema } from 'src/microservice/domain/schemas/field-schemas.schema';
+import { DependecyTokens } from 'src/microservice/application/app.constants';
 
 @Injectable()
 export class GetPetService extends AbstractGetService<
@@ -21,11 +23,12 @@ export class GetPetService extends AbstractGetService<
     protected readonly repository: PetsRepository,
     protected readonly getColorsService: GetColorService,
     protected readonly getAnimalsService: GetAnimalService,
-    protected readonly getRacesService: GetRaceService,
     protected readonly getUsersService: GetUserService,
-    @Inject(forwardRef(() => GetFieldSchemaService))
-    protected readonly getFieldSchemaService: GetFieldSchemaService
+    protected readonly getRacesService: GetRaceService,
+    protected readonly getFieldSchemaService: GetFieldSchemaService,
+    @Inject(DependecyTokens.FIELD_SCHEMA_DB)
+    protected readonly fieldSchemaData: FieldSchema[] = []
   ) {
-    super(repository, 'Pet', ['pets'], getFieldSchemaService);
+    super(repository, 'Pet', ['pets'], getFieldSchemaService, fieldSchemaData);
   }
 }

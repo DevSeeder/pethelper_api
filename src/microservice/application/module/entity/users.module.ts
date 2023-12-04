@@ -13,7 +13,6 @@ import { AuthJwtModule } from '../auth/auth-jwt.module';
 import { GetUserService } from '../../service/entity/users/get-user.service';
 import { FieldSchemasModule } from '../configuration/field-schemas.module';
 import { UpdateUserService } from '../../service/entity/users/update-user.service';
-import { importAsyncService } from '../../helper/init-service-module.helper';
 
 @Module({
   imports: [
@@ -29,8 +28,8 @@ import { importAsyncService } from '../../helper/init-service-module.helper';
   controllers: [UsersController],
   providers: [
     UsersRepository,
-    importAsyncService(GetUserService),
-    importAsyncService(UpdateUserService)
+    GetUserService,
+    UpdateUserService
     // CreateUserService,
     // ClientAuthService,
     // GetUserValidationService,

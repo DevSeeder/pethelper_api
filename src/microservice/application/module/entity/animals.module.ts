@@ -11,7 +11,6 @@ import { AnimalGroupsModule } from './animal-group.module';
 import { UpdateAnimalService } from '../../service/entity/animals/update-animal.service';
 import { CreateAnimalService } from '../../service/entity/animals/create-animal.service';
 import { FieldSchemasModule } from '../configuration/field-schemas.module';
-import { importAsyncService } from '../../helper/init-service-module.helper';
 
 @Module({
   imports: [
@@ -22,9 +21,9 @@ import { importAsyncService } from '../../helper/init-service-module.helper';
   controllers: [AnimalsController],
   providers: [
     AnimalsRepository,
-    importAsyncService(GetAnimalService),
-    importAsyncService(UpdateAnimalService),
-    importAsyncService(CreateAnimalService)
+    GetAnimalService,
+    UpdateAnimalService,
+    CreateAnimalService
   ],
   exports: [
     AnimalsRepository,

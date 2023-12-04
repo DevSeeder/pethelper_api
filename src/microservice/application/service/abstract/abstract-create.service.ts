@@ -1,16 +1,17 @@
-import { Injectable, NotAcceptableException } from '@nestjs/common';
+import { Inject, Injectable, NotAcceptableException } from '@nestjs/common';
 import { AbstractDBService } from './abstract-db.service';
 import { Search } from '../../dto/search/search.dto';
 import { MongoDBException } from '@devseeder/microservices-exceptions';
 import { ObjectId } from 'mongoose';
 import { GetFieldSchemaService } from '../configuration/field-schemas/get-field-schemas.service';
 import { AbstractRepository } from 'src/microservice/adapter/repository/abstract.repository';
-import { randomUUID } from 'crypto';
 import { StringHelper } from '../../helper/string.helper';
 import {
   CloneManyResponse,
   CloneOneResponse
 } from '../../dto/response/clone.response';
+import { FieldSchema } from 'src/microservice/domain/schemas/field-schemas.schema';
+import { DependecyTokens } from '../../app.constants';
 
 @Injectable()
 export abstract class AbstractCreateService<
@@ -26,9 +27,11 @@ export abstract class AbstractCreateService<
     >,
     protected readonly itemLabel: string = '',
     protected readonly entityLabels: string[] = [],
-    protected readonly getFieldSchemaService?: GetFieldSchemaService
+    protected readonly getFieldSchemaService?: GetFieldSchemaService,
+    @Inject(DependecyTokens.FIELD_SCHEMA_DB)
+    protected readonly fieldSchemaData?: FieldSchema[]
   ) {
-    super(repository, entityLabels, itemLabel, getFieldSchemaService);
+    super(repository, entityLabels, itemLabel, fieldSchemaData);
   }
 
   async create(body: BodyDto): Promise<{ _id: ObjectId }> {

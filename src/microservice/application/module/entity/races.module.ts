@@ -7,7 +7,6 @@ import {
 } from 'src/microservice/domain/schemas/races.schema';
 import { GetRaceService } from 'src/microservice/application/service/entity/races/get-race.service';
 import { FieldSchemasModule } from '../configuration/field-schemas.module';
-import { importAsyncService } from '../../helper/init-service-module.helper';
 
 @Module({
   imports: [
@@ -15,7 +14,7 @@ import { importAsyncService } from '../../helper/init-service-module.helper';
     FieldSchemasModule
   ],
   controllers: [],
-  providers: [RacesRepository, importAsyncService(GetRaceService)],
+  providers: [RacesRepository, GetRaceService],
   exports: [RacesRepository, GetRaceService]
 })
 export class RacesModule {}

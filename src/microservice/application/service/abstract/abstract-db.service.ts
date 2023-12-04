@@ -11,12 +11,16 @@ import { SearchEgineOperators } from 'src/microservice/domain/interface/search-e
 import { AbstractDocument } from 'src/microservice/domain/schemas/abstract.schema';
 import { SchemaValidator } from '../../helper/schema-validator.helper';
 import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.interface';
-import { GetFieldSchemaService } from '../configuration/field-schemas/get-field-schemas.service';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, Inject } from '@nestjs/common';
 import { Search } from '../../dto/search/search.dto';
-import { VALIDATE_ID_ENUMS } from '../../app.constants';
+import {
+  DependecyTokens,
+  GLOBAL_ENTITY,
+  VALIDATE_ID_ENUMS
+} from '../../app.constants';
 import { FieldSchemaBuilder } from '../../helper/field-schema.builder';
 import { DynamicValueService } from '../dynamic/get-dynamic-value.service';
+import { FieldSchema } from 'src/microservice/domain/schemas/field-schemas.schema';
 
 export class AbstractDBService<
   Collection,
@@ -24,7 +28,7 @@ export class AbstractDBService<
   ResponseModel,
   SearchParams extends Search
 > extends AbstractService {
-  protected fieldSchema: FieldItemSchema[] = [];
+  protected fieldSchemaDb: FieldSchema[] = [];
   constructor(
     protected readonly repository: MongooseRepository<
       Collection,
@@ -32,36 +36,22 @@ export class AbstractDBService<
     >,
     protected readonly entityLabels: string[] = [],
     protected readonly itemLabel: string = '',
-    protected readonly getFieldSchemaService?: GetFieldSchemaService
+    protected readonly fieldSchemaData?: FieldSchema[]
   ) {
     super();
-    this.init();
-  }
-
-  async init() {
-    if (!this.entityLabels.length || !this.getFieldSchemaService) return;
-    try {
-      this.logger.log(`Initializing service for '${this.entityLabels[0]}'...`);
-
-      this.fieldSchema = await this.getFieldSchemaService.search(
-        this.entityLabels
-      );
-      this.logger.log(`Service '${this.entityLabels[0]}' finished`);
-    } catch (err) {
-      this.logger.error(
-        `Error loading service for '${this.entityLabels[0]}': ${JSON.stringify(
-          err
-        )}`
-      );
-      throw err;
-    }
+    if (!this.fieldSchemaData || !this.fieldSchemaData.length) return;
+    this.fieldSchemaDb = this.fieldSchemaData.filter(
+      (schema) =>
+        this.entityLabels.includes(schema.entity) ||
+        schema.entity === GLOBAL_ENTITY
+    );
   }
 
   protected async convertRelation(
     item: Partial<MongooseModel> | Partial<AbstractDocument>
   ): Promise<ResponseModel> {
     if (!item) return null;
-    const relations = this.fieldSchema.filter(
+    const relations = this.fieldSchemaDb.filter(
       (schema) => schema.type === 'externalId'
     );
     const itemResponse = { ...item } as unknown as ResponseModel;
@@ -158,11 +148,11 @@ export class AbstractDBService<
 
     let objValue;
     try {
-      objValue = await this[
-        `get${rel.service.capitalizeFirstLetter()}Service`
-      ].getById(value);
+      const serviceKey = `get${rel.service.capitalizeFirstLetter()}Service`;
+      objValue = await this[serviceKey].getById(value);
     } catch (err) {
       this.logger.error(`Error searching id: ${JSON.stringify(err)}`);
+      this.logger.error(err);
       throw new InvalidDataException(rel.key, value);
     }
 
@@ -180,7 +170,7 @@ export class AbstractDBService<
     if (!item) return null;
 
     const itemResponse = { ...item };
-    const searchEngines = this.fieldSchema.filter(
+    const searchEngines = this.fieldSchemaDb.filter(
       (schema) => schema.searchEgines && schema.searchEgines.length
     );
 
@@ -298,7 +288,7 @@ export class AbstractDBService<
     let hasExternal = false;
     const orderKeys = orderBy.split(',');
     orderKeys.forEach((key) => {
-      const isFieldOrder = this.fieldSchema.filter(
+      const isFieldOrder = this.fieldSchemaDb.filter(
         (field) => field.key === key.trim() && field.orderBy
       );
       if (!isFieldOrder.length)

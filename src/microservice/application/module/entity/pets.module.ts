@@ -15,7 +15,6 @@ import { ExpensesController } from 'src/microservice/adapter/controller/expenses
 import { GetExpenseService } from '../../service/entity/expenses/get-Expense.service';
 import { ExpenseCategoriesModule } from './expense-categories.module';
 import { FieldSchemasModule } from '../configuration/field-schemas.module';
-import { importAsyncService } from '../../helper/init-service-module.helper';
 
 @Module({
   imports: [
@@ -31,10 +30,10 @@ import { importAsyncService } from '../../helper/init-service-module.helper';
   controllers: [PetsController, ExpensesController],
   providers: [
     PetsRepository,
-    importAsyncService(GetPetService),
-    importAsyncService(UpdatePetService),
-    importAsyncService(CreatePetService),
-    importAsyncService(GetExpenseService)
+    GetPetService,
+    UpdatePetService,
+    CreatePetService,
+    GetExpenseService
   ],
   exports: [
     PetsRepository,
