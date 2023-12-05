@@ -8,6 +8,7 @@ import { InputSchema } from 'src/microservice/domain/interface/input-schema.inte
 import { SchemaValidator } from './schema-validator.helper';
 import { InternalServerErrorException } from '@nestjs/common';
 import {
+  commonActivationSchema,
   commonGroupBySchema,
   commonSearchSchema,
   manyCloneSchema,
@@ -38,7 +39,8 @@ export class FieldSchemaBuilder {
       groupBy: FieldSchemaBuilder.buildSearchSchema(
         fieldSchema,
         commonGroupBySchema
-      )
+      ),
+      activation: Joi.object({ ...commonActivationSchema })
     };
   }
 

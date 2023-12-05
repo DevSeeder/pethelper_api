@@ -8,4 +8,5 @@ export interface InputSchema {
   create?: ObjectSchema;
   cloneOne?: ObjectSchema;
   cloneMany?: ObjectSchema;
+  activation?: ObjectSchema;
 }

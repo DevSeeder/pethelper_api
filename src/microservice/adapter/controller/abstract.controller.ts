@@ -36,10 +36,12 @@ import { GroupByResponse } from 'src/microservice/application/dto/response/group
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { AbstractEntityLoader } from './abstract-entity.loader';
+import { ActivationQueryParams } from 'src/microservice/application/dto/query/activation-query-params.dto';
+import { AbstractSchema } from 'src/microservice/domain/schemas/abstract.schema';
 
 export abstract class AbstractController<
   Collection,
-  MongooseModel,
+  MongooseModel extends AbstractSchema,
   GetResponse,
   SearchParams extends Search,
   BodyDto extends AbstractBodyDto
@@ -119,20 +121,27 @@ export abstract class AbstractController<
   }
 
   @Patch(`inactivate/:id`)
-  async inactivate(@Param('id') id: string): Promise<void> {
+  async inactivate(
+    @Param('id') id: string,
+    @Query() queryParams: ActivationQueryParams
+  ): Promise<void> {
     this.isMethodAllowed('inactivate');
-    await this.updateService.updateById(id, {
-      active: false,
-      inactivationDate: DateHelper.getDateNow()
-    });
+    SchemaValidator.validateSchema(this.inputSchema.activation, queryParams);
+    await this.updateService.activation(
+      id,
+      false,
+      queryParams.cascadeRelations
+    );
   }
 
   @Patch(`activate/:id`)
-  async activate(@Param('id') id: string): Promise<void> {
+  async activate(
+    @Param('id') id: string,
+    @Query() queryParams: ActivationQueryParams
+  ): Promise<void> {
     this.isMethodAllowed('activate');
-    await this.updateService.updateById(id, {
-      active: true
-    });
+    SchemaValidator.validateSchema(this.inputSchema.activation, queryParams);
+    await this.updateService.activation(id, true, queryParams.cascadeRelations);
   }
 
   @Patch(`/:id`)

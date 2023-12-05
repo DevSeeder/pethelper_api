@@ -10,11 +10,12 @@ import { AbstractSchema } from 'src/microservice/domain/schemas/abstract.schema'
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { AbstractSearchService } from './abstract-search.service';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
+import { InvalidDataException } from '@devseeder/microservices-exceptions';
 
 @Injectable()
 export abstract class AbstractUpdateService<
   Collection,
-  MongooseModel,
+  MongooseModel extends AbstractSchema,
   ResponseModel,
   BodyDto extends AbstractBodyDto,
   SearchParams
@@ -51,6 +52,69 @@ export abstract class AbstractUpdateService<
     this.logger.log(`Body: ${JSON.stringify(body)}`);
 
     await this.repository.updateOneById(id, body);
+  }
+
+  async activation(
+    id: string,
+    activation: boolean,
+    cascadeRelations = ''
+  ): Promise<void> {
+    const body: Partial<AbstractSchema> = { active: activation };
+    await this.updateById(id, body);
+    if (!cascadeRelations.length) return;
+
+    await this.cascadeUpdate(id, body, !activation, cascadeRelations);
+  }
+
+  async cascadeUpdate(
+    id: string,
+    body: Partial<AbstractSchema>,
+    active: boolean,
+    cascadeRelations = '*'
+  ): Promise<void> {
+    const relations = this.entitySchema.subRelations.filter(
+      (ent) =>
+        cascadeRelations === '*' ||
+        (cascadeRelations && cascadeRelations.split(',').includes(ent.entity))
+    );
+
+    if (cascadeRelations && cascadeRelations.length && cascadeRelations !== '*')
+      cascadeRelations.split(',').forEach((rel) => {
+        const foundRelation = this.entitySchema.subRelations.filter(
+          (sub) => sub.entity === rel
+        );
+
+        if (!foundRelation.length)
+          throw new InvalidDataException('Relation', rel);
+      });
+
+    for await (const rel of relations) {
+      this.logger.log(
+        `Service relation 'get${rel.entity.capitalizeFirstLetter()}Service'...`
+      );
+      const data = await this[
+        `get${rel.entity.capitalizeFirstLetter()}Service`
+      ].search(
+        {
+          [rel.key]: id,
+          active
+        },
+        false
+      );
+
+      const { items: subItems } = data;
+
+      this.logger.log(`${subItems.length} itens found for '${rel.entity}'...`);
+
+      for await (const item of subItems) {
+        this.logger.log(`Updating ${item._id} ${JSON.stringify(body)}...`);
+
+        await this[
+          `update${rel.entity.capitalizeFirstLetter()}Service`
+        ].updateById(item._id, body);
+      }
+      this.logger.log(`Relation '${rel.service}' successfully updated!`);
+    }
   }
 
   async updateBy(

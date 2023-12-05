@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { Logger, NotAcceptableException } from '@nestjs/common';
 import { GLOBAL_ENTITY } from 'src/microservice/application/app.constants';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
@@ -14,9 +14,13 @@ export abstract class AbstractEntityLoader {
     protected readonly fieldSchemaData?: FieldSchema[],
     protected readonly entitySchemaData?: EntitySchema[]
   ) {
-    this.entitySchema = entitySchemaData.filter(
+    const filterEntity = entitySchemaData.filter(
       (ent) => ent.entity === entity
-    )[0];
+    );
+    if (!filterEntity.length)
+      throw new NotAcceptableException(`Not entity found for ${entity}`);
+
+    this.entitySchema = filterEntity[0];
 
     this.entityLabels = [
       this.entitySchema.entity,

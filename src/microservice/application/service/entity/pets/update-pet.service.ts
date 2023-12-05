@@ -14,6 +14,8 @@ import { SearchPetDto } from '../../../dto/search/search-pet.dto';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
+import { UpdateExpenseService } from '../expenses/update-expense.service';
+import { GetExpenseService } from '../expenses/get-Expense.service';
 
 @Injectable()
 export class UpdatePetService extends AbstractUpdateService<
@@ -28,6 +30,8 @@ export class UpdatePetService extends AbstractUpdateService<
     protected readonly getColorsService: GetColorService,
     protected readonly getAnimalsService: GetAnimalService,
     protected readonly getRacesService: GetRaceService,
+    protected readonly getExpensesService: GetExpenseService,
+    protected readonly updateExpensesService: UpdateExpenseService,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
     protected readonly fieldSchemaData?: FieldSchema[],
     @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
