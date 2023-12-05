@@ -1,6 +1,6 @@
-import { ConfigBodyDto } from './config-body.dto';
+import { DomainBodyDto } from './domain-body.dto';
 
-export interface AnimalBodyDto extends ConfigBodyDto {
+export interface AnimalBodyDto extends DomainBodyDto {
   name: string;
   key: string;
   idGroup: string;

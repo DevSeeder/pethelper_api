@@ -4,7 +4,7 @@ import {
   ExpenseCategoryDocument
 } from '../../../../domain/schemas/entity/expense-categories.schema';
 import { ExpenseCategoriesRepository } from 'src/microservice/adapter/repository/entity/expense-categories.repository';
-import { ConfigBodyDto } from '../../../dto/body/config-body.dto';
+import { DomainBodyDto } from '../../../dto/body/domain-body.dto';
 import { AbstractCreateService } from '../../abstract/abstract-create.service';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
@@ -15,7 +15,7 @@ export class CreateExpenseCategoryService extends AbstractCreateService<
   ExpenseCategory,
   ExpenseCategoryDocument,
   ExpenseCategory,
-  ConfigBodyDto
+  DomainBodyDto
 > {
   constructor(
     protected readonly repository: ExpenseCategoriesRepository,

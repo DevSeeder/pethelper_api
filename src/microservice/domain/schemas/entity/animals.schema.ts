@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { AbstractConfig } from './config.schema';
+import { AbstractDomain } from './domain.schema';
 
 export type AnimalDocument = Animal & Document;
 
 @Schema({ timestamps: true, collection: 'animals' })
-export class Animal extends AbstractConfig {
+export class Animal extends AbstractDomain {
   @Prop({ required: true })
   idGroup: string;
 

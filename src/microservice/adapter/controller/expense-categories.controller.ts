@@ -5,8 +5,8 @@ import {
   ExpenseCategory,
   ExpenseCategoryDocument
 } from 'src/microservice/domain/schemas/entity/expense-categories.schema';
-import { ConfigBodyDto } from 'src/microservice/application/dto/body/config-body.dto';
-import { SearchConfigDto } from 'src/microservice/application/dto/search/search-config.dto';
+import { DomainBodyDto } from 'src/microservice/application/dto/body/domain-body.dto';
+import { SearchDomainDto } from 'src/microservice/application/dto/search/search-domain.dto';
 import { UpdateExpenseCategoryService } from 'src/microservice/application/service/entity/expense-categories/update-expense-category.service';
 import { CreateExpenseCategoryService } from 'src/microservice/application/service/entity/expense-categories/create-expense-category.service';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
@@ -18,8 +18,8 @@ export class ExpenseCategoriesController extends AbstractController<
   ExpenseCategory,
   ExpenseCategoryDocument,
   ExpenseCategory,
-  SearchConfigDto,
-  ConfigBodyDto
+  SearchDomainDto,
+  DomainBodyDto
 > {
   constructor(
     protected readonly getService: GetExpenseCategoriesService,

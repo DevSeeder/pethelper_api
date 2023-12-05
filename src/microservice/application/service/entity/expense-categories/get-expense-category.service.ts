@@ -5,7 +5,7 @@ import {
   ExpenseCategory,
   ExpenseCategoryDocument
 } from '../../../../domain/schemas/entity/expense-categories.schema';
-import { SearchConfigDto } from '../../../dto/search/search-config.dto';
+import { SearchDomainDto } from '../../../dto/search/search-domain.dto';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
@@ -15,7 +15,7 @@ export class GetExpenseCategoriesService extends AbstractGetService<
   ExpenseCategory,
   ExpenseCategoryDocument,
   ExpenseCategoryDocument,
-  SearchConfigDto
+  SearchDomainDto
 > {
   constructor(
     protected readonly repository: ExpenseCategoriesRepository,

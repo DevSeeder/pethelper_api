@@ -1,6 +1,6 @@
-import { SearchConfigDto } from './search-config.dto';
+import { SearchDomainDto } from './search-domain.dto';
 
-export class SearchAnimalDto extends SearchConfigDto {
+export class SearchAnimalDto extends SearchDomainDto {
   idGroup?: string;
   exotic?: boolean;
 }

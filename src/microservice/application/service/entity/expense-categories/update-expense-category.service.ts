@@ -5,8 +5,8 @@ import {
 } from '../../../../domain/schemas/entity/expense-categories.schema';
 import { AbstractUpdateService } from '../../abstract/abstract-update.service';
 import { ExpenseCategoriesRepository } from 'src/microservice/adapter/repository/entity/expense-categories.repository';
-import { ConfigBodyDto } from '../../../dto/body/config-body.dto';
-import { SearchConfigDto } from '../../../dto/search/search-config.dto';
+import { DomainBodyDto } from '../../../dto/body/domain-body.dto';
+import { SearchDomainDto } from '../../../dto/search/search-domain.dto';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
@@ -16,8 +16,8 @@ export class UpdateExpenseCategoryService extends AbstractUpdateService<
   ExpenseCategory,
   ExpenseCategoryDocument,
   ExpenseCategory,
-  ConfigBodyDto,
-  SearchConfigDto
+  DomainBodyDto,
+  SearchDomainDto
 > {
   constructor(
     protected readonly repository: ExpenseCategoriesRepository,

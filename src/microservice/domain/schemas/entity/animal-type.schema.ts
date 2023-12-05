@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { AbstractConfig } from './config.schema';
+import { AbstractDomain } from './domain.schema';
 
 export type AnimalTypeDocument = AnimalType & Document;
 
 @Schema({ timestamps: true, collection: 'animalTypes' })
-export class AnimalType extends AbstractConfig {}
+export class AnimalType extends AbstractDomain {}
 
 const schema = SchemaFactory.createForClass(AnimalType);
 schema.index({ name: 1 }, { unique: true });

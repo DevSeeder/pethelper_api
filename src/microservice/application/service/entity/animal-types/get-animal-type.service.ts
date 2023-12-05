@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { AbstractGetService } from '../../abstract/abstract-get.service';
-import { SearchConfigDto } from '../../../dto/search/search-config.dto';
+import { SearchDomainDto } from '../../../dto/search/search-domain.dto';
 import {
   AnimalType,
   AnimalTypeDocument
@@ -12,7 +12,7 @@ export class GetAnimalTypeService extends AbstractGetService<
   AnimalType,
   AnimalTypeDocument,
   AnimalType,
-  SearchConfigDto
+  SearchDomainDto
 > {
   constructor(protected readonly repository: AnimalTypesRepository) {
     super(repository, 'animalTypes');
