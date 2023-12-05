@@ -16,7 +16,7 @@ import {
 } from 'src/microservice/domain/field-schemas/abstract-input.schema';
 import { SearchEgineOperators } from 'src/microservice/domain/interface/search-engine.interface';
 import { InvalidDataException } from '@devseeder/microservices-exceptions';
-import { SKIP_ENUMS, SKIP_ENUMS_ALIAS } from '../app.constants';
+import { SKIP_ENUMS, SKIP_ENUMS_ALIAS } from '../../app.constants';
 
 export class FieldSchemaBuilder {
   static buildSchemas(fieldSchema: FieldItemSchema[]): InputSchema {

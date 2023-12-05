@@ -3,7 +3,7 @@ import { AbstractDBService } from './abstract-db.service';
 import { MongoDBException } from '@devseeder/microservices-exceptions';
 import { ObjectId } from 'mongoose';
 import { AbstractRepository } from 'src/microservice/adapter/repository/abstract.repository';
-import { StringHelper } from '../../helper/string.helper';
+import { StringHelper } from '../../helper/types/string.helper';
 import {
   CloneManyResponse,
   CloneOneResponse

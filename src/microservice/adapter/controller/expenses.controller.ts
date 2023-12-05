@@ -12,7 +12,7 @@ import { CreateExpenseService } from 'src/microservice/application/service/entit
 import { GetExpenseService } from 'src/microservice/application/service/entity/expenses/get-Expense.service';
 import { Get } from '@nestjs/common';
 import { GroupExpensesByPetAndCategoryResponse } from 'src/microservice/application/dto/response/groupby/group-expenses-by-pet-and-category.response';
-import { SchemaValidator } from 'src/microservice/application/helper/schema-validator.helper';
+import { SchemaValidator } from 'src/microservice/application/helper/validator/schema-validator.helper';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';

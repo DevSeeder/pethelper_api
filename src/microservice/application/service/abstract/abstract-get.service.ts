@@ -4,8 +4,8 @@ import {
   FieldSchemaPage,
   FormSchemaResponse
 } from 'src/microservice/domain/interface/field-schema.interface';
-import { FieldSchemaBuilder } from '../../helper/field-schema.builder';
-import { SortHelper } from '../../helper/sort.helper';
+import { FieldSchemaBuilder } from '../../helper/validator/field-schema.builder';
+import { SortHelper } from '../../helper/search/sort.helper';
 import { AbstractRepository } from 'src/microservice/adapter/repository/abstract.repository';
 import {
   CountResponse,

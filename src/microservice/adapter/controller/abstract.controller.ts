@@ -10,8 +10,7 @@ import {
   Query
 } from '@nestjs/common';
 import { Search } from 'src/microservice/application/dto/search/search.dto';
-import { DateHelper } from 'src/microservice/application/helper/date.helper';
-import { SchemaValidator } from 'src/microservice/application/helper/schema-validator.helper';
+import { SchemaValidator } from 'src/microservice/application/helper/validator/schema-validator.helper';
 import { AbstractGetService } from 'src/microservice/application/service/abstract/abstract-get.service';
 import { AbstractUpdateService } from 'src/microservice/application/service/abstract/abstract-update.service';
 import { InputSchema } from 'src/microservice/domain/interface/input-schema.interface';
@@ -19,7 +18,7 @@ import { AbstractCreateService } from 'src/microservice/application/service/abst
 import { AbstractBodyDto } from 'src/microservice/application/dto/body/abtract-body.dto';
 import { ObjectId } from 'mongoose';
 import { FormSchemaResponse } from 'src/microservice/domain/interface/field-schema.interface';
-import { FieldSchemaBuilder } from 'src/microservice/application/helper/field-schema.builder';
+import { FieldSchemaBuilder } from 'src/microservice/application/helper/validator/field-schema.builder';
 import {
   ClonyManyBodyDto,
   ClonyOneBodyDto
@@ -98,7 +97,7 @@ export abstract class AbstractController<
         `'${this.entitySchema.searchKey}' is not allowed.`
       );
 
-    SchemaValidator.validateSchema(this.inputSchema.search, params);
+    SchemaValidator.validateSchema(this.inputSchema.search, params, [], true);
 
     if (this.entitySchema.searchKey)
       params[this.entitySchema.searchKey] = searchId;
@@ -110,13 +109,13 @@ export abstract class AbstractController<
   searchAll(
     @Query() params: SearchParams
   ): Promise<PaginatedResponse<GetResponse>> {
-    SchemaValidator.validateSchema(this.inputSchema.search, params);
+    SchemaValidator.validateSchema(this.inputSchema.search, params, [], true);
     return this.getService.search(params);
   }
 
   @Get(`/meta/count`)
   count(@Query() params: SearchParams): Promise<CountResponse> {
-    SchemaValidator.validateSchema(this.inputSchema.count, params);
+    SchemaValidator.validateSchema(this.inputSchema.count, params, [], true);
     return this.getService.count(params);
   }
 
@@ -164,11 +163,7 @@ export abstract class AbstractController<
     @Body() body: BodyDto
   ): Promise<void> {
     this.isMethodAllowed('updateBy');
-    SchemaValidator.validateSchema(
-      this.inputSchema.search,
-      params,
-      this.fieldSchemaDb
-    );
+    SchemaValidator.validateSchema(this.inputSchema.search, params, [], true);
     SchemaValidator.validateSchema(
       this.inputSchema.update,
       body,
@@ -236,7 +231,7 @@ export abstract class AbstractController<
     @Query() params: SearchParams
   ): Promise<GroupByResponse[]> {
     this.isMethodAllowed('groupby');
-    SchemaValidator.validateSchema(this.inputSchema.groupBy, params);
+    SchemaValidator.validateSchema(this.inputSchema.groupBy, params, [], true);
     return this.getService.groupBy(relation, params);
   }
 

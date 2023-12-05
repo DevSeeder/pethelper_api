@@ -1,5 +1,5 @@
 import { Type } from '@nestjs/common';
-import { AbstractDBService } from '../service/abstract/abstract-db.service';
+import { AbstractDBService } from '../../service/abstract/abstract-db.service';
 
 // export function importAsyncService(useClass: Type<any>) {
 //   const dependencies = getDependencies(useClass);

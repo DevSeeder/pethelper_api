@@ -1,5 +1,5 @@
 import { CompareOperators } from 'src/microservice/domain/interface/search-engine.interface';
-import { DynamicValueService } from '../service/dynamic/get-dynamic-value.service';
+import { DynamicValueService } from '../../service/dynamic/get-dynamic-value.service';
 
 export class ComparatorHelper {
   static compare(

@@ -1,5 +1,5 @@
 import { DynamicValuesEnum } from 'src/microservice/domain/enum/dynamic-values.enum';
-import { DateHelper } from '../../helper/date.helper';
+import { DateHelper } from '../../helper/types/date.helper';
 
 export class DynamicValueService {
   static getDynamicValue(

@@ -1,14 +1,15 @@
 import { InvalidDataException } from '@devseeder/microservices-exceptions';
 import { MongooseRepository } from '@devseeder/nestjs-microservices-commons';
 import { SearchEgineOperators } from 'src/microservice/domain/interface/search-engine.interface';
-import { SchemaValidator } from '../../helper/schema-validator.helper';
+import { SchemaValidator } from '../../helper/validator/schema-validator.helper';
 import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.interface';
 import { BadRequestException, Inject } from '@nestjs/common';
 import { Search } from '../../dto/search/search.dto';
-import { FieldSchemaBuilder } from '../../helper/field-schema.builder';
+import { FieldSchemaBuilder } from '../../helper/validator/field-schema.builder';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { AbstractDBService } from './abstract-db.service';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
+import { SearchEncapsulatorHelper } from '../../helper/search/search-encapsulator.helper';
 
 export class AbstractSearchService<
   Collection,
@@ -143,18 +144,47 @@ export class AbstractSearchService<
   protected async buildSearchParams(
     searchParams: SearchParams
   ): Promise<Partial<SearchParams>> {
-    await this.convertRelation(
-      searchParams as unknown as Partial<MongooseModel>
+    const encapObjects = SearchEncapsulatorHelper.buildEncapsulatedSearch(
+      this.getDynamicValues(searchParams)
     );
 
-    const params = await this.buildSearchEgines(
-      this.getDynamicValues(searchParams) as any
-    );
+    const andParams = [];
+    for await (const clauseGroup of encapObjects['$and']) {
+      const group = await this.buildSearchGroup(clauseGroup as SearchParams);
+      if (!group) continue;
+      andParams.push(group);
+    }
+
+    const orParams = [];
+    for await (const clauseGroup of encapObjects['$or']) {
+      const group = await this.buildSearchGroup(clauseGroup as SearchParams);
+      if (!group) continue;
+      orParams.push(group);
+    }
+
+    const params = await this.buildSearchGroup({
+      ...encapObjects,
+      $and: undefined,
+      $or: undefined
+    } as unknown as SearchParams);
+
+    if (andParams.length) params['$and'] = andParams;
+    if (orParams.length) params['$or'] = orParams;
 
     return {
       ...params,
       active: params && params.active !== undefined ? params.active : true
     };
+  }
+
+  protected async buildSearchGroup(
+    searchParams: SearchParams
+  ): Promise<Partial<SearchParams>> {
+    await this.convertRelation(
+      searchParams as unknown as Partial<MongooseModel>
+    );
+
+    return await this.buildSearchEgines(searchParams);
   }
 
   protected validateOrderField(
