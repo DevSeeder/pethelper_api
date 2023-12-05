@@ -60,7 +60,7 @@ export abstract class AbstractCreateService<
   async clone(
     id: string,
     changeUniqueIndex = true,
-    relationsToClone = undefined,
+    relationsToClone = [],
     cloneBody = {}
   ): Promise<CloneOneResponse> {
     this.logger.log(`Cloning ${this.entitySchema.itemLabel} '${id}'...`);
@@ -89,7 +89,7 @@ export abstract class AbstractCreateService<
 
   async cloneByIds(
     ids: string[],
-    relationsToClone = undefined,
+    relationsToClone = [],
     cloneBody = {}
   ): Promise<CloneManyResponse> {
     this.logger.log(`Cloning ${this.entitySchema.itemLabel} '${ids}'...`);
@@ -111,11 +111,15 @@ export abstract class AbstractCreateService<
   private async cloneRelations(
     cloneId: string,
     newId: string,
-    relationsToClone = undefined
+    relationsToClone = []
   ): Promise<void> {
     this.logger.log('Cloning relations ');
     const relations = this.entitySchema.subRelations.filter((sub) =>
-      relationsToClone ? sub.clone : true
+      relationsToClone.length
+        ? (relationsToClone.includes(sub.entity) ||
+            relationsToClone[0] === '*') &&
+          sub.clone
+        : false
     );
     this.logger.log(`Cloning ${relations.length} relations`);
     for await (const rel of relations) {
@@ -151,12 +155,19 @@ export abstract class AbstractCreateService<
   private async getUniqueIndexToClone(bodyCreate: MongooseModel) {
     const objIndexes = await this.repository.getIndexes();
     delete objIndexes['_id_'];
+
     const mapKeys = Object.values(objIndexes).map((key) => key[0][0]);
     const randomId = StringHelper.generateRandomString(7);
-    mapKeys.forEach((key) => {
+    console.log(this.entitySchema.copyFields);
+    console.log(bodyCreate);
+
+    [...mapKeys, ...(this.entitySchema.copyFields || [])].forEach((key) => {
       if (typeof bodyCreate[key] == 'string')
         bodyCreate[key] = `${bodyCreate[key]}(copy ${randomId})`;
     });
+
+    console.log(bodyCreate[this.entitySchema.copyFields[0]]);
+    console.log([...mapKeys, ...(this.entitySchema.copyFields || [])]);
 
     delete bodyCreate['_id'];
     delete bodyCreate['createdAt'];

@@ -46,6 +46,9 @@ export class EntitySchema extends AbstractSchema {
 
   @Prop({ required: false, default: 1000 })
   order: number;
+
+  @Prop({ required: false, default: [] })
+  copyFields: string[] = [];
 }
 
 export interface SubRelation {
