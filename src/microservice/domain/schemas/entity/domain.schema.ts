@@ -11,4 +11,12 @@ export abstract class AbstractDomain extends AbstractSchema {
 
   @Prop({ required: true })
   key: string;
+
+  @Prop({ required: false, default: [] })
+  translations?: Translation[];
+}
+
+export interface Translation {
+  locale: string;
+  value: string;
 }

@@ -10,4 +10,7 @@ export abstract class AbstractSchema {
 
   @Prop({ required: false })
   inactivationDate?: Date;
+
+  @Prop({ required: false })
+  reasonInactivation?: string;
 }
