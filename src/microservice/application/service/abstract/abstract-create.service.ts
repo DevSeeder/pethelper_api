@@ -54,8 +54,7 @@ export abstract class AbstractCreateService<
         if (err.errCode === 11000) {
           const entityTranslation =
             await this.translationService.getEntityTranslation(
-              this.entitySchema.entity,
-              DEFAULT_LANG
+              this.entitySchema.entity
             );
           throw new NotAcceptableException(
             `${entityTranslation.itemLabel} already exists`

@@ -105,8 +105,7 @@ export abstract class AbstractGetService<
       if (!item && validateError) {
         const entityTranslation =
           await this.translationService.getEntityTranslation(
-            this.entitySchema.entity,
-            DEFAULT_LANG
+            this.entitySchema.entity
           );
         throw new NotFoundException(entityTranslation.itemLabel);
       }
@@ -136,8 +135,7 @@ export abstract class AbstractGetService<
       const fieldTranslation =
         await this.translationService.getFieldTranslation(
           this.entityLabels,
-          field.key,
-          DEFAULT_LANG
+          field.key
         );
 
       objectItem.label = fieldTranslation.fieldLabel;
@@ -151,8 +149,7 @@ export abstract class AbstractGetService<
 
     const entityTranslation =
       await this.translationService.getEntityTranslation(
-        this.entitySchema.entity,
-        DEFAULT_LANG
+        this.entitySchema.entity
       );
 
     const response: FormSchemaResponse = {
@@ -163,8 +160,7 @@ export abstract class AbstractGetService<
           label: (
             await this.translationService.getFieldTranslation(
               [rel.entity],
-              rel.key,
-              DEFAULT_LANG
+              rel.key
             )
           ).fieldLabel
         }))
@@ -184,8 +180,7 @@ export abstract class AbstractGetService<
             label: (
               await this.translationService.getFieldTranslation(
                 this.entityLabels,
-                field.key,
-                DEFAULT_LANG
+                field.key
               )
             ).fieldLabel
           }))

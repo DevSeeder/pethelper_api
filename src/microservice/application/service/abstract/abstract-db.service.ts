@@ -157,8 +157,7 @@ export class AbstractDBService<
     let item;
     const entityTranslation =
       await this.translationService.getEntityTranslation(
-        this.entitySchema.entity,
-        DEFAULT_LANG
+        this.entitySchema.entity
       );
 
     try {
