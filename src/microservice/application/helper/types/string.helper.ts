@@ -15,4 +15,10 @@ export class StringHelper {
 
     return randomString;
   }
+
+  static replaceTemplateObject(str: string, data: object) {
+    if (!str || !data || !Object.keys(data).length) return str;
+
+    return str.replace(/\$\{(\w+)\}/g, (match, token) => data[token] || match);
+  }
 }

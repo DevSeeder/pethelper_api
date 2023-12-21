@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { FieldSchemasRepository } from 'src/microservice/adapter/repository/configuration/field-schemas.repository';
+import { FieldSchemasRepository } from 'src/microservice/adapter/repository/config-schemas/field-schemas.repository';
 import { GLOBAL_ENTITY, PROJECT_KEY } from '../../../app.constants';
 import { AbstractService } from '@devseeder/nestjs-microservices-commons';
 import { FormFieldResponse } from 'src/microservice/domain/interface/field-schema.interface';

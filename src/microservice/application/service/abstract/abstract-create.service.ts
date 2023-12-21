@@ -12,6 +12,8 @@ import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schem
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { GetTranslationService } from '../translation/get-translation.service';
 import { DEFAULT_LANG } from '../../app.constants';
+import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
+import { ErrorService } from '../configuration/error-schema/error.service';
 
 @Injectable()
 export abstract class AbstractCreateService<
@@ -28,7 +30,8 @@ export abstract class AbstractCreateService<
     protected readonly entity: string,
     protected readonly fieldSchemaData: FieldSchema[],
     protected readonly entitySchemaData: EntitySchema[],
-    protected readonly translationService?: GetTranslationService
+    protected readonly translationService?: GetTranslationService,
+    protected readonly errorService?: ErrorService
   ) {
     super(repository, entity, fieldSchemaData, entitySchemaData);
   }
@@ -56,9 +59,11 @@ export abstract class AbstractCreateService<
             await this.translationService.getEntityTranslation(
               this.entitySchema.entity
             );
-          throw new NotAcceptableException(
-            `${entityTranslation.itemLabel} already exists`
-          );
+
+          this.errorService.throwError(ErrorKeys.ALREADY_EXISTS, {
+            key: entityTranslation.itemLabel,
+            value: body['name']
+          });
         }
       }
     }

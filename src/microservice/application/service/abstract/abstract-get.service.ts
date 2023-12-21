@@ -22,6 +22,8 @@ import { AbstractSearchService } from './abstract-search.service';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { GetTranslationService } from '../translation/get-translation.service';
 import { DEFAULT_LANG } from '../../app.constants';
+import { ErrorService } from '../configuration/error-schema/error.service';
+import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 
 @Injectable()
 export abstract class AbstractGetService<
@@ -43,7 +45,8 @@ export abstract class AbstractGetService<
     protected readonly entity: string,
     protected readonly fieldSchemaData: FieldSchema[] = [],
     protected readonly entitySchemaData: EntitySchema[] = [],
-    protected readonly translationService?: GetTranslationService
+    protected readonly translationService?: GetTranslationService,
+    protected readonly errorService?: ErrorService
   ) {
     super(repository, entity, fieldSchemaData, entitySchemaData);
   }
@@ -107,10 +110,15 @@ export abstract class AbstractGetService<
           await this.translationService.getEntityTranslation(
             this.entitySchema.entity
           );
-        throw new NotFoundException(entityTranslation.itemLabel);
+        this.errorService.throwError(ErrorKeys.NOT_FOUND, {
+          key: entityTranslation.itemLabel
+        });
       }
     } catch (err) {
-      throw new InvalidDataException('Id', id);
+      this.errorService.throwError(ErrorKeys.INVALID_DATA, {
+        key: 'Id',
+        value: id
+      });
     }
     return this.convertRelation(item);
   }
@@ -221,7 +229,10 @@ export abstract class AbstractGetService<
     const selectParam = {};
     params.select.split(',').forEach((key) => {
       if (!this.fieldSchemaDb.find((schema) => schema.key === key))
-        throw new BadRequestException(`Invalid select field '${key}'`);
+        this.errorService.throwError(ErrorKeys.INVALID_DATA, {
+          key: 'select field',
+          value: key
+        });
       selectParam[key] = 1;
     });
 
@@ -279,9 +290,16 @@ export abstract class AbstractGetService<
         ['number', 'double', 'integer'].includes(schema.type)
     );
     if (sumField && !sumFieldSchema.length)
-      throw new InvalidDataException('Sum Field', sumField);
+      this.errorService.throwError(ErrorKeys.INVALID_DATA, {
+        key: 'Sum Field',
+        value: sumField
+      });
 
-    if (!rel.length) throw new InvalidDataException('Relation', groupedEntity);
+    if (!rel.length)
+      this.errorService.throwError(ErrorKeys.INVALID_DATA, {
+        key: 'Relation',
+        value: groupedEntity
+      });
 
     const searchWhere = await this.buildSearchParams(searchParams);
 

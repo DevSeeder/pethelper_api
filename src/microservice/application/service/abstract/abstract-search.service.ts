@@ -11,6 +11,8 @@ import { AbstractDBService } from './abstract-db.service';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { SearchEncapsulatorHelper } from '../../helper/search/search-encapsulator.helper';
 import { GetTranslationService } from '../translation/get-translation.service';
+import { ErrorService } from '../configuration/error-schema/error.service';
+import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 
 export class AbstractSearchService<
   Collection,
@@ -26,7 +28,8 @@ export class AbstractSearchService<
     protected readonly entity: string,
     protected readonly fieldSchemaData: FieldSchema[] = [],
     protected readonly entitySchemaData: EntitySchema[] = [],
-    protected readonly translationService?: GetTranslationService
+    protected readonly translationService?: GetTranslationService,
+    protected readonly errorService?: ErrorService
   ) {
     super(
       repository,
@@ -74,9 +77,16 @@ export class AbstractSearchService<
       try {
         res = await this.repository.find({ _id: ids }, { name: 1 });
       } catch (err) {
-        throw new InvalidDataException('Id', id);
+        this.errorService.throwError(ErrorKeys.INVALID_DATA, {
+          key: 'Id',
+          value: id
+        });
       }
-      if (!res.length) throw new InvalidDataException('Id', id);
+      if (!res.length)
+        this.errorService.throwError(ErrorKeys.INVALID_DATA, {
+          key: 'Id',
+          value: id
+        });
     }
 
     return {
@@ -211,7 +221,10 @@ export class AbstractSearchService<
         (field) => field.key === key.trim() && field.orderBy
       );
       if (!isFieldOrder.length)
-        throw new BadRequestException(`Invalid order field '${key.trim()}'`);
+        this.errorService.throwError(ErrorKeys.INVALID_DATA, {
+          key: 'order field',
+          value: key.trim()
+        });
 
       if (isFieldOrder[0].type === 'externalId') {
         hasExternal = true;

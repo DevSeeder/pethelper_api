@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { EntitySchemasRepository } from 'src/microservice/adapter/repository/configuration/entity-schemas.repository';
+import { EntitySchemasRepository } from 'src/microservice/adapter/repository/config-schemas/entity-schemas.repository';
 
 import { DependecyTokens } from '../../app.constants';
 import { GetEntitySchemaService } from '../../service/configuration/entity-schema/get-entity-schemas.service';

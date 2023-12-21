@@ -6,10 +6,10 @@ import { GLOBAL_ENTITY } from 'src/microservice/application/app.constants';
 import { HttpStatus } from '@nestjs/common';
 import { Translation } from '../entity/domain.schema';
 
-export type EntitySchemaDocument = EntitySchema & Document;
+export type ErrorSchemaDocument = ErrorSchema & Document;
 
-@Schema({ timestamps: true, collection: 'entitySchemas' })
-export class EntitySchema extends AbstractSchema {
+@Schema({ timestamps: true, collection: 'errors' })
+export class ErrorSchema extends AbstractSchema {
   @Prop({ required: true, default: GLOBAL_ENTITY })
   projectKey: string;
 
@@ -35,8 +35,8 @@ export class EntitySchema extends AbstractSchema {
   translations: Translation[];
 }
 
-const schema = SchemaFactory.createForClass(EntitySchema);
+const schema = SchemaFactory.createForClass(ErrorSchema);
 schema.index({ projectKey: 1, name: 1 }, { unique: true });
 schema.index({ projectKey: 1, key: 1 }, { unique: true });
 schema.index({ projectKey: 1, code: 1 }, { unique: true });
-export const EntitySchemasSchema = schema;
+export const ErrorSchemasSchema = schema;

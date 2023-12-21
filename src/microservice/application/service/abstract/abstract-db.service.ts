@@ -1,22 +1,17 @@
-import {
-  InvalidDataException,
-  NotFoundException
-} from '@devseeder/microservices-exceptions';
+import { InvalidDataException } from '@devseeder/microservices-exceptions';
 import { MongooseRepository } from '@devseeder/nestjs-microservices-commons';
 import { Relation } from 'src/microservice/domain/interface/relation.interface';
 import { SearchEgineOperators } from 'src/microservice/domain/interface/search-engine.interface';
 import { AbstractDocument } from 'src/microservice/domain/schemas/abstract.schema';
 import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.interface';
-import {
-  DEFAULT_LANG,
-  GLOBAL_ENTITY,
-  VALIDATE_ID_ENUMS
-} from '../../app.constants';
+import { VALIDATE_ID_ENUMS } from '../../app.constants';
 import { DynamicValueService } from '../dynamic/get-dynamic-value.service';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { AbstractEntityLoader } from '../../loader/abstract-entity.loader';
 import { GetTranslationService } from '../translation/get-translation.service';
+import { ErrorService } from '../configuration/error-schema/error.service';
+import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 
 export class AbstractDBService<
   Collection,
@@ -31,7 +26,8 @@ export class AbstractDBService<
     protected readonly entity: string,
     protected readonly fieldSchemaData: FieldSchema[] = [],
     protected readonly entitySchemaData: EntitySchema[] = [],
-    protected readonly translationService?: GetTranslationService
+    protected readonly translationService?: GetTranslationService,
+    protected readonly errorService?: ErrorService
   ) {
     super(entity, fieldSchemaData, entitySchemaData);
   }
@@ -142,13 +138,19 @@ export class AbstractDBService<
     } catch (err) {
       this.logger.error(`Error searching id: ${JSON.stringify(err)}`);
       this.logger.error(err);
-      throw new InvalidDataException(rel.key, value);
+      this.errorService.throwError(ErrorKeys.INVALID_DATA, {
+        key: await this.getFieldTranslation(rel.key),
+        value
+      });
     }
 
     const objKey = rel.repoKey ? rel.repoKey : 'name';
 
     if (objValue === null || objValue === undefined)
-      throw new InvalidDataException(rel.key, value);
+      this.errorService.throwError(ErrorKeys.INVALID_DATA, {
+        key: await this.getFieldTranslation(rel.key),
+        value
+      });
 
     let valueRelation = objValue[objKey];
 
@@ -173,9 +175,14 @@ export class AbstractDBService<
     try {
       item = await this.repository.findById(id);
     } catch (err) {
-      throw new NotFoundException(entityTranslation.itemLabel);
+      this.errorService.throwError(ErrorKeys.NOT_FOUND, {
+        key: entityTranslation.itemLabel
+      });
     }
-    if (!item) throw new NotFoundException(entityTranslation.itemLabel);
+    if (!item)
+      this.errorService.throwError(ErrorKeys.NOT_FOUND, {
+        key: entityTranslation.itemLabel
+      });
     return item;
   }
 
@@ -196,5 +203,13 @@ export class AbstractDBService<
         );
       });
     return item;
+  }
+
+  protected async getFieldTranslation(key: string): Promise<string> {
+    const fieldTranslation = await this.translationService.getFieldTranslation(
+      this.entityLabels,
+      key
+    );
+    return fieldTranslation.fieldLabel;
   }
 }

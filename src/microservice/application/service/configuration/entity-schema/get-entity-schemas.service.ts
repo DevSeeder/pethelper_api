@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { EntitySchemasRepository } from 'src/microservice/adapter/repository/configuration/entity-schemas.repository';
+import { EntitySchemasRepository } from 'src/microservice/adapter/repository/config-schemas/entity-schemas.repository';
 import { GLOBAL_ENTITY, PROJECT_KEY } from '../../../app.constants';
 import { AbstractService } from '@devseeder/nestjs-microservices-commons';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';

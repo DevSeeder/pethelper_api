@@ -10,8 +10,9 @@ import { AbstractSchema } from 'src/microservice/domain/schemas/abstract.schema'
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { AbstractSearchService } from './abstract-search.service';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
-import { InvalidDataException } from '@devseeder/microservices-exceptions';
 import { GetTranslationService } from '../translation/get-translation.service';
+import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
+import { ErrorService } from '../configuration/error-schema/error.service';
 
 @Injectable()
 export abstract class AbstractUpdateService<
@@ -34,7 +35,8 @@ export abstract class AbstractUpdateService<
     protected readonly entity: string,
     protected readonly fieldSchemaData: FieldSchema[],
     protected readonly entitySchemaData: EntitySchema[],
-    protected readonly translationService?: GetTranslationService
+    protected readonly translationService?: GetTranslationService,
+    protected readonly errorService?: ErrorService
   ) {
     super(repository, entity, fieldSchemaData, entitySchemaData);
   }
@@ -44,7 +46,7 @@ export abstract class AbstractUpdateService<
     body: Partial<BodyDto> | Partial<AbstractSchema>
   ): Promise<void> {
     if (!body || !Object.keys(body).length)
-      throw new BadRequestException('Empty body');
+      this.errorService.throwError(ErrorKeys.EMPTY_BODY);
 
     this.logger.log(`Updating record by id '${id}'`);
 
@@ -87,7 +89,10 @@ export abstract class AbstractUpdateService<
         );
 
         if (!foundRelation.length)
-          throw new InvalidDataException('Relation', rel);
+          this.errorService.throwError(ErrorKeys.INVALID_DATA, {
+            key: 'Relation',
+            value: rel
+          });
       });
 
     for await (const rel of relations) {
@@ -124,7 +129,7 @@ export abstract class AbstractUpdateService<
     body: Partial<BodyDto> | Partial<AbstractSchema>
   ): Promise<void> {
     if (!body || !Object.keys(body).length)
-      throw new BadRequestException('Empty body');
+      this.errorService.throwError(ErrorKeys.EMPTY_BODY);
 
     this.logger.log(`Updating records by '${JSON.stringify(search)}'`);
 
@@ -137,8 +142,7 @@ export abstract class AbstractUpdateService<
       false
     );
 
-    if (!items.length)
-      throw new NotFoundException('No record found to be updated.');
+    if (!items.length) this.errorService.throwError(ErrorKeys.NO_RECORD_UPDATE);
 
     this.logger.log(`Body: ${JSON.stringify(body)}`);
 
@@ -147,9 +151,7 @@ export abstract class AbstractUpdateService<
     try {
       await this.repository.updateMany(searchWhere, body);
     } catch (err) {
-      throw new ConflictException(
-        'The records are already updated with this values'
-      );
+      this.errorService.throwError(ErrorKeys.ALREADY_UPDATED);
     }
   }
 }
