@@ -150,7 +150,17 @@ export class AbstractDBService<
     if (objValue === null || objValue === undefined)
       throw new InvalidDataException(rel.key, value);
 
-    return objValue[objKey];
+    let valueRelation = objValue[objKey];
+
+    if (objValue.translations && objValue.translations.length) {
+      const lang = this.translationService.getLang();
+      const translation = objValue.translations.filter(
+        (tra) => tra.locale == lang
+      );
+      valueRelation = translation[0].value;
+    }
+
+    return valueRelation;
   }
 
   protected async validateId(id: string): Promise<MongooseModel> {
