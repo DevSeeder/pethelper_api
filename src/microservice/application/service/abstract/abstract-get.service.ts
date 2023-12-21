@@ -133,6 +133,15 @@ export abstract class AbstractGetService<
         objectItem['values'] = values.data;
       }
 
+      const fieldTranslation =
+        await this.translationService.getFieldTranslation(
+          this.entityLabels,
+          field.key,
+          DEFAULT_LANG
+        );
+
+      objectItem.label = fieldTranslation.fieldLabel;
+
       arrayResponse.push(objectItem);
     }
 
@@ -153,7 +162,7 @@ export abstract class AbstractGetService<
           relation: rel.entity,
           label: (
             await this.translationService.getFieldTranslation(
-              rel.entity,
+              [rel.entity],
               rel.key,
               DEFAULT_LANG
             )
@@ -174,7 +183,7 @@ export abstract class AbstractGetService<
             key: field.key,
             label: (
               await this.translationService.getFieldTranslation(
-                this.entitySchema.entity,
+                this.entityLabels,
                 field.key,
                 DEFAULT_LANG
               )

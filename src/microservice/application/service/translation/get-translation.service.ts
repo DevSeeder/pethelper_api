@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { EntityTranslationsRepository } from 'src/microservice/adapter/repository/translations/entity-translations.repository';
 import { FieldTranslationsRepository } from 'src/microservice/adapter/repository/translations/field-translations.repository';
 import { FieldTranslation } from 'src/microservice/domain/schemas/translations/field-translations.schema';
-import { PROJECT_KEY } from '../../app.constants';
+import { GLOBAL_ENTITY, PROJECT_KEY } from '../../app.constants';
 import { NotFoundException } from '@devseeder/microservices-exceptions';
 import { EntityTranslation } from 'src/microservice/domain/schemas/translations/entity-translations.schema';
 
@@ -17,13 +17,26 @@ export class GetTranslationService extends AbstractService {
   }
 
   async getFieldTranslation(
-    entity: string,
+    entity: string[],
     key: string,
     lang: string
   ): Promise<FieldTranslation> {
+    this.logger.log(
+      `Searching Field Translation ${JSON.stringify({
+        projectKey: PROJECT_KEY,
+        entity: {
+          $in: [GLOBAL_ENTITY, ...entity]
+        },
+        key,
+        locale: lang
+      })}`
+    );
+
     const items = await this.fieldRepository.find({
       projectKey: PROJECT_KEY,
-      entity,
+      entity: {
+        $in: [GLOBAL_ENTITY, ...entity]
+      },
       key,
       locale: lang
     });
