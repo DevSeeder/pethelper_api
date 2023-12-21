@@ -14,6 +14,7 @@ import { SearchExpenseDto } from '../../../dto/search/search-Expense.dto';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
+import { GetTranslationService } from '../../translation/get-translation.service';
 
 @Injectable()
 export class UpdateExpenseService extends AbstractUpdateService<
@@ -29,10 +30,17 @@ export class UpdateExpenseService extends AbstractUpdateService<
     protected readonly getExpenseCategoriesService: GetExpenseCategoriesService,
     protected readonly getUsersService: GetUserService,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
-    protected readonly fieldSchemaData?: FieldSchema[],
+    protected readonly fieldSchemaData: FieldSchema[],
     @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
-    protected readonly entitySchemaData?: EntitySchema[]
+    protected readonly entitySchemaData: EntitySchema[],
+    protected readonly translationService?: GetTranslationService
   ) {
-    super(repository, 'expenses', fieldSchemaData, entitySchemaData);
+    super(
+      repository,
+      'expenses',
+      fieldSchemaData,
+      entitySchemaData,
+      translationService
+    );
   }
 }

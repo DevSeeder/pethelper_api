@@ -7,6 +7,7 @@ import { ExpensesModule } from './application/module/entity/expenses.module';
 import { ExpenseCategoriesModule } from './application/module/entity/expense-categories.module';
 import { AnimalsModule } from './application/module/entity/animals.module';
 import { FieldSchemasModule } from './application/module/configuration/field-schemas.module';
+import { TranslationsModule } from './application/module/translation/translation.module';
 
 @Module({
   imports: [

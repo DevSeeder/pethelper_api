@@ -10,6 +10,7 @@ import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schem
 import { AbstractDBService } from './abstract-db.service';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { SearchEncapsulatorHelper } from '../../helper/search/search-encapsulator.helper';
+import { GetTranslationService } from '../translation/get-translation.service';
 
 export class AbstractSearchService<
   Collection,
@@ -23,10 +24,17 @@ export class AbstractSearchService<
       MongooseModel
     >,
     protected readonly entity: string,
-    protected readonly fieldSchemaData?: FieldSchema[],
-    protected readonly entitySchemaData?: EntitySchema[]
+    protected readonly fieldSchemaData: FieldSchema[] = [],
+    protected readonly entitySchemaData: EntitySchema[] = [],
+    protected readonly translationService?: GetTranslationService
   ) {
-    super(repository, entity, fieldSchemaData, entitySchemaData);
+    super(
+      repository,
+      entity,
+      fieldSchemaData,
+      entitySchemaData,
+      translationService
+    );
   }
 
   protected async buildSearchEgines(

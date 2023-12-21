@@ -19,6 +19,7 @@ import { GetExpenseService } from '../../service/entity/expenses/get-Expense.ser
 import { ExpenseCategoriesModule } from './expense-categories.module';
 import { FieldSchemasModule } from '../configuration/field-schemas.module';
 import { EntitySchemasModule } from '../configuration/entity-schemas.module';
+import { TranslationsModule } from '../translation/translation.module';
 
 @Module({
   imports: [
@@ -30,7 +31,8 @@ import { EntitySchemasModule } from '../configuration/entity-schemas.module';
     forwardRef(() => ExpensesModule),
     ExpenseCategoriesModule,
     FieldSchemasModule,
-    EntitySchemasModule
+    EntitySchemasModule,
+    TranslationsModule
   ],
   controllers: [PetsController, ExpensesController],
   providers: [

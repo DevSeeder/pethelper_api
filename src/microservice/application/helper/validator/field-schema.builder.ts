@@ -154,6 +154,10 @@ export class FieldSchemaBuilder {
         );
       case 'array':
         return search ? Joi.string() : Joi.array();
+      case 'translation':
+      case 'object':
+      case 'json':
+        return Joi.object();
       default:
         throw new InternalServerErrorException(
           `Schema type ${schema.type} not implemented`

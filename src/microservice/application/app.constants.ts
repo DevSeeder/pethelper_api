@@ -3,6 +3,7 @@ import { SearchEgineOperators } from '../domain/interface/search-engine.interfac
 // CONFIG KEYS
 export const PROJECT_KEY = 'PET_HELPER';
 export const GLOBAL_ENTITY = 'global';
+export const DEFAULT_LANG = 'pt-BR';
 
 // OPERATORS ENUMS
 export const SKIP_ENUMS_ALIAS = [SearchEgineOperators.IN];

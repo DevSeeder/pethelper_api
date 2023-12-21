@@ -10,6 +10,8 @@ import {
 } from '../../dto/response/clone.response';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
+import { GetTranslationService } from '../translation/get-translation.service';
+import { DEFAULT_LANG } from '../../app.constants';
 
 @Injectable()
 export abstract class AbstractCreateService<
@@ -24,8 +26,9 @@ export abstract class AbstractCreateService<
       MongooseModel
     >,
     protected readonly entity: string,
-    protected readonly fieldSchemaData?: FieldSchema[],
-    protected readonly entitySchemaData?: EntitySchema[]
+    protected readonly fieldSchemaData: FieldSchema[],
+    protected readonly entitySchemaData: EntitySchema[],
+    protected readonly translationService?: GetTranslationService
   ) {
     super(repository, entity, fieldSchemaData, entitySchemaData);
   }
@@ -49,8 +52,13 @@ export abstract class AbstractCreateService<
     } catch (err) {
       if (err instanceof MongoDBException) {
         if (err.errCode === 11000) {
+          const entityTranslation =
+            await this.translationService.getEntityTranslation(
+              this.entitySchema.entity,
+              DEFAULT_LANG
+            );
           throw new NotAcceptableException(
-            `${this.entitySchema.itemLabel} already exists`
+            `${entityTranslation.itemLabel} already exists`
           );
         }
       }

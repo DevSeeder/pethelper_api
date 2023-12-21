@@ -8,12 +8,14 @@ import {
 import { GetRaceService } from 'src/microservice/application/service/entity/races/get-race.service';
 import { FieldSchemasModule } from '../configuration/field-schemas.module';
 import { EntitySchemasModule } from '../configuration/entity-schemas.module';
+import { TranslationsModule } from '../translation/translation.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Race.name, schema: RacesSchema }]),
     FieldSchemasModule,
-    EntitySchemasModule
+    EntitySchemasModule,
+    TranslationsModule
   ],
   controllers: [],
   providers: [RacesRepository, GetRaceService],

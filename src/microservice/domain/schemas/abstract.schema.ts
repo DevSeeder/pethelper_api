@@ -13,4 +13,7 @@ export abstract class AbstractSchema {
 
   @Prop({ required: false })
   reasonInactivation?: string;
+
+  @Prop({ required: false, type: Object })
+  metadata?: object;
 }

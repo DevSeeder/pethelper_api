@@ -5,7 +5,7 @@ import { AbstractTranslation } from './abstract-translation.schema';
 
 export type EntityTranslationDocument = EntityTranslation & Document;
 
-@Schema({ timestamps: true, collection: 'EntityTranslations' })
+@Schema({ timestamps: true, collection: 'entityTranslations' })
 export class EntityTranslation extends AbstractTranslation {
   @Prop({ required: true })
   entityLabel: string;

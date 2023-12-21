@@ -11,6 +11,7 @@ import { CreateExpenseCategoryService } from '../../service/entity/expense-categ
 import { ExpenseCategoriesController } from 'src/microservice/adapter/controller/expense-categories.controller';
 import { FieldSchemasModule } from '../configuration/field-schemas.module';
 import { EntitySchemasModule } from '../configuration/entity-schemas.module';
+import { TranslationsModule } from '../translation/translation.module';
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { EntitySchemasModule } from '../configuration/entity-schemas.module';
       { name: ExpenseCategory.name, schema: ExpenseCategoriesSchema }
     ]),
     FieldSchemasModule,
-    EntitySchemasModule
+    EntitySchemasModule,
+    TranslationsModule
   ],
   controllers: [ExpenseCategoriesController],
   providers: [

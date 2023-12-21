@@ -8,6 +8,7 @@ import {
 import { GetAnimalGroupService } from 'src/microservice/application/service/entity/animal-groups/get-animal-group.service';
 import { FieldSchemasModule } from '../configuration/field-schemas.module';
 import { EntitySchemasModule } from '../configuration/entity-schemas.module';
+import { TranslationsModule } from '../translation/translation.module';
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import { EntitySchemasModule } from '../configuration/entity-schemas.module';
       { name: AnimalGroup.name, schema: AnimalGroupsSchema }
     ]),
     FieldSchemasModule,
-    EntitySchemasModule
+    EntitySchemasModule,
+    TranslationsModule
   ],
   controllers: [],
   providers: [AnimalGroupsRepository, GetAnimalGroupService],

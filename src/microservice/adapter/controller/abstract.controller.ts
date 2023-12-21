@@ -80,9 +80,7 @@ export abstract class AbstractController<
   // @Scopes(EnumScopes.USER)
   @Get(`/:id`)
   async getById(@Param('id') id: string): Promise<GetResponse> {
-    const item = await this.getService.getById(id);
-    if (!item) throw new NotFoundException(this.entitySchema.itemLabel);
-    return item;
+    return this.getService.getById(id, true);
   }
 
   @Get(`/search/:searchId`)

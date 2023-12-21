@@ -10,6 +10,7 @@ import { GetFieldSchemaService } from '../../configuration/field-schemas/get-fie
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
+import { GetTranslationService } from '../../translation/get-translation.service';
 
 @Injectable()
 export class GetAnimalGroupService extends AbstractGetService<
@@ -21,10 +22,17 @@ export class GetAnimalGroupService extends AbstractGetService<
   constructor(
     protected readonly repository: AnimalGroupsRepository,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
-    protected readonly fieldSchemaData?: FieldSchema[],
+    protected readonly fieldSchemaData: FieldSchema[],
     @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
-    protected readonly entitySchemaData?: EntitySchema[]
+    protected readonly entitySchemaData: EntitySchema[],
+    protected readonly translationService?: GetTranslationService
   ) {
-    super(repository, 'animalGroups', fieldSchemaData, entitySchemaData);
+    super(
+      repository,
+      'animalGroups',
+      fieldSchemaData,
+      entitySchemaData,
+      translationService
+    );
   }
 }

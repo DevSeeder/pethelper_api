@@ -31,13 +31,13 @@ export class ComparatorHelper {
     operator: CompareOperators
   ): boolean {
     switch (operator) {
-      case CompareOperators.GREATER_THEN:
+      case CompareOperators.GREATER_THAN:
         return valueA > valueB;
-      case CompareOperators.GREATER_THEN_EQUAL:
+      case CompareOperators.GREATER_THAN_EQUAL:
         return valueA >= valueB;
-      case CompareOperators.LOWER_THEN:
+      case CompareOperators.LOWER_THAN:
         return valueA < valueB;
-      case CompareOperators.LOWER_THEN_EQUAL:
+      case CompareOperators.LOWER_THAN_EQUAL:
         return valueA <= valueB;
       case CompareOperators.NOT_EQUAL:
         return valueA != valueB;
@@ -69,14 +69,14 @@ export class ComparatorHelper {
   ): string {
     const valueB = DynamicValueService.getValueMessage(value, value);
     switch (operator) {
-      case CompareOperators.GREATER_THEN:
-        return `"${key.capitalizeFirstLetter()}" must be greater then ${valueB}`;
-      case CompareOperators.GREATER_THEN_EQUAL:
-        return `"${key.capitalizeFirstLetter()}" must be greater then or equal to ${valueB}`;
-      case CompareOperators.LOWER_THEN:
-        return `"${key.capitalizeFirstLetter()}" must be lower then ${valueB}`;
-      case CompareOperators.LOWER_THEN_EQUAL:
-        return `"${key.capitalizeFirstLetter()}" must be lower then or equal to ${valueB}`;
+      case CompareOperators.GREATER_THAN:
+        return `"${key.capitalizeFirstLetter()}" must be greater than ${valueB}`;
+      case CompareOperators.GREATER_THAN_EQUAL:
+        return `"${key.capitalizeFirstLetter()}" must be greater than or equal to ${valueB}`;
+      case CompareOperators.LOWER_THAN:
+        return `"${key.capitalizeFirstLetter()}" must be lower than ${valueB}`;
+      case CompareOperators.LOWER_THAN_EQUAL:
+        return `"${key.capitalizeFirstLetter()}" must be lower than or equal to ${valueB}`;
       case CompareOperators.NOT_EQUAL:
         return `"${key.capitalizeFirstLetter()}" must be different from ${valueB}`;
       case CompareOperators.EQUAL:

@@ -12,13 +12,15 @@ import { UpdateAnimalService } from '../../service/entity/animals/update-animal.
 import { CreateAnimalService } from '../../service/entity/animals/create-animal.service';
 import { FieldSchemasModule } from '../configuration/field-schemas.module';
 import { EntitySchemasModule } from '../configuration/entity-schemas.module';
+import { TranslationsModule } from '../translation/translation.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Animal.name, schema: AnimalsSchema }]),
     AnimalGroupsModule,
     FieldSchemasModule,
-    EntitySchemasModule
+    EntitySchemasModule,
+    TranslationsModule
   ],
   controllers: [AnimalsController],
   providers: [

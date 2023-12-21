@@ -11,6 +11,7 @@ import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schem
 import { AbstractSearchService } from './abstract-search.service';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { InvalidDataException } from '@devseeder/microservices-exceptions';
+import { GetTranslationService } from '../translation/get-translation.service';
 
 @Injectable()
 export abstract class AbstractUpdateService<
@@ -31,8 +32,9 @@ export abstract class AbstractUpdateService<
       MongooseModel
     >,
     protected readonly entity: string,
-    protected readonly fieldSchemaData?: FieldSchema[],
-    protected readonly entitySchemaData?: EntitySchema[]
+    protected readonly fieldSchemaData: FieldSchema[],
+    protected readonly entitySchemaData: EntitySchema[],
+    protected readonly translationService?: GetTranslationService
   ) {
     super(repository, entity, fieldSchemaData, entitySchemaData);
   }

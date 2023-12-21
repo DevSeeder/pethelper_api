@@ -7,11 +7,16 @@ import { Relation } from 'src/microservice/domain/interface/relation.interface';
 import { SearchEgineOperators } from 'src/microservice/domain/interface/search-engine.interface';
 import { AbstractDocument } from 'src/microservice/domain/schemas/abstract.schema';
 import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.interface';
-import { VALIDATE_ID_ENUMS } from '../../app.constants';
+import {
+  DEFAULT_LANG,
+  GLOBAL_ENTITY,
+  VALIDATE_ID_ENUMS
+} from '../../app.constants';
 import { DynamicValueService } from '../dynamic/get-dynamic-value.service';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { AbstractEntityLoader } from '../../loader/abstract-entity.loader';
+import { GetTranslationService } from '../translation/get-translation.service';
 
 export class AbstractDBService<
   Collection,
@@ -24,8 +29,9 @@ export class AbstractDBService<
       MongooseModel
     >,
     protected readonly entity: string,
-    protected readonly fieldSchemaData?: FieldSchema[],
-    protected readonly entitySchemaData?: EntitySchema[]
+    protected readonly fieldSchemaData: FieldSchema[] = [],
+    protected readonly entitySchemaData: EntitySchema[] = [],
+    protected readonly translationService?: GetTranslationService
   ) {
     super(entity, fieldSchemaData, entitySchemaData);
   }
@@ -149,12 +155,18 @@ export class AbstractDBService<
 
   protected async validateId(id: string): Promise<MongooseModel> {
     let item;
+    const entityTranslation =
+      await this.translationService.getEntityTranslation(
+        this.entitySchema.entity,
+        DEFAULT_LANG
+      );
+
     try {
       item = await this.repository.findById(id);
     } catch (err) {
-      throw new NotFoundException(this.entitySchema.itemLabel);
+      throw new NotFoundException(entityTranslation.itemLabel);
     }
-    if (!item) throw new NotFoundException(this.entitySchema.itemLabel);
+    if (!item) throw new NotFoundException(entityTranslation.itemLabel);
     return item;
   }
 

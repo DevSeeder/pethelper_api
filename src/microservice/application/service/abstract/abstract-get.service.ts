@@ -12,11 +12,16 @@ import {
   PaginatedMeta,
   PaginatedResponse
 } from '../../dto/response/paginated.response';
-import { InvalidDataException } from '@devseeder/microservices-exceptions';
+import {
+  InvalidDataException,
+  NotFoundException
+} from '@devseeder/microservices-exceptions';
 import { GroupByResponse } from '../../dto/response/groupby/group-by.response';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { AbstractSearchService } from './abstract-search.service';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
+import { GetTranslationService } from '../translation/get-translation.service';
+import { DEFAULT_LANG } from '../../app.constants';
 
 @Injectable()
 export abstract class AbstractGetService<
@@ -36,8 +41,9 @@ export abstract class AbstractGetService<
       MongooseModel
     >,
     protected readonly entity: string,
-    protected readonly fieldSchemaData?: FieldSchema[],
-    protected readonly entitySchemaData?: EntitySchema[]
+    protected readonly fieldSchemaData: FieldSchema[] = [],
+    protected readonly entitySchemaData: EntitySchema[] = [],
+    protected readonly translationService?: GetTranslationService
   ) {
     super(repository, entity, fieldSchemaData, entitySchemaData);
   }
@@ -92,10 +98,18 @@ export abstract class AbstractGetService<
     return response;
   }
 
-  async getById(id: string): Promise<ResponseModel> {
+  async getById(id: string, validateError = false): Promise<ResponseModel> {
     let item;
     try {
       item = await this.repository.findById(id, { all: 0 });
+      if (!item && validateError) {
+        const entityTranslation =
+          await this.translationService.getEntityTranslation(
+            this.entitySchema.entity,
+            DEFAULT_LANG
+          );
+        throw new NotFoundException(entityTranslation.itemLabel);
+      }
     } catch (err) {
       throw new InvalidDataException('Id', id);
     }
@@ -126,25 +140,47 @@ export abstract class AbstractGetService<
       (sub) => sub.clone
     );
 
+    const entityTranslation =
+      await this.translationService.getEntityTranslation(
+        this.entitySchema.entity,
+        DEFAULT_LANG
+      );
+
     const response: FormSchemaResponse = {
       fields: arrayResponse,
-      cloneRelations: cloneRelations.map((rel) => ({
-        relation: rel.entity,
-        label: rel.label
-      })),
+      cloneRelations: await Promise.all(
+        cloneRelations.map(async (rel) => ({
+          relation: rel.entity,
+          label: (
+            await this.translationService.getFieldTranslation(
+              rel.entity,
+              rel.key,
+              DEFAULT_LANG
+            )
+          ).fieldLabel
+        }))
+      ),
       entityRefs: {
         entity: this.entitySchema.entity,
-        label: this.entitySchema.label,
+        label: entityTranslation.entityLabel,
         forbiddenMethods: this.entitySchema.forbiddenMethods
       }
     };
 
     if (page === FieldSchemaPage.SEARCH)
       response.filterOptions = {
-        orderBy: orderFields.map((field) => ({
-          key: field.key,
-          label: field.label
-        }))
+        orderBy: await Promise.all(
+          orderFields.map(async (field) => ({
+            key: field.key,
+            label: (
+              await this.translationService.getFieldTranslation(
+                this.entitySchema.entity,
+                field.key,
+                DEFAULT_LANG
+              )
+            ).fieldLabel
+          }))
+        )
       };
 
     return response;

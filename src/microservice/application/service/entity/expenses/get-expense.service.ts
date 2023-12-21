@@ -17,6 +17,7 @@ import {
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
+import { GetTranslationService } from '../../translation/get-translation.service';
 
 @Injectable()
 export class GetExpenseService extends AbstractGetService<
@@ -31,11 +32,18 @@ export class GetExpenseService extends AbstractGetService<
     protected readonly getUsersService: GetUserService,
     protected readonly getExpenseCategoriesService: GetExpenseCategoriesService,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
-    protected readonly fieldSchemaData?: FieldSchema[],
+    protected readonly fieldSchemaData: FieldSchema[],
     @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
-    protected readonly entitySchemaData?: EntitySchema[]
+    protected readonly entitySchemaData: EntitySchema[],
+    protected readonly translationService?: GetTranslationService
   ) {
-    super(repository, 'expenses', fieldSchemaData, entitySchemaData);
+    super(
+      repository,
+      'expenses',
+      fieldSchemaData,
+      entitySchemaData,
+      translationService
+    );
   }
 
   async groupByPetsAndCategory(

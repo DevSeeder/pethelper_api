@@ -9,6 +9,7 @@ import { SearchDomainDto } from '../../../dto/search/search-domain.dto';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
+import { GetTranslationService } from '../../translation/get-translation.service';
 
 @Injectable()
 export class GetExpenseCategoriesService extends AbstractGetService<
@@ -20,10 +21,17 @@ export class GetExpenseCategoriesService extends AbstractGetService<
   constructor(
     protected readonly repository: ExpenseCategoriesRepository,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
-    protected readonly fieldSchemaData?: FieldSchema[],
+    protected readonly fieldSchemaData: FieldSchema[],
     @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
-    protected readonly entitySchemaData?: EntitySchema[]
+    protected readonly entitySchemaData: EntitySchema[],
+    protected readonly translationService?: GetTranslationService
   ) {
-    super(repository, 'expenseCategories', fieldSchemaData, entitySchemaData);
+    super(
+      repository,
+      'expenseCategories',
+      fieldSchemaData,
+      entitySchemaData,
+      translationService
+    );
   }
 }
