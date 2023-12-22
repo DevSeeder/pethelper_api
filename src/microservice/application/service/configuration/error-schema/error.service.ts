@@ -48,4 +48,51 @@ export class ErrorService extends AbstractService {
       errorSchema[0].code
     );
   }
+
+  async getJoiErrors(): Promise<Record<string, string>> {
+    const joiMessages = {};
+    const joiErrors = this.errors.filter(
+      (err) =>
+        err.metadata &&
+        err.metadata['joiMessages'] &&
+        err.metadata['joiMessages'].length
+    );
+
+    for await (const err of joiErrors) {
+      const translatedMessage = err.translations.filter(
+        (tra) => tra.locale === this.translationService.getLang()
+      );
+
+      err.metadata['joiMessages'].forEach((joiMsg) => {
+        const objReplace = {
+          key: 'label',
+          value:
+            (err.metadata['joiAlias'] && err.metadata['joiAlias'].value) || '',
+          pattern:
+            (err.metadata['joiAlias'] && err.metadata['joiAlias'].pattern) || ''
+        };
+
+        let replaceMessage = translatedMessage[0].value
+          .replace('${key}', '{#label}')
+          .replace('${pattern}', `{#${objReplace.pattern}}`);
+
+        if (objReplace.value === 'type')
+          replaceMessage = replaceMessage.replace(
+            '${value}',
+            `${joiMsg.split('.')[0]}`
+          );
+        else
+          replaceMessage = replaceMessage.replace(
+            '${value}',
+            `{#${objReplace.value}}`
+          );
+
+        joiMessages[joiMsg] = replaceMessage;
+      });
+    }
+
+    console.log(joiMessages);
+
+    return joiMessages;
+  }
 }

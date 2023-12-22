@@ -40,7 +40,10 @@ export class SchemaValidator {
     obj: object,
     fieldSchemasDb: FieldSchema[] = []
   ) {
-    const { error } = schema.validate(obj);
+    const { error } = schema.validate(obj, {
+      messages: await this.errorService.getJoiErrors()
+    });
+
     if (error)
       throw new BadRequestException(
         StringHelper.capitalizeFirstLetter(error.message.replaceAll('"', ''))
