@@ -77,16 +77,25 @@ export class ErrorService extends AbstractService {
           .replace('${key}', objReplace.key)
           .replace('${pattern}', `{#${objReplace.pattern}}`);
 
-        if (objReplace.value === 'type')
-          replaceMessage = replaceMessage.replace(
-            '${value}',
-            `${joiMsg.split('.')[0]}`
-          );
-        else
-          replaceMessage = replaceMessage.replace(
-            '${value}',
-            `{#${objReplace.value}}`
-          );
+        switch (objReplace.value) {
+          case 'type':
+            replaceMessage = replaceMessage.replace(
+              '${value}',
+              `${joiMsg.split('.')[0]}`
+            );
+            break;
+          case '@empty':
+            replaceMessage = replaceMessage
+              .replace('${value}', '')
+              .replace("'' ", '');
+            break;
+          default:
+            replaceMessage = replaceMessage.replace(
+              '${value}',
+              `{#${objReplace.value}}`
+            );
+            break;
+        }
 
         joiMessages[joiMsg] = replaceMessage;
       });
