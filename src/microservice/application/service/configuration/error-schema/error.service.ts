@@ -62,7 +62,6 @@ export class ErrorService extends AbstractService {
       const translatedMessage = err.translations.filter(
         (tra) => tra.locale === this.translationService.getLang()
       );
-
       err.metadata['joiMessages'].forEach((joiMsg) => {
         const objReplace = {
           key: 'label',
@@ -90,8 +89,6 @@ export class ErrorService extends AbstractService {
         joiMessages[joiMsg] = replaceMessage;
       });
     }
-
-    console.log(joiMessages);
 
     return joiMessages;
   }

@@ -170,16 +170,11 @@ export abstract class AbstractCreateService<
 
     const mapKeys = Object.values(objIndexes).map((key) => key[0][0]);
     const randomId = StringHelper.generateRandomString(7);
-    console.log(this.entitySchema.copyFields);
-    console.log(bodyCreate);
 
     [...mapKeys, ...(this.entitySchema.copyFields || [])].forEach((key) => {
       if (typeof bodyCreate[key] == 'string')
         bodyCreate[key] = `${bodyCreate[key]}(copy ${randomId})`;
     });
-
-    console.log(bodyCreate[this.entitySchema.copyFields[0]]);
-    console.log([...mapKeys, ...(this.entitySchema.copyFields || [])]);
 
     delete bodyCreate['_id'];
     delete bodyCreate['createdAt'];
