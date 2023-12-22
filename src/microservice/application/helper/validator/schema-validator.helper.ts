@@ -11,12 +11,16 @@ import { ComparatorHelper } from './comparator.helper';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { SearchEncapsulatorHelper } from '../search/search-encapsulator.helper';
 import { ErrorService } from '../../service/configuration/error-schema/error.service';
+import { GetTranslationService } from '../../service/translation/get-translation.service';
 
 export class SchemaValidator {
   private logger = new Logger(SchemaValidator.name);
-  constructor(private readonly errorService: ErrorService) {}
+  constructor(
+    private readonly errorService: ErrorService,
+    private readonly translationService: GetTranslationService
+  ) {}
 
-  validateSchema(
+  async validateSchema(
     schema: ObjectSchema,
     obj: object,
     fieldSchemasDb: FieldSchema[] = [],
@@ -26,12 +30,12 @@ export class SchemaValidator {
       return this.validateSingleSchema(schema, obj, fieldSchemasDb);
     const arrToValidate = SearchEncapsulatorHelper.cleanToValidateSchema(obj);
     this.logger.log(`Array To Validate: ${JSON.stringify(arrToValidate)}`);
-    arrToValidate.forEach((objItem) => {
-      this.validateSingleSchema(schema, objItem, fieldSchemasDb);
-    });
+
+    for await (const objItem of arrToValidate)
+      await this.validateSingleSchema(schema, objItem, fieldSchemasDb);
   }
 
-  validateSingleSchema(
+  async validateSingleSchema(
     schema: ObjectSchema,
     obj: object,
     fieldSchemasDb: FieldSchema[] = []
@@ -42,16 +46,15 @@ export class SchemaValidator {
         StringHelper.capitalizeFirstLetter(error.message.replaceAll('"', ''))
       );
 
-    fieldSchemasDb
-      .filter(
-        (field) =>
-          obj[field.key] !== undefined &&
-          field.validations &&
-          field.validations.length
-      )
-      .forEach((fieldSchema) => {
-        this.executeValidationField(fieldSchema, obj);
-      });
+    const validationSchemas = fieldSchemasDb.filter(
+      (field) =>
+        obj[field.key] !== undefined &&
+        field.validations &&
+        field.validations.length
+    );
+
+    for await (const fieldSchema of validationSchemas)
+      await this.executeValidationField(fieldSchema, obj);
   }
 
   validateEnum(values: any[]): any {
@@ -63,8 +66,13 @@ export class SchemaValidator {
     };
   }
 
-  executeValidationField(schema: FieldItemSchema, item: object) {
-    schema.validations.forEach((val) => {
+  async executeValidationField(
+    schema: FieldItemSchema,
+    item: object
+  ): Promise<void> {
+    if (!schema.validations || !schema.validations.length) return;
+
+    for await (const val of schema.validations) {
       const value = DynamicValueService.getDynamicValue(
         val.value,
         val.value,
@@ -77,15 +85,19 @@ export class SchemaValidator {
         schema.type
       );
 
-      if (!isValid)
-        throw new NotAcceptableException(
-          ComparatorHelper.getCompareErrorMessage(
-            schema.key,
-            val.value,
-            val.operator
-          )
+      if (!isValid) {
+        const compHelper = new ComparatorHelper(
+          this.errorService,
+          this.translationService,
+          [schema.entity]
         );
-    });
+        await compHelper.getComparatorError(
+          schema.key,
+          val.value,
+          val.operator
+        );
+      }
+    }
   }
 
   static removeUndefined<FilteredObject>(obj: object): FilteredObject {

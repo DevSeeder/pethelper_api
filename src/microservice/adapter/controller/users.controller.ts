@@ -24,6 +24,7 @@ import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schem
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { ErrorService } from 'src/microservice/application/service/configuration/error-schema/error.service';
+import { GetTranslationService } from 'src/microservice/application/service/translation/get-translation.service';
 
 @Controller('users')
 export class UsersController extends AbstractController<
@@ -40,7 +41,8 @@ export class UsersController extends AbstractController<
     protected readonly fieldSchemaData?: FieldSchema[],
     @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
     protected readonly entitySchemaData?: EntitySchema[],
-    protected readonly errorService?: ErrorService
+    protected readonly errorService?: ErrorService,
+    protected readonly translationService?: GetTranslationService
   ) {
     super(
       'users',
@@ -49,7 +51,8 @@ export class UsersController extends AbstractController<
       null,
       fieldSchemaData,
       entitySchemaData,
-      errorService
+      errorService,
+      translationService
     );
   }
 

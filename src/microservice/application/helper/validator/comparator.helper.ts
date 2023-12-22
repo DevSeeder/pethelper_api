@@ -1,7 +1,16 @@
 import { CompareOperators } from 'src/microservice/domain/interface/search-engine.interface';
 import { DynamicValueService } from '../../service/dynamic/get-dynamic-value.service';
+import { ErrorService } from '../../service/configuration/error-schema/error.service';
+import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
+import { GetTranslationService } from '../../service/translation/get-translation.service';
 
 export class ComparatorHelper {
+  constructor(
+    private readonly errorService: ErrorService,
+    private readonly translationService: GetTranslationService,
+    private readonly entityLabels = []
+  ) {}
+
   static compare(
     valueA: any,
     valueB: any,
@@ -62,49 +71,61 @@ export class ComparatorHelper {
     }
   }
 
-  static getCompareErrorMessage(
+  async getComparatorError(
     key: string,
     value: any,
     operator: CompareOperators
-  ): string {
+  ): Promise<void> {
     const valueB = DynamicValueService.getValueMessage(value, value);
+    const compKey = await this.translationService.getFieldTranslation(
+      this.entityLabels,
+      key
+    );
     switch (operator) {
       case CompareOperators.GREATER_THAN:
-        return `"${key.capitalizeFirstLetter()}" must be greater than ${valueB}`;
       case CompareOperators.GREATER_THAN_EQUAL:
-        return `"${key.capitalizeFirstLetter()}" must be greater than or equal to ${valueB}`;
       case CompareOperators.LOWER_THAN:
-        return `"${key.capitalizeFirstLetter()}" must be lower than ${valueB}`;
       case CompareOperators.LOWER_THAN_EQUAL:
-        return `"${key.capitalizeFirstLetter()}" must be lower than or equal to ${valueB}`;
       case CompareOperators.NOT_EQUAL:
-        return `"${key.capitalizeFirstLetter()}" must be different from ${valueB}`;
       case CompareOperators.EQUAL:
-        return `"${key.capitalizeFirstLetter()}" must be equal to ${valueB}`;
-      case CompareOperators.IN:
-        return `"${key.capitalizeFirstLetter()}" must be in this values '${valueB.join(
-          ', '
-        )}'`;
-      case CompareOperators.NOT_IN:
-        return `"${key.capitalizeFirstLetter()}" must not be in this values '${valueB.join(
-          ', '
-        )}'`;
       case CompareOperators.LIKE:
-        return `"${key.capitalizeFirstLetter()}" must contain this word '${valueB}'`;
-      case CompareOperators.BETWEEN:
-        return `"${key.capitalizeFirstLetter()}" must be between ${
-          valueB[0]
-        } and ${valueB[1]}`;
       case CompareOperators.BEGINS_WITH:
-        return `"${key.capitalizeFirstLetter()}" must begins with '${valueB}'`;
       case CompareOperators.ENDS_WITH:
-        return `"${key.capitalizeFirstLetter()}" must ends with '${valueB}'`;
       case CompareOperators.CONTAINS:
-        return `"${key.capitalizeFirstLetter()}" must contains this value '${valueB}'`;
       case CompareOperators.NOT_CONTAINS:
-        return `"${key.capitalizeFirstLetter()}" must not contains this value '${valueB}'`;
+        this.errorService.throwError(
+          this.getEnumKeyByEnumValue<ErrorKeys>(CompareOperators, operator),
+          {
+            key: compKey.fieldLabel,
+            value: valueB
+          }
+        );
+        break;
+      case CompareOperators.IN:
+      case CompareOperators.NOT_IN:
+      case CompareOperators.BETWEEN:
+        this.errorService.throwError(
+          this.getEnumKeyByEnumValue<ErrorKeys>(CompareOperators, operator),
+          {
+            key: compKey.fieldLabel,
+            value: valueB.join(',')
+          }
+        );
       default:
-        return `Invalid ${key.capitalizeFirstLetter()}`;
+        this.errorService.throwError(ErrorKeys.INVALID_DATA, {
+          key: 'Comparator',
+          value: compKey.fieldLabel
+        });
     }
+  }
+
+  getEnumKeyByEnumValue<EnumType>(
+    myEnum: any,
+    enumValue: string
+  ): EnumType | null {
+    const keys = Object.keys(myEnum).filter(
+      (x) => myEnum[x as unknown as string] == enumValue
+    );
+    return keys.length > 0 ? (keys[0] as EnumType) : null;
   }
 }

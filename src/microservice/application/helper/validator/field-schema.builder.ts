@@ -19,11 +19,18 @@ import { InvalidDataException } from '@devseeder/microservices-exceptions';
 import { SKIP_ENUMS, SKIP_ENUMS_ALIAS } from '../../app.constants';
 import { ErrorService } from '../../service/configuration/error-schema/error.service';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
+import { GetTranslationService } from '../../service/translation/get-translation.service';
 
 export class FieldSchemaBuilder {
   private schemaValidator: SchemaValidator;
-  constructor(protected readonly errorService: ErrorService) {
-    this.schemaValidator = new SchemaValidator(errorService);
+  constructor(
+    protected readonly errorService: ErrorService,
+    private readonly translationService: GetTranslationService
+  ) {
+    this.schemaValidator = new SchemaValidator(
+      errorService,
+      translationService
+    );
   }
 
   buildSchemas(fieldSchema: FieldItemSchema[]): InputSchema {

@@ -29,6 +29,7 @@ import { ActivationQueryParams } from 'src/microservice/application/dto/query/ac
 import { AbstractSchema } from 'src/microservice/domain/schemas/abstract.schema';
 import { ErrorService } from 'src/microservice/application/service/configuration/error-schema/error.service';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
+import { GetTranslationService } from 'src/microservice/application/service/translation/get-translation.service';
 
 export abstract class AbstractController<
   Collection,
@@ -63,15 +64,20 @@ export abstract class AbstractController<
     >,
     protected readonly fieldSchemaData?: FieldSchema[],
     protected readonly entitySchemaData?: EntitySchema[],
-    protected readonly errorService?: ErrorService
+    protected readonly errorService?: ErrorService,
+    protected readonly translationService?: GetTranslationService
   ) {
     super(entity, fieldSchemaData, entitySchemaData);
 
-    this.inputSchema = new FieldSchemaBuilder(errorService).buildSchemas(
-      this.fieldSchemaDb
-    );
+    this.inputSchema = new FieldSchemaBuilder(
+      errorService,
+      translationService
+    ).buildSchemas(this.fieldSchemaDb);
 
-    this.schemaValidator = new SchemaValidator(errorService);
+    this.schemaValidator = new SchemaValidator(
+      errorService,
+      translationService
+    );
   }
 
   // @UseGuards(MyJwtAuthGuard)
@@ -82,7 +88,7 @@ export abstract class AbstractController<
   }
 
   @Get(`/search/:searchId`)
-  searchBy(
+  async searchBy(
     @Query() params: SearchParams,
     @Param('searchId') searchId: string
   ): Promise<PaginatedResponse<GetResponse>> {
@@ -93,7 +99,7 @@ export abstract class AbstractController<
         key: this.entitySchema.searchKey
       });
 
-    this.schemaValidator.validateSchema(
+    await this.schemaValidator.validateSchema(
       this.inputSchema.search,
       params,
       [],
@@ -107,10 +113,10 @@ export abstract class AbstractController<
   }
 
   @Get(`/`)
-  searchAll(
+  async searchAll(
     @Query() params: SearchParams
   ): Promise<PaginatedResponse<GetResponse>> {
-    this.schemaValidator.validateSchema(
+    await this.schemaValidator.validateSchema(
       this.inputSchema.search,
       params,
       [],
@@ -120,8 +126,8 @@ export abstract class AbstractController<
   }
 
   @Get(`/meta/count`)
-  count(@Query() params: SearchParams): Promise<CountResponse> {
-    this.schemaValidator.validateSchema(
+  async count(@Query() params: SearchParams): Promise<CountResponse> {
+    await this.schemaValidator.validateSchema(
       this.inputSchema.count,
       params,
       [],
@@ -136,7 +142,7 @@ export abstract class AbstractController<
     @Query() queryParams: ActivationQueryParams
   ): Promise<void> {
     this.isMethodAllowed('inactivate');
-    this.schemaValidator.validateSchema(
+    await this.schemaValidator.validateSchema(
       this.inputSchema.activation,
       queryParams
     );
@@ -153,7 +159,7 @@ export abstract class AbstractController<
     @Query() queryParams: ActivationQueryParams
   ): Promise<void> {
     this.isMethodAllowed('activate');
-    this.schemaValidator.validateSchema(
+    await this.schemaValidator.validateSchema(
       this.inputSchema.activation,
       queryParams
     );
@@ -166,7 +172,7 @@ export abstract class AbstractController<
     @Body() body: BodyDto
   ): Promise<void> {
     this.isMethodAllowed('updateById');
-    this.schemaValidator.validateSchema(
+    await this.schemaValidator.validateSchema(
       this.inputSchema.update,
       body,
       this.fieldSchemaDb
@@ -180,13 +186,13 @@ export abstract class AbstractController<
     @Body() body: BodyDto
   ): Promise<void> {
     this.isMethodAllowed('updateBy');
-    this.schemaValidator.validateSchema(
+    await this.schemaValidator.validateSchema(
       this.inputSchema.search,
       params,
       [],
       true
     );
-    this.schemaValidator.validateSchema(
+    await this.schemaValidator.validateSchema(
       this.inputSchema.update,
       body,
       this.fieldSchemaDb
@@ -197,7 +203,7 @@ export abstract class AbstractController<
   @Post(`/`)
   async create(@Body() body: BodyDto): Promise<{ _id: ObjectId }> {
     this.isMethodAllowed('create');
-    this.schemaValidator.validateSchema(
+    await this.schemaValidator.validateSchema(
       this.inputSchema.create,
       body,
       this.fieldSchemaDb
@@ -216,7 +222,7 @@ export abstract class AbstractController<
     @Body() body: ClonyOneBodyDto
   ): Promise<CloneOneResponse> {
     this.isMethodAllowed('cloneById');
-    this.schemaValidator.validateSchema(
+    await this.schemaValidator.validateSchema(
       this.inputSchema.cloneOne,
       body,
       this.fieldSchemaDb
@@ -235,7 +241,7 @@ export abstract class AbstractController<
     body: ClonyManyBodyDto
   ): Promise<CloneManyResponse> {
     this.isMethodAllowed('cloneManyByIds');
-    this.schemaValidator.validateSchema(
+    await this.schemaValidator.validateSchema(
       this.inputSchema.cloneMany,
       body,
       this.fieldSchemaDb
@@ -248,12 +254,12 @@ export abstract class AbstractController<
   }
 
   @Get(`/groupby/:relation`)
-  groupBy(
+  async groupBy(
     @Param('relation') relation: string,
     @Query() params: SearchParams
   ): Promise<GroupByResponse[]> {
     this.isMethodAllowed('groupby');
-    this.schemaValidator.validateSchema(
+    await this.schemaValidator.validateSchema(
       this.inputSchema.groupBy,
       params,
       [],

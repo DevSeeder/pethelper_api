@@ -29,6 +29,7 @@ export class ErrorService extends AbstractService {
     }
   ): void {
     const lang = this.translationService.getLang();
+    this.logger.log(`Error Key: ${errorKey}`);
     const errorSchema = this.errors.filter((err) => err.key === errorKey);
 
     if (!errorSchema.length) throw new NotFoundException('Error Schema');
