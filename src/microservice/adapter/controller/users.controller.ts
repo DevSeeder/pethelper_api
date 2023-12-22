@@ -23,6 +23,7 @@ import { UpdateUserService } from 'src/microservice/application/service/entity/u
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
+import { ErrorService } from 'src/microservice/application/service/configuration/error-schema/error.service';
 
 @Controller('users')
 export class UsersController extends AbstractController<
@@ -38,7 +39,8 @@ export class UsersController extends AbstractController<
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
     protected readonly fieldSchemaData?: FieldSchema[],
     @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
-    protected readonly entitySchemaData?: EntitySchema[]
+    protected readonly entitySchemaData?: EntitySchema[],
+    protected readonly errorService?: ErrorService
   ) {
     super(
       'users',
@@ -46,7 +48,8 @@ export class UsersController extends AbstractController<
       updateUserService,
       null,
       fieldSchemaData,
-      entitySchemaData
+      entitySchemaData,
+      errorService
     );
   }
 

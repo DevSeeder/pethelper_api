@@ -13,6 +13,7 @@ import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { GetTranslationService } from '../../translation/get-translation.service';
+import { ErrorService } from '../../configuration/error-schema/error.service';
 
 @Injectable()
 export class UpdateAnimalService extends AbstractUpdateService<
@@ -29,14 +30,16 @@ export class UpdateAnimalService extends AbstractUpdateService<
     protected readonly fieldSchemaData: FieldSchema[],
     @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
     protected readonly entitySchemaData: EntitySchema[],
-    protected readonly translationService?: GetTranslationService
+    protected readonly translationService?: GetTranslationService,
+    protected readonly errorService?: ErrorService
   ) {
     super(
       repository,
       'animals',
       fieldSchemaData,
       entitySchemaData,
-      translationService
+      translationService,
+      errorService
     );
   }
 }

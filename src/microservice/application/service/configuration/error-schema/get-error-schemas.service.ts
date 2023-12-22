@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ErrorSchemasRepository } from 'src/microservice/adapter/repository/config-schemas/error-schemas.repository';
-import { PROJECT_KEY } from '../../../app.constants';
+import { GLOBAL_ENTITY, PROJECT_KEY } from '../../../app.constants';
 import { AbstractService } from '@devseeder/nestjs-microservices-commons';
 import { ErrorSchema } from 'src/microservice/domain/schemas/configuration-schemas/error-schemas.schema';
 
@@ -12,7 +12,9 @@ export class GetErrorSchemaService extends AbstractService {
   async getAll(): Promise<ErrorSchema[]> {
     const itens = await this.repository.find(
       {
-        projectKey: PROJECT_KEY
+        projectKey: {
+          $in: [GLOBAL_ENTITY, PROJECT_KEY]
+        }
       },
       { projectKey: 0 },
       { order: 1 },

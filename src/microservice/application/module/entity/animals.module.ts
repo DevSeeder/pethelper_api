@@ -13,6 +13,7 @@ import { CreateAnimalService } from '../../service/entity/animals/create-animal.
 import { FieldSchemasModule } from '../configuration/field-schemas.module';
 import { EntitySchemasModule } from '../configuration/entity-schemas.module';
 import { TranslationsModule } from '../translation/translation.module';
+import { ErrorSchemasModule } from '../configuration/error-schemas.module';
 
 @Module({
   imports: [
@@ -20,7 +21,8 @@ import { TranslationsModule } from '../translation/translation.module';
     AnimalGroupsModule,
     FieldSchemasModule,
     EntitySchemasModule,
-    TranslationsModule
+    TranslationsModule,
+    ErrorSchemasModule
   ],
   controllers: [AnimalsController],
   providers: [

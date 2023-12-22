@@ -15,6 +15,7 @@ import { FieldSchemasModule } from '../configuration/field-schemas.module';
 import { UpdateUserService } from '../../service/entity/users/update-user.service';
 import { EntitySchemasModule } from '../configuration/entity-schemas.module';
 import { TranslationsModule } from '../translation/translation.module';
+import { ErrorSchemasModule } from '../configuration/error-schemas.module';
 
 @Module({
   imports: [
@@ -27,7 +28,8 @@ import { TranslationsModule } from '../translation/translation.module';
     // HttpModule,
     FieldSchemasModule,
     EntitySchemasModule,
-    TranslationsModule
+    TranslationsModule,
+    ErrorSchemasModule
   ],
   controllers: [UsersController],
   providers: [

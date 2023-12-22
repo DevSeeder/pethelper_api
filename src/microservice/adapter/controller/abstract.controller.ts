@@ -1,14 +1,4 @@
-import { NotFoundException } from '@devseeder/microservices-exceptions';
-import {
-  BadRequestException,
-  Body,
-  ForbiddenException,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Query
-} from '@nestjs/common';
+import { Body, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { Search } from 'src/microservice/application/dto/search/search.dto';
 import { SchemaValidator } from 'src/microservice/application/helper/validator/schema-validator.helper';
 import { AbstractGetService } from 'src/microservice/application/service/abstract/abstract-get.service';
@@ -37,6 +27,8 @@ import { EntitySchema } from 'src/microservice/domain/schemas/configuration-sche
 import { AbstractEntityLoader } from './abstract-entity.loader';
 import { ActivationQueryParams } from 'src/microservice/application/dto/query/activation-query-params.dto';
 import { AbstractSchema } from 'src/microservice/domain/schemas/abstract.schema';
+import { ErrorService } from 'src/microservice/application/service/configuration/error-schema/error.service';
+import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 
 export abstract class AbstractController<
   Collection,
@@ -46,6 +38,7 @@ export abstract class AbstractController<
   BodyDto extends AbstractBodyDto
 > extends AbstractEntityLoader {
   protected inputSchema: InputSchema;
+  protected schemaValidator: SchemaValidator;
 
   constructor(
     protected readonly entity: string,
@@ -69,11 +62,16 @@ export abstract class AbstractController<
       BodyDto
     >,
     protected readonly fieldSchemaData?: FieldSchema[],
-    protected readonly entitySchemaData?: EntitySchema[]
+    protected readonly entitySchemaData?: EntitySchema[],
+    protected readonly errorService?: ErrorService
   ) {
     super(entity, fieldSchemaData, entitySchemaData);
 
-    this.inputSchema = FieldSchemaBuilder.buildSchemas(this.fieldSchemaDb);
+    this.inputSchema = new FieldSchemaBuilder(errorService).buildSchemas(
+      this.fieldSchemaDb
+    );
+
+    this.schemaValidator = new SchemaValidator(errorService);
   }
 
   // @UseGuards(MyJwtAuthGuard)
@@ -91,11 +89,16 @@ export abstract class AbstractController<
     this.isMethodAllowed('searchBy');
 
     if (params[this.entitySchema.searchKey] !== undefined)
-      throw new BadRequestException(
-        `'${this.entitySchema.searchKey}' is not allowed.`
-      );
+      this.errorService.throwError(ErrorKeys.NOT_ALLOWED, {
+        key: this.entitySchema.searchKey
+      });
 
-    SchemaValidator.validateSchema(this.inputSchema.search, params, [], true);
+    this.schemaValidator.validateSchema(
+      this.inputSchema.search,
+      params,
+      [],
+      true
+    );
 
     if (this.entitySchema.searchKey)
       params[this.entitySchema.searchKey] = searchId;
@@ -107,13 +110,23 @@ export abstract class AbstractController<
   searchAll(
     @Query() params: SearchParams
   ): Promise<PaginatedResponse<GetResponse>> {
-    SchemaValidator.validateSchema(this.inputSchema.search, params, [], true);
+    this.schemaValidator.validateSchema(
+      this.inputSchema.search,
+      params,
+      [],
+      true
+    );
     return this.getService.search(params);
   }
 
   @Get(`/meta/count`)
   count(@Query() params: SearchParams): Promise<CountResponse> {
-    SchemaValidator.validateSchema(this.inputSchema.count, params, [], true);
+    this.schemaValidator.validateSchema(
+      this.inputSchema.count,
+      params,
+      [],
+      true
+    );
     return this.getService.count(params);
   }
 
@@ -123,7 +136,10 @@ export abstract class AbstractController<
     @Query() queryParams: ActivationQueryParams
   ): Promise<void> {
     this.isMethodAllowed('inactivate');
-    SchemaValidator.validateSchema(this.inputSchema.activation, queryParams);
+    this.schemaValidator.validateSchema(
+      this.inputSchema.activation,
+      queryParams
+    );
     await this.updateService.activation(
       id,
       false,
@@ -137,7 +153,10 @@ export abstract class AbstractController<
     @Query() queryParams: ActivationQueryParams
   ): Promise<void> {
     this.isMethodAllowed('activate');
-    SchemaValidator.validateSchema(this.inputSchema.activation, queryParams);
+    this.schemaValidator.validateSchema(
+      this.inputSchema.activation,
+      queryParams
+    );
     await this.updateService.activation(id, true, queryParams.cascadeRelations);
   }
 
@@ -147,7 +166,7 @@ export abstract class AbstractController<
     @Body() body: BodyDto
   ): Promise<void> {
     this.isMethodAllowed('updateById');
-    SchemaValidator.validateSchema(
+    this.schemaValidator.validateSchema(
       this.inputSchema.update,
       body,
       this.fieldSchemaDb
@@ -161,8 +180,13 @@ export abstract class AbstractController<
     @Body() body: BodyDto
   ): Promise<void> {
     this.isMethodAllowed('updateBy');
-    SchemaValidator.validateSchema(this.inputSchema.search, params, [], true);
-    SchemaValidator.validateSchema(
+    this.schemaValidator.validateSchema(
+      this.inputSchema.search,
+      params,
+      [],
+      true
+    );
+    this.schemaValidator.validateSchema(
       this.inputSchema.update,
       body,
       this.fieldSchemaDb
@@ -173,7 +197,7 @@ export abstract class AbstractController<
   @Post(`/`)
   async create(@Body() body: BodyDto): Promise<{ _id: ObjectId }> {
     this.isMethodAllowed('create');
-    SchemaValidator.validateSchema(
+    this.schemaValidator.validateSchema(
       this.inputSchema.create,
       body,
       this.fieldSchemaDb
@@ -192,7 +216,7 @@ export abstract class AbstractController<
     @Body() body: ClonyOneBodyDto
   ): Promise<CloneOneResponse> {
     this.isMethodAllowed('cloneById');
-    SchemaValidator.validateSchema(
+    this.schemaValidator.validateSchema(
       this.inputSchema.cloneOne,
       body,
       this.fieldSchemaDb
@@ -211,7 +235,7 @@ export abstract class AbstractController<
     body: ClonyManyBodyDto
   ): Promise<CloneManyResponse> {
     this.isMethodAllowed('cloneManyByIds');
-    SchemaValidator.validateSchema(
+    this.schemaValidator.validateSchema(
       this.inputSchema.cloneMany,
       body,
       this.fieldSchemaDb
@@ -229,7 +253,12 @@ export abstract class AbstractController<
     @Query() params: SearchParams
   ): Promise<GroupByResponse[]> {
     this.isMethodAllowed('groupby');
-    SchemaValidator.validateSchema(this.inputSchema.groupBy, params, [], true);
+    this.schemaValidator.validateSchema(
+      this.inputSchema.groupBy,
+      params,
+      [],
+      true
+    );
     return this.getService.groupBy(relation, params);
   }
 
@@ -238,6 +267,7 @@ export abstract class AbstractController<
     const notAllowed = this.entitySchema.forbiddenMethods.filter(
       (m) => m === method
     );
-    if (notAllowed.length) throw new ForbiddenException('Method not allowed');
+    if (notAllowed.length)
+      this.errorService.throwError(ErrorKeys.METHOD_NOT_ALLOWED);
   }
 }

@@ -125,7 +125,10 @@ export abstract class AbstractGetService<
 
   async getForm(page: string): Promise<FormSchemaResponse> {
     const fields = this.fieldSchemaDb.filter((field) =>
-      FieldSchemaBuilder.getFormFilterCondition(page, field)
+      new FieldSchemaBuilder(this.errorService).getFormFilterCondition(
+        page,
+        field
+      )
     );
     const orderFields = this.fieldSchemaDb.filter((fields) => fields.orderBy);
     const arrayResponse = [];

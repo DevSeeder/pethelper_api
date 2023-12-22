@@ -7,12 +7,15 @@ import {
 } from 'src/microservice/domain/schemas/configuration-schemas/error-schemas.schema';
 import { DependecyTokens } from '../../app.constants';
 import { GetErrorSchemaService } from '../../service/configuration/error-schema/get-error-schemas.service';
+import { ErrorService } from '../../service/configuration/error-schema/error.service';
+import { TranslationsModule } from '../translation/translation.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: ErrorSchema.name, schema: ErrorSchemasSchema }
-    ])
+    ]),
+    TranslationsModule
   ],
   controllers: [],
   providers: [
@@ -24,11 +27,13 @@ import { GetErrorSchemaService } from '../../service/configuration/error-schema/
         return await dataService.getAll(); // Método que busca os dados no banco
       },
       inject: [GetErrorSchemaService]
-    }
+    },
+    ErrorService
   ],
   exports: [
     ErrorSchemasRepository,
     GetErrorSchemaService,
+    ErrorService,
     DependecyTokens.ERROR_SCHEMA_DB
   ]
 })

@@ -16,6 +16,7 @@ import { SchemaValidator } from 'src/microservice/application/helper/validator/s
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
+import { ErrorService } from 'src/microservice/application/service/configuration/error-schema/error.service';
 
 @Controller('expenses')
 export class ExpensesController extends AbstractController<
@@ -32,7 +33,8 @@ export class ExpensesController extends AbstractController<
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
     protected readonly fieldSchemaData?: FieldSchema[],
     @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
-    protected readonly entitySchemaData?: EntitySchema[]
+    protected readonly entitySchemaData?: EntitySchema[],
+    protected readonly errorService?: ErrorService
   ) {
     super(
       'expenses',
@@ -40,7 +42,8 @@ export class ExpensesController extends AbstractController<
       updateService,
       createService,
       fieldSchemaData,
-      entitySchemaData
+      entitySchemaData,
+      errorService
     );
   }
 
@@ -48,7 +51,7 @@ export class ExpensesController extends AbstractController<
   groupByPetsAndCategory(
     @Query() params: SearchExpenseDto
   ): Promise<GroupExpensesByPetAndCategoryResponse[]> {
-    SchemaValidator.validateSchema(this.inputSchema.search, params);
+    this.schemaValidator.validateSchema(this.inputSchema.search, params);
     return this.getService.groupByPetsAndCategory(params);
   }
 
@@ -56,7 +59,7 @@ export class ExpensesController extends AbstractController<
   groupByCategoryAndPet(
     @Query() params: SearchExpenseDto
   ): Promise<GroupExpensesByPetAndCategoryResponse[]> {
-    SchemaValidator.validateSchema(this.inputSchema.search, params);
+    this.schemaValidator.validateSchema(this.inputSchema.search, params);
     return this.getService.groupByCategoryAndPet(params);
   }
 }

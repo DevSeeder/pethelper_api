@@ -12,6 +12,7 @@ import { ExpenseCategoriesController } from 'src/microservice/adapter/controller
 import { FieldSchemasModule } from '../configuration/field-schemas.module';
 import { EntitySchemasModule } from '../configuration/entity-schemas.module';
 import { TranslationsModule } from '../translation/translation.module';
+import { ErrorSchemasModule } from '../configuration/error-schemas.module';
 
 @Module({
   imports: [
@@ -20,7 +21,8 @@ import { TranslationsModule } from '../translation/translation.module';
     ]),
     FieldSchemasModule,
     EntitySchemasModule,
-    TranslationsModule
+    TranslationsModule,
+    ErrorSchemasModule
   ],
   controllers: [ExpenseCategoriesController],
   providers: [

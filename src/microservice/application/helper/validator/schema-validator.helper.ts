@@ -10,28 +10,28 @@ import { DynamicValueService } from '../../service/dynamic/get-dynamic-value.ser
 import { ComparatorHelper } from './comparator.helper';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { SearchEncapsulatorHelper } from '../search/search-encapsulator.helper';
+import { ErrorService } from '../../service/configuration/error-schema/error.service';
 
 export class SchemaValidator {
-  static logger = new Logger(SchemaValidator.name);
+  private logger = new Logger(SchemaValidator.name);
+  constructor(private readonly errorService: ErrorService) {}
 
-  static validateSchema(
+  validateSchema(
     schema: ObjectSchema,
     obj: object,
     fieldSchemasDb: FieldSchema[] = [],
     encapsulate = false
   ) {
     if (!encapsulate)
-      return SchemaValidator.validateSingleSchema(schema, obj, fieldSchemasDb);
+      return this.validateSingleSchema(schema, obj, fieldSchemasDb);
     const arrToValidate = SearchEncapsulatorHelper.cleanToValidateSchema(obj);
-    SchemaValidator.logger.log(
-      `Array To Validate: ${JSON.stringify(arrToValidate)}`
-    );
+    this.logger.log(`Array To Validate: ${JSON.stringify(arrToValidate)}`);
     arrToValidate.forEach((objItem) => {
-      SchemaValidator.validateSingleSchema(schema, objItem, fieldSchemasDb);
+      this.validateSingleSchema(schema, objItem, fieldSchemasDb);
     });
   }
 
-  static validateSingleSchema(
+  validateSingleSchema(
     schema: ObjectSchema,
     obj: object,
     fieldSchemasDb: FieldSchema[] = []
@@ -50,11 +50,11 @@ export class SchemaValidator {
           field.validations.length
       )
       .forEach((fieldSchema) => {
-        SchemaValidator.executeValidationField(fieldSchema, obj);
+        this.executeValidationField(fieldSchema, obj);
       });
   }
 
-  static validateEnum(values: any[]): any {
+  validateEnum(values: any[]): any {
     return (value, helpers) => {
       if (!values.includes(value)) {
         return helpers.error('any.invalid');
@@ -63,7 +63,7 @@ export class SchemaValidator {
     };
   }
 
-  static executeValidationField(schema: FieldItemSchema, item: object) {
+  executeValidationField(schema: FieldItemSchema, item: object) {
     schema.validations.forEach((val) => {
       const value = DynamicValueService.getDynamicValue(
         val.value,

@@ -17,34 +17,29 @@ import {
 import { SearchEgineOperators } from 'src/microservice/domain/interface/search-engine.interface';
 import { InvalidDataException } from '@devseeder/microservices-exceptions';
 import { SKIP_ENUMS, SKIP_ENUMS_ALIAS } from '../../app.constants';
+import { ErrorService } from '../../service/configuration/error-schema/error.service';
+import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 
 export class FieldSchemaBuilder {
-  static buildSchemas(fieldSchema: FieldItemSchema[]): InputSchema {
+  private schemaValidator: SchemaValidator;
+  constructor(protected readonly errorService: ErrorService) {
+    this.schemaValidator = new SchemaValidator(errorService);
+  }
+
+  buildSchemas(fieldSchema: FieldItemSchema[]): InputSchema {
     return {
-      search: FieldSchemaBuilder.buildSearchSchema(
-        fieldSchema,
-        commonSearchSchema
-      ),
-      update: FieldSchemaBuilder.buildUpdateSchema(fieldSchema),
-      create: FieldSchemaBuilder.buildCreateSchema(fieldSchema),
-      cloneOne: FieldSchemaBuilder.buildCloneSchema(
-        fieldSchema,
-        singleCloneSchema
-      ),
-      cloneMany: FieldSchemaBuilder.buildCloneSchema(
-        fieldSchema,
-        manyCloneSchema
-      ),
-      count: FieldSchemaBuilder.buildSearchSchema(fieldSchema),
-      groupBy: FieldSchemaBuilder.buildSearchSchema(
-        fieldSchema,
-        commonGroupBySchema
-      ),
+      search: this.buildSearchSchema(fieldSchema, commonSearchSchema),
+      update: this.buildUpdateSchema(fieldSchema),
+      create: this.buildCreateSchema(fieldSchema),
+      cloneOne: this.buildCloneSchema(fieldSchema, singleCloneSchema),
+      cloneMany: this.buildCloneSchema(fieldSchema, manyCloneSchema),
+      count: this.buildSearchSchema(fieldSchema),
+      groupBy: this.buildSearchSchema(fieldSchema, commonGroupBySchema),
       activation: Joi.object({ ...commonActivationSchema })
     };
   }
 
-  static buildSearchSchema(
+  buildSearchSchema(
     fieldSchema: FieldItemSchema[],
     commons: SchemaMap = {}
   ): ObjectSchema {
@@ -53,76 +48,66 @@ export class FieldSchemaBuilder {
     fieldSchema
       .filter((field) => field.allowed.search)
       .forEach((schema) => {
-        if (FieldSchemaBuilder.buildSearchEngine(schema, objectSchema)) return;
+        if (this.buildSearchEngine(schema, objectSchema)) return;
 
-        const joiSchema = FieldSchemaBuilder.getType(Joi, schema, true);
+        const joiSchema = this.getType(Joi, schema, true);
 
         if (schema.type === 'enum')
           objectSchema[schema.key] = joiSchema
             .optional()
-            .custom(SchemaValidator.validateEnum(schema.enumValues));
+            .custom(this.schemaValidator.validateEnum(schema.enumValues));
         else objectSchema[schema.key] = joiSchema.optional();
       });
     return Joi.object({ ...commons, ...objectSchema });
   }
 
-  static buildUpdateSchema(fieldSchema: FieldItemSchema[]): ObjectSchema {
-    return Joi.object(FieldSchemaBuilder.buildObjectUpdate(fieldSchema));
+  buildUpdateSchema(fieldSchema: FieldItemSchema[]): ObjectSchema {
+    return Joi.object(this.buildObjectUpdate(fieldSchema));
   }
 
-  static buildCloneSchema(
+  buildCloneSchema(
     fieldSchema: FieldItemSchema[],
     cloneSchema: SchemaMap
   ): ObjectSchema {
     return Joi.object({
       ...cloneSchema,
-      replaceBody: FieldSchemaBuilder.buildObjectUpdate(fieldSchema)
+      replaceBody: this.buildObjectUpdate(fieldSchema)
     });
   }
 
-  static buildObjectUpdate(fieldSchema: FieldItemSchema[]): SchemaMap {
+  buildObjectUpdate(fieldSchema: FieldItemSchema[]): SchemaMap {
     const objectSchema: SchemaMap = {};
 
     fieldSchema
       .filter((field) => field.allowed.update)
       .forEach((schema) => {
-        const joiSchema = FieldSchemaBuilder.getType(
-          Joi,
-          schema,
-          false,
-          schema?.array
-        );
+        const joiSchema = this.getType(Joi, schema, false, schema?.array);
         if (schema.type === 'enum')
           objectSchema[schema.key] = joiSchema
             .optional()
-            .custom(SchemaValidator.validateEnum(schema.enumValues));
+            .custom(this.schemaValidator.validateEnum(schema.enumValues));
         else objectSchema[schema.key] = joiSchema.optional();
       });
     return objectSchema;
   }
 
-  static buildCreateSchema(fieldSchema: FieldItemSchema[]): ObjectSchema {
+  buildCreateSchema(fieldSchema: FieldItemSchema[]): ObjectSchema {
     const objectSchema: SchemaMap = {};
 
     fieldSchema.forEach((schema) => {
-      let joiSchema = FieldSchemaBuilder.getType(
-        Joi,
-        schema,
-        false,
-        schema?.array
-      );
+      let joiSchema = this.getType(Joi, schema, false, schema?.array);
       joiSchema = schema.required ? joiSchema.required() : joiSchema.optional();
 
       if (schema.type === 'enum')
         objectSchema[schema.key] = joiSchema
           .optional()
-          .custom(SchemaValidator.validateEnum(schema.enumValues));
+          .custom(this.schemaValidator.validateEnum(schema.enumValues));
       else objectSchema[schema.key] = joiSchema.optional();
     });
     return Joi.object(objectSchema);
   }
 
-  static getType(
+  getType(
     Joi: Root,
     schema: FieldItemSchema,
     search = false,
@@ -159,23 +144,21 @@ export class FieldSchemaBuilder {
       case 'json':
         return Joi.object();
       default:
-        throw new InternalServerErrorException(
-          `Schema type ${schema.type} not implemented`
-        );
+        this.errorService.throwError(ErrorKeys.NOT_IMPLEMENTED, {
+          key: 'Schema type',
+          value: schema.type
+        });
     }
   }
 
-  static buildSearchEngine(
-    schema: FieldItemSchema,
-    objectSchema: SchemaMap
-  ): boolean {
+  buildSearchEngine(schema: FieldItemSchema, objectSchema: SchemaMap): boolean {
     if (!schema?.searchEgines) return false;
 
     let ignoreOriginalKey = false;
 
     if (schema?.searchEgines.includes(SearchEgineOperators.BETWEEN)) {
-      const start = FieldSchemaBuilder.getType(Joi, schema, true);
-      const end = FieldSchemaBuilder.getType(Joi, schema, true);
+      const start = this.getType(Joi, schema, true);
+      const end = this.getType(Joi, schema, true);
       objectSchema[`${schema.key}_start`] = start.optional();
       objectSchema[`${schema.key}_end`] = end.optional();
       ignoreOriginalKey = true;
@@ -184,14 +167,14 @@ export class FieldSchemaBuilder {
     Object.values(SearchEgineOperators).forEach((op) => {
       if (SKIP_ENUMS.includes(op)) return;
       ignoreOriginalKey = false;
-      const joiSchema = FieldSchemaBuilder.getType(Joi, schema, true);
+      const joiSchema = this.getType(Joi, schema, true);
       objectSchema[`${schema.key}_${op}`] = joiSchema.optional();
     });
 
     return ignoreOriginalKey;
   }
 
-  static getFormFilterCondition(page: string, field: FieldItemSchema): boolean {
+  getFormFilterCondition(page: string, field: FieldItemSchema): boolean {
     switch (page) {
       case FieldSchemaPage.SEARCH:
         return field.allowed.search;
@@ -200,7 +183,10 @@ export class FieldSchemaBuilder {
       case FieldSchemaPage.CREATE:
         return true;
       default:
-        throw new InvalidDataException('page', page);
+        this.errorService.throwError(ErrorKeys.INVALID_DATA, {
+          key: 'page',
+          value: page
+        });
     }
   }
 

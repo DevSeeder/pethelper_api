@@ -17,6 +17,7 @@ import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schem
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { GetTranslationService } from '../../translation/get-translation.service';
+import { ErrorService } from '../../configuration/error-schema/error.service';
 
 @Injectable()
 export class CreatePetService extends AbstractCreateService<
@@ -37,14 +38,16 @@ export class CreatePetService extends AbstractCreateService<
     protected readonly fieldSchemaData: FieldSchema[],
     @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
     protected readonly entitySchemaData: EntitySchema[],
-    protected readonly translationService?: GetTranslationService
+    protected readonly translationService?: GetTranslationService,
+    protected readonly errorService?: ErrorService
   ) {
     super(
       repository,
       'pets',
       fieldSchemaData,
       entitySchemaData,
-      translationService
+      translationService,
+      errorService
     );
   }
 }

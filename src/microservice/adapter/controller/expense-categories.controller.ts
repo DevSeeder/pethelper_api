@@ -12,6 +12,7 @@ import { CreateExpenseCategoryService } from 'src/microservice/application/servi
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
+import { ErrorService } from 'src/microservice/application/service/configuration/error-schema/error.service';
 
 @Controller('expensecategories')
 export class ExpenseCategoriesController extends AbstractController<
@@ -28,7 +29,8 @@ export class ExpenseCategoriesController extends AbstractController<
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
     protected readonly fieldSchemaData?: FieldSchema[],
     @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
-    protected readonly entitySchemaData?: EntitySchema[]
+    protected readonly entitySchemaData?: EntitySchema[],
+    protected readonly errorService?: ErrorService
   ) {
     super(
       'expenseCategories',
@@ -36,7 +38,8 @@ export class ExpenseCategoriesController extends AbstractController<
       updateService,
       createService,
       fieldSchemaData,
-      entitySchemaData
+      entitySchemaData,
+      errorService
     );
   }
 }

@@ -13,6 +13,7 @@ import { CreatePetService } from 'src/microservice/application/service/entity/pe
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
+import { ErrorService } from 'src/microservice/application/service/configuration/error-schema/error.service';
 
 @Controller('pets')
 export class PetsController extends AbstractController<
@@ -29,7 +30,8 @@ export class PetsController extends AbstractController<
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
     protected readonly fieldSchemaData?: FieldSchema[],
     @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
-    protected readonly entitySchemaData?: EntitySchema[]
+    protected readonly entitySchemaData?: EntitySchema[],
+    protected readonly errorService?: ErrorService
   ) {
     super(
       'pets',
@@ -37,7 +39,8 @@ export class PetsController extends AbstractController<
       updateService,
       createService,
       fieldSchemaData,
-      entitySchemaData
+      entitySchemaData,
+      errorService
     );
   }
 }

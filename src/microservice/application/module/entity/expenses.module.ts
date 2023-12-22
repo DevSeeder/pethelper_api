@@ -15,6 +15,7 @@ import { CreateExpenseService } from '../../service/entity/expenses/create-expen
 import { FieldSchemasModule } from '../configuration/field-schemas.module';
 import { EntitySchemasModule } from '../configuration/entity-schemas.module';
 import { TranslationsModule } from '../translation/translation.module';
+import { ErrorSchemasModule } from '../configuration/error-schemas.module';
 
 @Module({
   imports: [
@@ -24,7 +25,8 @@ import { TranslationsModule } from '../translation/translation.module';
     ExpenseCategoriesModule,
     FieldSchemasModule,
     EntitySchemasModule,
-    TranslationsModule
+    TranslationsModule,
+    ErrorSchemasModule
   ],
   controllers: [ExpensesController],
   providers: [

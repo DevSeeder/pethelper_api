@@ -9,13 +9,15 @@ import { GetColorService } from 'src/microservice/application/service/entity/col
 import { FieldSchemasModule } from '../configuration/field-schemas.module';
 import { EntitySchemasModule } from '../configuration/entity-schemas.module';
 import { TranslationsModule } from '../translation/translation.module';
+import { ErrorSchemasModule } from '../configuration/error-schemas.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Color.name, schema: ColorsSchema }]),
     FieldSchemasModule,
     EntitySchemasModule,
-    TranslationsModule
+    TranslationsModule,
+    ErrorSchemasModule
   ],
   controllers: [],
   providers: [ColorsRepository, GetColorService],
