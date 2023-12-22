@@ -64,7 +64,9 @@ export class ErrorService extends AbstractService {
       );
       err.metadata['joiMessages'].forEach((joiMsg) => {
         const objReplace = {
-          key: 'label',
+          key: err.metadata['joiFieldTranslation']
+            ? '@translate({#label})'
+            : '{#label}',
           value:
             (err.metadata['joiAlias'] && err.metadata['joiAlias'].value) || '',
           pattern:
@@ -72,7 +74,7 @@ export class ErrorService extends AbstractService {
         };
 
         let replaceMessage = translatedMessage[0].value
-          .replace('${key}', '{#label}')
+          .replace('${key}', objReplace.key)
           .replace('${pattern}', `{#${objReplace.pattern}}`);
 
         if (objReplace.value === 'type')

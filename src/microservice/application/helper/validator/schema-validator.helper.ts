@@ -3,7 +3,7 @@ import {
   Logger,
   NotAcceptableException
 } from '@nestjs/common';
-import { ObjectSchema, number } from 'joi';
+import { ObjectSchema, ValidationError, number } from 'joi';
 import { StringHelper } from '../types/string.helper';
 import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.interface';
 import { DynamicValueService } from '../../service/dynamic/get-dynamic-value.service';
@@ -27,7 +27,8 @@ export class SchemaValidator {
     encapsulate = false
   ) {
     if (!encapsulate)
-      return this.validateSingleSchema(schema, obj, fieldSchemasDb);
+      await this.validateSingleSchema(schema, obj, fieldSchemasDb);
+
     const arrToValidate = SearchEncapsulatorHelper.cleanToValidateSchema(obj);
     this.logger.log(`Array To Validate: ${JSON.stringify(arrToValidate)}`);
 
@@ -44,10 +45,7 @@ export class SchemaValidator {
       messages: await this.errorService.getJoiErrors()
     });
 
-    if (error)
-      throw new BadRequestException(
-        StringHelper.capitalizeFirstLetter(error.message.replaceAll('"', ''))
-      );
+    if (error) await this.printSchemaError(error, fieldSchemasDb);
 
     const validationSchemas = fieldSchemasDb.filter(
       (field) =>
@@ -101,6 +99,38 @@ export class SchemaValidator {
         );
       }
     }
+  }
+
+  private async printSchemaError(
+    error: ValidationError,
+    fieldSchemas: FieldSchema[]
+  ): Promise<void> {
+    this.logger.error(JSON.stringify(error));
+
+    let message = error.message;
+
+    const translate = StringHelper.extractKey(
+      error.message,
+      /@translate\(([^)]+)\)/
+    );
+
+    if (translate) {
+      const translateKey = translate.replaceAll('"', '');
+
+      const fieldTranslation =
+        await this.translationService.getFieldTranslation(
+          [fieldSchemas.filter((sch) => sch.key === translateKey)[0].entity],
+          translateKey
+        );
+      message = message.replaceAll(
+        `@translate(${translate})`,
+        fieldTranslation.fieldLabel
+      );
+    }
+
+    throw new BadRequestException(
+      StringHelper.capitalizeFirstLetter(message.replaceAll('"', ''))
+    );
   }
 
   static removeUndefined<FilteredObject>(obj: object): FilteredObject {

@@ -104,12 +104,11 @@ export class FieldSchemaBuilder {
     fieldSchema.forEach((schema) => {
       let joiSchema = this.getType(Joi, schema, false, schema?.array);
       joiSchema = schema.required ? joiSchema.required() : joiSchema.optional();
-
       if (schema.type === 'enum')
         objectSchema[schema.key] = joiSchema
           .optional()
           .custom(this.schemaValidator.validateEnum(schema.enumValues));
-      else objectSchema[schema.key] = joiSchema.optional();
+      else objectSchema[schema.key] = joiSchema;
     });
     return Joi.object(objectSchema);
   }

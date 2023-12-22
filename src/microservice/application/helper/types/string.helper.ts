@@ -21,4 +21,13 @@ export class StringHelper {
 
     return str.replace(/\$\{(\w+)\}/g, (match, token) => data[token] || match);
   }
+
+  static extractKey(
+    str: string,
+    pattern: RegExp,
+    matchIndex = 1
+  ): string | null {
+    const match = str.match(pattern);
+    return match ? match[matchIndex] : null;
+  }
 }
