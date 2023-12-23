@@ -14,6 +14,7 @@ import { SearchEncapsulatorHelper } from '../search/search-encapsulator.helper';
 import { ErrorService } from '../../service/configuration/error-schema/error.service';
 import { GetTranslationService } from '../../service/translation/get-translation.service';
 import { CustomErrorException } from '@devseeder/microservices-exceptions';
+import { ErrorSchemaException } from 'src/core/exceptions/error-schema.exception';
 
 export class SchemaValidator {
   private logger = new Logger(SchemaValidator.name);
@@ -130,10 +131,15 @@ export class SchemaValidator {
       );
     }
 
-    throw new CustomErrorException(
+    const errorSchema = this.errorService.getJoiErrorByType(
+      error['details'][0].type
+    );
+
+    throw new ErrorSchemaException(
       StringHelper.capitalizeFirstLetter(message.replaceAll('"', '')),
-      HttpStatus.NOT_ACCEPTABLE,
-      422
+      errorSchema.httpStatus,
+      errorSchema.code,
+      errorSchema.name
     );
   }
 

@@ -9,6 +9,7 @@ import {
 } from '@devseeder/microservices-exceptions';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 import { StringHelper } from 'src/microservice/application/helper/types/string.helper';
+import { ErrorSchemaException } from 'src/core/exceptions/error-schema.exception';
 
 @Injectable()
 export class ErrorService extends AbstractService {
@@ -42,10 +43,11 @@ export class ErrorService extends AbstractService {
 
     if (errorTranslation.length) messageError = errorTranslation[0].value;
 
-    throw new CustomErrorException(
+    throw new ErrorSchemaException(
       StringHelper.replaceTemplateObject(messageError, errorProps),
       errorSchema[0].httpStatus,
-      errorSchema[0].code
+      errorSchema[0].code,
+      errorSchema[0].name
     );
   }
 
@@ -103,5 +105,14 @@ export class ErrorService extends AbstractService {
     }
 
     return joiMessages;
+  }
+
+  getJoiErrorByType(type: string): ErrorSchema {
+    return this.errors.filter(
+      (err) =>
+        err.metadata &&
+        err.metadata['joiMessages'] &&
+        err.metadata['joiMessages'].includes(type)
+    )[0];
   }
 }
