@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  HttpStatus,
   Logger,
   NotAcceptableException
 } from '@nestjs/common';
@@ -12,6 +13,7 @@ import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schem
 import { SearchEncapsulatorHelper } from '../search/search-encapsulator.helper';
 import { ErrorService } from '../../service/configuration/error-schema/error.service';
 import { GetTranslationService } from '../../service/translation/get-translation.service';
+import { CustomErrorException } from '@devseeder/microservices-exceptions';
 
 export class SchemaValidator {
   private logger = new Logger(SchemaValidator.name);
@@ -128,8 +130,10 @@ export class SchemaValidator {
       );
     }
 
-    throw new BadRequestException(
-      StringHelper.capitalizeFirstLetter(message.replaceAll('"', ''))
+    throw new CustomErrorException(
+      StringHelper.capitalizeFirstLetter(message.replaceAll('"', '')),
+      HttpStatus.NOT_ACCEPTABLE,
+      422
     );
   }
 
