@@ -11,6 +11,7 @@ import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schem
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { GetTranslationService } from '../../translation/get-translation.service';
 import { ErrorService } from '../../configuration/error-schema/error.service';
+import { UpdateExpenseCategoryService } from './update-expense-category.service';
 
 @Injectable()
 export class CreateExpenseCategoryService extends AbstractCreateService<
@@ -21,6 +22,7 @@ export class CreateExpenseCategoryService extends AbstractCreateService<
 > {
   constructor(
     protected readonly repository: ExpenseCategoriesRepository,
+    protected readonly updateService: UpdateExpenseCategoryService,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
     protected readonly fieldSchemaData: FieldSchema[],
     @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
@@ -31,6 +33,7 @@ export class CreateExpenseCategoryService extends AbstractCreateService<
     super(
       repository,
       'expenseCategories',
+      updateService,
       fieldSchemaData,
       entitySchemaData,
       translationService,

@@ -1,4 +1,7 @@
-import { MongooseRepository } from '@devseeder/nestjs-microservices-commons';
+import {
+  DateHelper,
+  MongooseRepository
+} from '@devseeder/nestjs-microservices-commons';
 import {
   BadRequestException,
   ConflictException,
@@ -13,6 +16,7 @@ import { EntitySchema } from 'src/microservice/domain/schemas/configuration-sche
 import { GetTranslationService } from '../translation/get-translation.service';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 import { ErrorService } from '../configuration/error-schema/error.service';
+import { InactivationReason } from 'src/microservice/domain/enum/inactivation-reason.enum';
 
 @Injectable()
 export abstract class AbstractUpdateService<
@@ -61,9 +65,15 @@ export abstract class AbstractUpdateService<
   async activation(
     id: string,
     activation: boolean,
-    cascadeRelations = ''
+    cascadeRelations = '',
+    reason = InactivationReason.MANUAL
   ): Promise<void> {
-    const body: Partial<AbstractSchema> = { active: activation };
+    const body: Partial<AbstractSchema> = {
+      active: activation,
+      inactivationReason: !activation ? reason : null,
+      inactivationDate: !activation ? DateHelper.getDateNow() : null
+    };
+
     await this.updateById(id, body);
     if (!cascadeRelations.length) return;
 

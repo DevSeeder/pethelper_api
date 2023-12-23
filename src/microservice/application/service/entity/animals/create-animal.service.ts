@@ -13,6 +13,7 @@ import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schem
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { GetTranslationService } from '../../translation/get-translation.service';
 import { ErrorService } from '../../configuration/error-schema/error.service';
+import { UpdateAnimalService } from './update-animal.service';
 
 @Injectable()
 export class CreateAnimalService extends AbstractCreateService<
@@ -23,6 +24,7 @@ export class CreateAnimalService extends AbstractCreateService<
 > {
   constructor(
     protected readonly repository: AnimalsRepository,
+    protected readonly updateService: UpdateAnimalService,
     protected readonly getAnimalGroupsService: GetAnimalGroupService,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
     protected readonly fieldSchemaData: FieldSchema[],
@@ -34,6 +36,7 @@ export class CreateAnimalService extends AbstractCreateService<
     super(
       repository,
       'animals',
+      updateService,
       fieldSchemaData,
       entitySchemaData,
       translationService,

@@ -1,4 +1,4 @@
-import { Injectable, NotAcceptableException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { AbstractDBService } from './abstract-db.service';
 import { MongoDBException } from '@devseeder/microservices-exceptions';
 import { ObjectId } from 'mongoose';
@@ -11,29 +11,48 @@ import {
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { GetTranslationService } from '../translation/get-translation.service';
-import { DEFAULT_LANG } from '../../app.constants';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 import { ErrorService } from '../configuration/error-schema/error.service';
+import { RollbackCloneService } from '../rollback/rollback-clone.service';
+import { AbstractSchema } from 'src/microservice/domain/schemas/abstract.schema';
+import { AbstractUpdateService } from './abstract-update.service';
+import { Search } from '@devseeder/nestjs-microservices-commons';
 
 @Injectable()
 export abstract class AbstractCreateService<
   Collection,
-  MongooseModel,
+  MongooseModel extends AbstractSchema,
   ResponseModel,
   BodyDto
 > extends AbstractDBService<Collection, MongooseModel, ResponseModel> {
+  protected readonly rollbackService: RollbackCloneService<
+    Collection,
+    MongooseModel,
+    ResponseModel,
+    BodyDto
+  >;
+
   constructor(
     protected readonly repository: AbstractRepository<
       Collection,
       MongooseModel
     >,
     protected readonly entity: string,
+    protected readonly updateService: AbstractUpdateService<
+      Collection,
+      MongooseModel,
+      ResponseModel,
+      BodyDto,
+      Search
+    >,
     protected readonly fieldSchemaData: FieldSchema[],
     protected readonly entitySchemaData: EntitySchema[],
     protected readonly translationService?: GetTranslationService,
     protected readonly errorService?: ErrorService
   ) {
     super(repository, entity, fieldSchemaData, entitySchemaData);
+
+    this.rollbackService = new RollbackCloneService(updateService, this.entity);
   }
 
   async create(body: BodyDto): Promise<{ _id: ObjectId }> {
@@ -94,7 +113,16 @@ export abstract class AbstractCreateService<
       ...cloneBody
     } as BodyDto);
 
-    await this.cloneRelations(id, insertedId._id.toString(), relationsToClone);
+    try {
+      await this.cloneRelations(
+        id,
+        insertedId._id.toString(),
+        relationsToClone
+      );
+    } catch (err) {
+      await this.rollbackService.rollbackClone(insertedId._id.toString());
+      throw err;
+    }
 
     return insertedId;
   }
@@ -161,6 +189,7 @@ export abstract class AbstractCreateService<
         );
       }
       this.logger.log(`Relation '${rel.service}' successfully cloned!`);
+      throw new Error('any error teste');
     }
   }
 

@@ -15,6 +15,7 @@ import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { GetTranslationService } from '../../translation/get-translation.service';
 import { ErrorService } from '../../configuration/error-schema/error.service';
+import { UpdateExpenseService } from './update-expense.service';
 
 @Injectable()
 export class CreateExpenseService extends AbstractCreateService<
@@ -25,6 +26,7 @@ export class CreateExpenseService extends AbstractCreateService<
 > {
   constructor(
     protected readonly repository: ExpensesRepository,
+    protected readonly updateService: UpdateExpenseService,
     protected readonly getPetsService: GetPetService,
     protected readonly getExpenseCategoriesService: GetExpenseCategoriesService,
     protected readonly getUsersService: GetUserService,
@@ -38,6 +40,7 @@ export class CreateExpenseService extends AbstractCreateService<
     super(
       repository,
       'expenses',
+      updateService,
       fieldSchemaData,
       entitySchemaData,
       translationService,
