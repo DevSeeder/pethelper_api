@@ -76,7 +76,10 @@ export class ComparatorHelper {
     value: any,
     operator: CompareOperators
   ): Promise<void> {
-    const valueB = DynamicValueService.getValueMessage(value, value);
+    const valueB = new DynamicValueService(
+      this.translationService
+    ).getValueMessage(value, value);
+
     const compKey = await this.translationService.getFieldTranslation(
       this.entityLabels,
       key

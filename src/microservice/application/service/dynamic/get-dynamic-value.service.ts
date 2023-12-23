@@ -1,8 +1,11 @@
 import { DynamicValuesEnum } from 'src/microservice/domain/enum/dynamic-values.enum';
 import { DateHelper } from '../../helper/types/date.helper';
 import { DEFAULT_LANG } from '../../app.constants';
+import { GetTranslationService } from '../translation/get-translation.service';
 
 export class DynamicValueService {
+  constructor(protected readonly translationService: GetTranslationService) {}
+
   static getDynamicValue(
     dynamicValue: DynamicValuesEnum,
     value: any,
@@ -25,28 +28,18 @@ export class DynamicValueService {
         return value;
     }
   }
-  static getValueMessage(
-    dynamicValue: DynamicValuesEnum,
-    value: any,
-    lang = DEFAULT_LANG
-  ): any {
+
+  getValueMessage(dynamicValue: DynamicValuesEnum, value: any): any {
     if (typeof dynamicValue !== 'string') return value;
 
     if (value.startsWith('$')) return value.replace('$', '');
 
     switch (dynamicValue) {
       case DynamicValuesEnum.CUR_DATETIME:
-        if (lang === 'pt-BR') return 'Data e hora atual';
-        return 'Actual Datetime';
       case DynamicValuesEnum.CUR_DATE:
-        if (lang === 'pt-BR') return 'Data atual';
-        return 'Actual Date';
       case DynamicValuesEnum.CUR_TIME:
-        if (lang === 'pt-BR') return 'Hora atual';
-        return 'Actual Time';
       case DynamicValuesEnum.CUR_USER:
-        if (lang === 'pt-BR') return 'Usuário atual';
-        return 'Actual User';
+        return this.translationService.getServiceKeyTranslation(dynamicValue);
       default:
         return value;
     }

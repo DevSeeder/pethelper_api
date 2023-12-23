@@ -79,9 +79,10 @@ export class ErrorService extends AbstractService {
 
         switch (objReplace.value) {
           case 'type':
+            const type = joiMsg.split('.')[0];
             replaceMessage = replaceMessage.replace(
               '${value}',
-              `${joiMsg.split('.')[0]}`
+              `${this.translationService.getServiceKeyTranslation(type)}`
             );
             break;
           case '@empty':
