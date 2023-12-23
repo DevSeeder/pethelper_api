@@ -135,14 +135,25 @@ export abstract class AbstractCreateService<
     this.logger.log(`Cloning ${this.entitySchema.itemLabel} '${ids}'...`);
     const arrClone: ObjectId[] = [];
 
-    for await (const id of ids) {
-      const insertedId = await this.clone(
-        id,
-        true,
-        relationsToClone,
-        cloneBody
+    try {
+      for await (const id of ids) {
+        const insertedId = await this.clone(
+          id,
+          true,
+          relationsToClone,
+          cloneBody
+        );
+        arrClone.push(insertedId._id);
+      }
+    } catch (err) {
+      this.logger.error(
+        `Error while clonning, starting rollback for all itens`
       );
-      arrClone.push(insertedId._id);
+      for await (const cloneId of arrClone) {
+        await this.rollbackService.rollbackClone(cloneId.toString());
+      }
+      this.logger.error('Rollback finished for all itens');
+      throw err;
     }
 
     return { _ids: arrClone };
@@ -189,7 +200,6 @@ export abstract class AbstractCreateService<
         );
       }
       this.logger.log(`Relation '${rel.service}' successfully cloned!`);
-      throw new Error('any error teste');
     }
   }
 
