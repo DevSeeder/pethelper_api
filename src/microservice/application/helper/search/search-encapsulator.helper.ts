@@ -7,8 +7,9 @@ export class SearchEncapsulatorHelper {
     const objIndex = [];
 
     const regex = /^(and|or)\d+_/;
+    const regexParent = /^\$parent\.\w+\.\w+$/;
     Object.keys(obj).forEach((key) => {
-      if (!regex.test(key)) {
+      if (!regex.test(key) && !regexParent.test(key)) {
         notEncapObj[key] = obj[key];
         return;
       }

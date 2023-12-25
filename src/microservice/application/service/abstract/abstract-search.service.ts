@@ -1,9 +1,7 @@
-import { InvalidDataException } from '@devseeder/microservices-exceptions';
 import { MongooseRepository } from '@devseeder/nestjs-microservices-commons';
 import { SearchEgineOperators } from 'src/microservice/domain/interface/search-engine.interface';
 import { SchemaValidator } from '../../helper/validator/schema-validator.helper';
 import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.interface';
-import { BadRequestException, Inject } from '@nestjs/common';
 import { Search } from '../../dto/search/search.dto';
 import { FieldSchemaBuilder } from '../../helper/validator/field-schema.builder';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
@@ -201,8 +199,9 @@ export class AbstractSearchService<
     await this.convertRelation(
       searchParams as unknown as Partial<MongooseModel>
     );
-
-    return await this.buildSearchEgines(searchParams);
+    const searchEngs = await this.buildSearchEgines(searchParams);
+    await this.joinParentSearch(searchEngs as SearchParams);
+    return searchEngs;
   }
 
   protected validateOrderField(
@@ -241,5 +240,44 @@ export class AbstractSearchService<
 
     this.logger.log(`Sorting ${JSON.stringify(sortObj)}...`);
     return { sort: sortObj, sortExternal, hasExternal };
+  }
+
+  async joinParentSearch(searchParams: SearchParams): Promise<SearchParams> {
+    const keys = Object.keys(searchParams).filter((key) =>
+      key.startsWith('$parent.')
+    );
+
+    for await (const key of keys) {
+      const splitKey = key.split('.');
+      this.logger.log(`Relation: ${splitKey[1]} && Key: ${splitKey[2]}`);
+      const relation = this.fieldSchemaDb.filter(
+        (field) =>
+          field.externalRelation &&
+          field.externalRelation.service === splitKey[1]
+      );
+
+      if (!relation.length)
+        this.errorService.throwError(ErrorKeys.INVALID_DATA, {
+          key: 'Relation',
+          value: splitKey[1]
+        });
+
+      const parentItems = await this[
+        `get${relation[0].externalRelation.service.capitalizeFirstLetter()}Service`
+      ].search(
+        {
+          [splitKey[2]]: searchParams[key],
+          select: 'name'
+        },
+        false,
+        false
+      );
+      searchParams[relation[0].key] = {
+        $in: parentItems.items.map((item) => item._id)
+      };
+      delete searchParams[key];
+    }
+
+    return searchParams;
   }
 }

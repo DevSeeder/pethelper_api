@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  HttpStatus,
-  Logger,
-  NotAcceptableException
-} from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { ObjectSchema, ValidationError, number } from 'joi';
 import { StringHelper } from '../types/string.helper';
 import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.interface';

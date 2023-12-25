@@ -36,7 +36,7 @@ export class AbstractDBService<
     item: Partial<MongooseModel> | Partial<AbstractDocument>,
     validateInput = true
   ): Promise<ResponseModel> {
-    if (!item || Object.keys(item)) return null;
+    if (!item || !Object.keys(item).length) return null;
 
     const relations = this.fieldSchemaDb.filter(
       (schema) => schema.type === 'externalId'
@@ -45,6 +45,7 @@ export class AbstractDBService<
     for await (const schema of relations) {
       await this.convertRelationItem(schema, item, itemResponse, validateInput);
     }
+
     return this.getDynamicValues(itemResponse) as ResponseModel;
   }
 
