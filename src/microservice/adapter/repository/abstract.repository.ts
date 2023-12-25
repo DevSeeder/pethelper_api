@@ -9,10 +9,7 @@ export abstract class AbstractRepository<
   Collection,
   CollectionDocument
 > extends MongooseRepository<Collection, CollectionDocument> {
-  constructor(
-    model: Model<CollectionDocument>,
-    protected readonly connection: Connection
-  ) {
+  constructor(model: Model<CollectionDocument>) {
     super(model);
   }
 
