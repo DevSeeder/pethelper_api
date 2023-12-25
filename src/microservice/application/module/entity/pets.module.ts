@@ -1,6 +1,5 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { PetsController } from 'src/microservice/adapter/controller/pets.controller';
 import { PetsRepository } from 'src/microservice/adapter/repository/entity/pets.repository';
 import {
   Pet,
@@ -21,6 +20,7 @@ import { FieldSchemasModule } from '../configuration/field-schemas.module';
 import { EntitySchemasModule } from '../configuration/entity-schemas.module';
 import { TranslationsModule } from '../translation/translation.module';
 import { ErrorSchemasModule } from '../configuration/error-schemas.module';
+import { PetsController } from '../../../adapter/controller/pets.controller';
 
 @Module({
   imports: [

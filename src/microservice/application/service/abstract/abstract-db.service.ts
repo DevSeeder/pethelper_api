@@ -33,15 +33,17 @@ export class AbstractDBService<
   }
 
   protected async convertRelation(
-    item: Partial<MongooseModel> | Partial<AbstractDocument>
+    item: Partial<MongooseModel> | Partial<AbstractDocument>,
+    validateInput = true
   ): Promise<ResponseModel> {
-    if (!item) return null;
+    if (!item || Object.keys(item)) return null;
+
     const relations = this.fieldSchemaDb.filter(
       (schema) => schema.type === 'externalId'
     );
     const itemResponse = { ...item } as unknown as ResponseModel;
     for await (const schema of relations) {
-      await this.convertRelationItem(schema, item, itemResponse);
+      await this.convertRelationItem(schema, item, itemResponse, validateInput);
     }
     return this.getDynamicValues(itemResponse) as ResponseModel;
   }
@@ -49,7 +51,8 @@ export class AbstractDBService<
   private async convertRelationItem(
     schema: FieldItemSchema,
     item: Partial<MongooseModel> | Partial<AbstractDocument>,
-    itemResponse: ResponseModel
+    itemResponse: ResponseModel,
+    validateInput = true
   ) {
     const rel: Relation = {
       key: schema.key,
@@ -85,7 +88,7 @@ export class AbstractDBService<
 
     itemResponse[rel.key] = {
       id: value,
-      value: await this.convertValueRelation(rel, value)
+      value: await this.convertValueRelation(rel, value, validateInput)
     };
   }
 
@@ -127,7 +130,8 @@ export class AbstractDBService<
 
   protected async convertValueRelation(
     rel: Relation,
-    value: string
+    value: string,
+    validateInput = true
   ): Promise<any> {
     if (!value) return null;
 
@@ -146,11 +150,14 @@ export class AbstractDBService<
 
     const objKey = rel.repoKey ? rel.repoKey : 'name';
 
-    if (objValue === null || objValue === undefined)
+    if (objValue === null || objValue === undefined) {
+      if (!validateInput) return value;
+
       this.errorService.throwError(ErrorKeys.INVALID_DATA, {
         key: await this.getFieldTranslation(rel.key),
         value
       });
+    }
 
     let valueRelation = objValue[objKey];
 

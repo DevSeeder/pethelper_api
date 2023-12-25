@@ -227,12 +227,12 @@ export abstract class AbstractController<
       body,
       this.fieldSchemaDb
     );
-    return this.createService.clone(
-      id,
-      true,
+    const response = await this.createService.cloneByIds(
+      [id],
       body.cloneRelations,
       body.replaceBody
     );
+    return response[0];
   }
 
   @Post(`/clone`)

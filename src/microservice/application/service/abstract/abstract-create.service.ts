@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { AbstractDBService } from './abstract-db.service';
 import { MongoDBException } from '@devseeder/microservices-exceptions';
-import { ObjectId } from 'mongoose';
+import { ClientSession, ObjectId } from 'mongoose';
 import { AbstractRepository } from 'src/microservice/adapter/repository/abstract.repository';
 import { StringHelper } from '../../helper/types/string.helper';
 import {
@@ -55,8 +55,12 @@ export abstract class AbstractCreateService<
     this.rollbackService = new RollbackCloneService(updateService, this.entity);
   }
 
-  async create(body: BodyDto): Promise<{ _id: ObjectId }> {
-    await this.convertRelation(body);
+  async create(
+    body: BodyDto,
+    validateInput = true,
+    session: ClientSession = null
+  ): Promise<{ _id: ObjectId }> {
+    await this.convertRelation(body, validateInput);
 
     const bodyCreate = {
       ...this.getDynamicValues(body),
@@ -68,8 +72,10 @@ export abstract class AbstractCreateService<
     try {
       const insertedId = await this.repository.insertOne(
         bodyCreate as Collection,
-        this.entitySchema.itemLabel
+        this.entitySchema.itemLabel,
+        session
       );
+
       return { _id: insertedId };
     } catch (err) {
       if (err instanceof MongoDBException) {
@@ -88,15 +94,18 @@ export abstract class AbstractCreateService<
     }
   }
 
-  async clone(
+  async cloneOne(
     id: string,
     changeUniqueIndex = true,
     relationsToClone = [],
-    cloneBody = {}
+    cloneBody = {},
+    session: ClientSession = null
   ): Promise<CloneOneResponse> {
     this.logger.log(`Cloning ${this.entitySchema.itemLabel} '${id}'...`);
 
     const cloneTarget = await this.validateId(id);
+
+    await this.convertRelation(cloneBody);
 
     const bodyCreate = {
       ...cloneTarget,
@@ -108,21 +117,21 @@ export abstract class AbstractCreateService<
     this.logger.log(`CloneBody ${JSON.stringify(cloneBody)}`);
     this.logger.log(`Body ${JSON.stringify({ ...bodyCreate, ...cloneBody })}`);
 
-    const insertedId = await this.create({
-      ...bodyCreate,
-      ...cloneBody
-    } as BodyDto);
+    const insertedId = await this.create(
+      {
+        ...bodyCreate,
+        ...cloneBody
+      } as BodyDto,
+      false,
+      session
+    );
 
-    try {
-      await this.cloneRelations(
-        id,
-        insertedId._id.toString(),
-        relationsToClone
-      );
-    } catch (err) {
-      await this.rollbackService.rollbackClone(insertedId._id.toString());
-      throw err;
-    }
+    await this.cloneRelations(
+      id,
+      insertedId._id.toString(),
+      relationsToClone,
+      session
+    );
 
     return insertedId;
   }
@@ -132,26 +141,30 @@ export abstract class AbstractCreateService<
     relationsToClone = [],
     cloneBody = {}
   ): Promise<CloneManyResponse> {
-    this.logger.log(`Cloning ${this.entitySchema.itemLabel} '${ids}'...`);
+    this.logger.log(
+      `Cloning ${this.entitySchema.itemLabel} '${ids.join(',')}'...`
+    );
     const arrClone: ObjectId[] = [];
 
     try {
+      const session = await this.repository.startTransaction();
       for await (const id of ids) {
-        const insertedId = await this.clone(
+        const insertedId = await this.cloneOne(
           id,
           true,
           relationsToClone,
-          cloneBody
+          cloneBody,
+          session
         );
         arrClone.push(insertedId._id);
       }
+      await this.repository.commit();
+      this.logger.log('Clonning proccess finished');
     } catch (err) {
       this.logger.error(
         `Error while clonning, starting rollback for all itens`
       );
-      for await (const cloneId of arrClone) {
-        await this.rollbackService.rollbackClone(cloneId.toString());
-      }
+      await this.repository.rollback();
       this.logger.error('Rollback finished for all itens');
       throw err;
     }
@@ -162,7 +175,8 @@ export abstract class AbstractCreateService<
   private async cloneRelations(
     cloneId: string,
     newId: string,
-    relationsToClone = []
+    relationsToClone = [],
+    session: ClientSession = null
   ): Promise<void> {
     this.logger.log('Cloning relations ');
     const relations = this.entitySchema.subRelations.filter((sub) =>
@@ -184,6 +198,7 @@ export abstract class AbstractCreateService<
         {
           [rel.key]: cloneId
         },
+        false,
         false
       );
 
@@ -192,11 +207,16 @@ export abstract class AbstractCreateService<
       this.logger.log(`${subItems.length} itens found for '${rel.entity}'...`);
 
       for await (const item of subItems) {
-        await this[`create${rel.entity.capitalizeFirstLetter()}Service`].clone(
+        await this[
+          `create${rel.entity.capitalizeFirstLetter()}Service`
+        ].cloneOne(
           item._id,
           false,
           '*',
-          { [rel.key]: rel.array ? [newId] : newId }
+          {
+            [rel.key]: rel.array ? [newId] : newId
+          },
+          session
         );
       }
       this.logger.log(`Relation '${rel.service}' successfully cloned!`);

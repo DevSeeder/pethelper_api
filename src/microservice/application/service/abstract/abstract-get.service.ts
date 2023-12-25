@@ -53,7 +53,8 @@ export abstract class AbstractGetService<
 
   async search(
     searchParams: SearchParams = null,
-    paginate = true
+    paginate = true,
+    convertOutput = true
   ): Promise<PaginatedResponse<ResponseModel>> {
     const searchWhere = await this.buildSearchParams(searchParams);
     const { page, pageSize } = this.getPagination(searchParams, searchWhere);
@@ -77,12 +78,12 @@ export abstract class AbstractGetService<
       page
     );
 
-    const arrMap = await responseItems.map((item) =>
-      this.convertRelation(item)
+    const arrMap = await responseItems.map(
+      async (item) => await this.convertRelation(item)
     );
 
     const totalSorted = SortHelper.orderBy(
-      await Promise.all(arrMap),
+      convertOutput ? await Promise.all(arrMap) : responseItems,
       this.fieldSchemaDb,
       sortExternal,
       hasExternal
