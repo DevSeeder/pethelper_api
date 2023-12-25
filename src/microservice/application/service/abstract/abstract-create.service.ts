@@ -13,7 +13,6 @@ import { EntitySchema } from 'src/microservice/domain/schemas/configuration-sche
 import { GetTranslationService } from '../translation/get-translation.service';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 import { ErrorService } from '../configuration/error-schema/error.service';
-import { RollbackCloneService } from '../rollback/rollback-clone.service';
 import { AbstractSchema } from 'src/microservice/domain/schemas/abstract.schema';
 import { AbstractUpdateService } from './abstract-update.service';
 import { Search } from '@devseeder/nestjs-microservices-commons';
@@ -25,13 +24,6 @@ export abstract class AbstractCreateService<
   ResponseModel,
   BodyDto
 > extends AbstractDBService<Collection, MongooseModel, ResponseModel> {
-  protected readonly rollbackService: RollbackCloneService<
-    Collection,
-    MongooseModel,
-    ResponseModel,
-    BodyDto
-  >;
-
   constructor(
     protected readonly repository: AbstractRepository<
       Collection,
@@ -51,8 +43,6 @@ export abstract class AbstractCreateService<
     protected readonly errorService?: ErrorService
   ) {
     super(repository, entity, fieldSchemaData, entitySchemaData);
-
-    this.rollbackService = new RollbackCloneService(updateService, this.entity);
   }
 
   async create(

@@ -17,6 +17,7 @@ import { GetTranslationService } from '../translation/get-translation.service';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 import { ErrorService } from '../configuration/error-schema/error.service';
 import { InactivationReason } from 'src/microservice/domain/enum/inactivation-reason.enum';
+import { ClientSession } from 'mongoose';
 
 @Injectable()
 export abstract class AbstractUpdateService<
@@ -47,7 +48,8 @@ export abstract class AbstractUpdateService<
 
   async updateById(
     id: string,
-    body: Partial<BodyDto> | Partial<AbstractSchema>
+    body: Partial<BodyDto> | Partial<AbstractSchema>,
+    session: ClientSession = null
   ): Promise<void> {
     if (!body || !Object.keys(body).length)
       this.errorService.throwError(ErrorKeys.EMPTY_BODY);
@@ -59,7 +61,7 @@ export abstract class AbstractUpdateService<
 
     this.logger.log(`Body: ${JSON.stringify(body)}`);
 
-    await this.repository.updateOneById(id, body);
+    await this.repository.updateOneById(id, body, session);
   }
 
   async activation(
@@ -74,17 +76,37 @@ export abstract class AbstractUpdateService<
       inactivationDate: !activation ? DateHelper.getDateNow() : null
     };
 
-    await this.updateById(id, body);
-    if (!cascadeRelations.length) return;
+    const session = await this.repository.startTransaction();
+    try {
+      await this.updateById(id, body, session);
 
-    await this.cascadeUpdate(id, body, !activation, cascadeRelations);
+      if (!cascadeRelations.length) {
+        this.logger.log(`No cascade relations`);
+        await this.repository.commit();
+        return;
+      }
+
+      await this.cascadeUpdate(
+        id,
+        body,
+        !activation,
+        cascadeRelations,
+        session
+      );
+
+      await this.repository.commit();
+    } catch (err) {
+      await this.repository.rollback();
+      throw err;
+    }
   }
 
   async cascadeUpdate(
     id: string,
     body: Partial<AbstractSchema>,
     active: boolean,
-    cascadeRelations = '*'
+    cascadeRelations = '*',
+    session: ClientSession = null
   ): Promise<void> {
     const relations = this.entitySchema.subRelations.filter(
       (ent) =>
@@ -116,6 +138,7 @@ export abstract class AbstractUpdateService<
           [rel.key]: id,
           active
         },
+        false,
         false
       );
 
@@ -128,7 +151,7 @@ export abstract class AbstractUpdateService<
 
         await this[
           `update${rel.entity.capitalizeFirstLetter()}Service`
-        ].updateById(item._id, body);
+        ].updateById(item._id, body, session);
       }
       this.logger.log(`Relation '${rel.service}' successfully updated!`);
     }
