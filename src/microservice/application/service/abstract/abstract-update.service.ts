@@ -18,6 +18,7 @@ import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 import { ErrorService } from '../configuration/error-schema/error.service';
 import { InactivationReason } from 'src/microservice/domain/enum/inactivation-reason.enum';
 import { ClientSession } from 'mongoose';
+import { AbstractRepository } from 'src/microservice/adapter/repository/abstract.repository';
 
 @Injectable()
 export abstract class AbstractUpdateService<
@@ -33,7 +34,7 @@ export abstract class AbstractUpdateService<
   SearchParams
 > {
   constructor(
-    protected readonly repository: MongooseRepository<
+    protected readonly repository: AbstractRepository<
       Collection,
       MongooseModel
     >,
@@ -168,14 +169,9 @@ export abstract class AbstractUpdateService<
 
     const searchWhere = await this.buildSearchParams(search);
 
-    const items = await this.repository.find(
-      searchWhere,
-      { name: 1 },
-      {},
-      false
-    );
+    const items = await this.repository.count(searchWhere);
 
-    if (!items.length) this.errorService.throwError(ErrorKeys.NO_RECORD_UPDATE);
+    if (items <= 0) this.errorService.throwError(ErrorKeys.NO_RECORD_UPDATE);
 
     this.logger.log(`Body: ${JSON.stringify(body)}`);
 
