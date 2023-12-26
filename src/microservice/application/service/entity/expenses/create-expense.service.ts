@@ -1,14 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ExpensesRepository } from 'src/microservice/adapter/repository/entity/expenses.repository';
-import {
-  Expense,
-  ExpenseDocument
-} from '../../../../domain/schemas/entity/expenses.schema';
+import { Expense } from '../../../../domain/schemas/entity/expenses.schema';
 import { ExpenseResponse } from '../../../dto/response/expense.response';
 import { ExpenseBodyDto } from '../../../dto/body/expense-body.dto';
 import { GetPetService } from '../pets/get-pet.service';
 import { GetUserService } from '../users/get-user.service';
-import { AbstractCreateService } from '../../abstract/abstract-create.service';
+import { GenericCreateService } from '../../abstract/generic-create.service';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import {
   DependecyTokens,
@@ -17,15 +14,13 @@ import {
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { GetTranslationService } from '../../translation/get-translation.service';
 import { ErrorService } from '../../configuration/error-schema/error.service';
-import { UpdateExpenseService } from './update-expense.service';
 import { ExpenseCategory } from 'src/microservice/domain/schemas/entity/expense-categories.schema';
 import { Search } from 'src/microservice/application/dto/search/search.dto';
 import { GenericGetService } from '../../abstract/generic-get.service';
 
 @Injectable()
-export class CreateExpenseService extends AbstractCreateService<
+export class CreateExpenseService extends GenericCreateService<
   Expense,
-  ExpenseDocument,
   ExpenseResponse,
   ExpenseBodyDto
 > {

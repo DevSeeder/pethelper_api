@@ -3,11 +3,8 @@ import { Search } from 'src/microservice/application/dto/search/search.dto';
 import { SchemaValidator } from 'src/microservice/application/helper/validator/schema-validator.helper';
 import { GenericGetService } from 'src/microservice/application/service/abstract/generic-get.service';
 import { GenericUpdateService } from 'src/microservice/application/service/abstract/generic-update.service';
-import {
-  InputSchema,
-  RequestSchema
-} from 'src/microservice/domain/interface/input-schema.interface';
-import { AbstractCreateService } from 'src/microservice/application/service/abstract/abstract-create.service';
+import { RequestSchema } from 'src/microservice/domain/interface/input-schema.interface';
+import { GenericCreateService } from 'src/microservice/application/service/abstract/generic-create.service';
 import { AbstractBodyDto } from 'src/microservice/application/dto/body/abtract-body.dto';
 import { ObjectId } from 'mongoose';
 import { FormSchemaResponse } from 'src/microservice/domain/interface/field-schema.interface';
@@ -29,10 +26,10 @@ import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schem
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { AbstractEntityLoader } from './abstract-entity.loader';
 import { ActivationQueryParams } from 'src/microservice/application/dto/query/activation-query-params.dto';
-import { AbstractSchema } from 'src/microservice/domain/schemas/abstract.schema';
 import { ErrorService } from 'src/microservice/application/service/configuration/error-schema/error.service';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 import { GetTranslationService } from 'src/microservice/application/service/translation/get-translation.service';
+import { AbstractSchema } from 'src/microservice/domain/schemas/abstract.schema';
 
 export abstract class AbstractController<
   Collection,
@@ -57,9 +54,8 @@ export abstract class AbstractController<
       BodyDto,
       SearchParams
     >,
-    protected readonly createService?: AbstractCreateService<
+    protected readonly createService?: GenericCreateService<
       Collection,
-      MongooseModel,
       GetResponse,
       BodyDto
     >,

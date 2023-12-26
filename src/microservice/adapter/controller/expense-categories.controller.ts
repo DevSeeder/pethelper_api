@@ -17,6 +17,7 @@ import { ErrorService } from 'src/microservice/application/service/configuration
 import { GetTranslationService } from 'src/microservice/application/service/translation/get-translation.service';
 import { GenericGetService } from 'src/microservice/application/service/abstract/generic-get.service';
 import { GenericUpdateService } from 'src/microservice/application/service/abstract/generic-update.service';
+import { GenericCreateService } from 'src/microservice/application/service/abstract/generic-create.service';
 
 @Controller('expensecategories')
 export class ExpenseCategoriesController extends AbstractController<
@@ -40,7 +41,12 @@ export class ExpenseCategoriesController extends AbstractController<
       SearchDomainDto,
       DomainBodyDto
     >,
-    protected readonly createService: CreateExpenseCategoryService,
+    @Inject(`GENERIC_CREATE_SERVICE_${DependencyEntityTokens.EXPENSE_CATEGORY}`)
+    protected readonly createService: GenericCreateService<
+      ExpenseCategory,
+      ExpenseCategory,
+      DomainBodyDto
+    >,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
     protected readonly fieldSchemaData?: FieldSchema[],
     @Inject(DependecyTokens.ENTITY_SCHEMA_DB)

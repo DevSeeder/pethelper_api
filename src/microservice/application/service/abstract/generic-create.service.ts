@@ -13,17 +13,13 @@ import { EntitySchema } from 'src/microservice/domain/schemas/configuration-sche
 import { GetTranslationService } from '../translation/get-translation.service';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 import { ErrorService } from '../configuration/error-schema/error.service';
-import { AbstractSchema } from 'src/microservice/domain/schemas/abstract.schema';
-import { GenericUpdateService } from './generic-update.service';
-import { Search } from '@devseeder/nestjs-microservices-commons';
 
 @Injectable()
-export abstract class AbstractCreateService<
+export class GenericCreateService<
   Collection,
-  MongooseModel extends AbstractSchema,
   ResponseModel,
   BodyDto
-> extends AbstractDBService<Collection, MongooseModel, ResponseModel> {
+> extends AbstractDBService<Collection, Collection & Document, ResponseModel> {
   constructor(
     protected readonly repository: GenericRepository<Collection>,
     protected readonly entity: string,
@@ -203,7 +199,7 @@ export abstract class AbstractCreateService<
     }
   }
 
-  private async getUniqueIndexToClone(bodyCreate: MongooseModel) {
+  private async getUniqueIndexToClone(bodyCreate: Collection & Document) {
     const objIndexes = await this.repository.getIndexes();
     delete objIndexes['_id_'];
 

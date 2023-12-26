@@ -1,10 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import {
-  ExpenseCategory,
-  ExpenseCategoryDocument
-} from '../../../../domain/schemas/entity/expense-categories.schema';
+import { ExpenseCategory } from '../../../../domain/schemas/entity/expense-categories.schema';
 import { DomainBodyDto } from '../../../dto/body/domain-body.dto';
-import { AbstractCreateService } from '../../abstract/abstract-create.service';
+import { GenericCreateService } from '../../abstract/generic-create.service';
 import {
   DependecyTokens,
   DependencyEntityTokens
@@ -16,9 +13,8 @@ import { ErrorService } from '../../configuration/error-schema/error.service';
 import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';
 
 @Injectable()
-export class CreateExpenseCategoryService extends AbstractCreateService<
+export class CreateExpenseCategoryService extends GenericCreateService<
   ExpenseCategory,
-  ExpenseCategoryDocument,
   ExpenseCategory,
   DomainBodyDto
 > {

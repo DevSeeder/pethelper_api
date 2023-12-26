@@ -45,6 +45,9 @@ export class SchemaValidator {
       encapsulate
     );
 
+    if (!['search', 'count', 'groupBy', 'update'].includes(requestMethod))
+      return;
+
     await this.validateFamilySchema(
       schema.parents,
       requestMethod,

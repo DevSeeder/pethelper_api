@@ -1,12 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { PetsRepository } from 'src/microservice/adapter/repository/entity/pets.repository';
-import {
-  Pet,
-  PetDocument
-} from '../../../../domain/schemas/entity/pets.schema';
+import { Pet } from '../../../../domain/schemas/entity/pets.schema';
 import { GetAnimalService } from '../animals/get-animal.service';
 import { PetResponse } from '../../../dto/response/pet.response';
-import { AbstractCreateService } from '../../abstract/abstract-create.service';
+import { GenericCreateService } from '../../abstract/generic-create.service';
 import { PetBodyDto } from '../../../dto/body/pet-body.dto';
 import { GetUserService } from '../users/get-user.service';
 import { CreateExpenseService } from '../expenses/create-expense.service';
@@ -25,9 +22,8 @@ import { Search } from 'src/microservice/application/dto/search/search.dto';
 import { Race } from 'src/microservice/domain/schemas/entity/races.schema';
 
 @Injectable()
-export class CreatePetService extends AbstractCreateService<
+export class CreatePetService extends GenericCreateService<
   Pet,
-  PetDocument,
   PetResponse,
   PetBodyDto
 > {
