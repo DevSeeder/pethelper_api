@@ -4,9 +4,7 @@ import {
   Pet,
   PetDocument
 } from '../../../../domain/schemas/entity/pets.schema';
-import { GetColorService } from '../colors/get-color.service';
 import { GetAnimalService } from '../animals/get-animal.service';
-import { GetRaceService } from '../races/get-race.service';
 import { PetResponse } from '../../../dto/response/pet.response';
 import { AbstractCreateService } from '../../abstract/abstract-create.service';
 import { PetBodyDto } from '../../../dto/body/pet-body.dto';
@@ -19,6 +17,10 @@ import { EntitySchema } from 'src/microservice/domain/schemas/configuration-sche
 import { GetTranslationService } from '../../translation/get-translation.service';
 import { ErrorService } from '../../configuration/error-schema/error.service';
 import { UpdatePetService } from './update-pet.service';
+import { GenericGetService } from '../../abstract/generic-get.service';
+import { Color } from 'src/microservice/domain/schemas/entity/colors.schema';
+import { Search } from 'src/microservice/application/dto/search/search.dto';
+import { Race } from 'src/microservice/domain/schemas/entity/races.schema';
 
 @Injectable()
 export class CreatePetService extends AbstractCreateService<
@@ -30,9 +32,15 @@ export class CreatePetService extends AbstractCreateService<
   constructor(
     protected readonly repository: PetsRepository,
     protected readonly updateService: UpdatePetService,
-    protected readonly getColorsService: GetColorService,
+    @Inject(`GENERIC_GET_SERVICE_${Color.name}`)
+    protected readonly getColorsService: GenericGetService<
+      Color,
+      Color,
+      Search
+    >,
     protected readonly getAnimalsService: GetAnimalService,
-    protected readonly getRacesService: GetRaceService,
+    @Inject(`GENERIC_GET_SERVICE_${Race.name}`)
+    protected readonly getRacesService: GenericGetService<Race, Race, Search>,
     protected readonly getUsersService: GetUserService,
     protected readonly getExpensesService: GetExpenseService,
     protected readonly createExpensesService: CreateExpenseService,

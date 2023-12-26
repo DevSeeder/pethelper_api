@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Search } from 'src/microservice/application/dto/search/search.dto';
 import {
   FieldSchemaPage,
@@ -12,31 +12,25 @@ import {
   PaginatedMeta,
   PaginatedResponse
 } from '../../dto/response/paginated.response';
-import {
-  CustomErrorException,
-  InvalidDataException,
-  NotFoundException
-} from '@devseeder/microservices-exceptions';
+import { CustomErrorException } from '@devseeder/microservices-exceptions';
 import { GroupByResponse } from '../../dto/response/groupby/group-by.response';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { AbstractSearchService } from './abstract-search.service';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { GetTranslationService } from '../translation/get-translation.service';
-import { DEFAULT_LANG } from '../../app.constants';
 import { ErrorService } from '../configuration/error-schema/error.service';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 
 @Injectable()
-export abstract class AbstractGetService<
+export class GenericGetService<
   Collection,
-  MongooseModel,
   ResponseModel,
   SearchParams extends Search
 > extends AbstractSearchService<
   Collection,
-  MongooseModel,
+  Collection & Document,
   ResponseModel,
-  SearchParams
+  Search
 > {
   constructor(
     protected readonly repository: GenericRepository<Collection>,

@@ -7,18 +7,26 @@ import {
 } from 'src/microservice/domain/schemas/entity/animals.schema';
 import { GetAnimalService } from 'src/microservice/application/service/entity/animals/get-animal.service';
 import { AnimalsController } from 'src/microservice/adapter/controller/animals.controller';
-import { AnimalGroupsModule } from './animal-group.module';
 import { UpdateAnimalService } from '../../service/entity/animals/update-animal.service';
 import { CreateAnimalService } from '../../service/entity/animals/create-animal.service';
 import { FieldSchemasModule } from '../configuration/field-schemas.module';
 import { EntitySchemasModule } from '../configuration/entity-schemas.module';
 import { TranslationsModule } from '../translation/translation.module';
 import { ErrorSchemasModule } from '../configuration/error-schemas.module';
+import { GenericModule } from '../generic.module';
+import {
+  AnimalGroup,
+  AnimalGroupsSchema
+} from 'src/microservice/domain/schemas/entity/animal-group.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Animal.name, schema: AnimalsSchema }]),
-    AnimalGroupsModule,
+    GenericModule.forFeature<AnimalGroup>(
+      AnimalGroup.name,
+      AnimalGroupsSchema,
+      'animalGroups'
+    ),
     FieldSchemasModule,
     EntitySchemasModule,
     TranslationsModule,

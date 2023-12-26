@@ -1,7 +1,7 @@
 import { Body, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { Search } from 'src/microservice/application/dto/search/search.dto';
 import { SchemaValidator } from 'src/microservice/application/helper/validator/schema-validator.helper';
-import { AbstractGetService } from 'src/microservice/application/service/abstract/abstract-get.service';
+import { GenericGetService } from 'src/microservice/application/service/abstract/generic-get.service';
 import { AbstractUpdateService } from 'src/microservice/application/service/abstract/abstract-update.service';
 import {
   InputSchema,
@@ -46,9 +46,8 @@ export abstract class AbstractController<
 
   constructor(
     protected readonly entity: string,
-    protected readonly getService?: AbstractGetService<
+    protected readonly getService?: GenericGetService<
       Collection,
-      MongooseModel,
       GetResponse,
       SearchParams
     >,

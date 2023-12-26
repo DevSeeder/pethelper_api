@@ -4,7 +4,7 @@ import {
   User,
   UserDocument
 } from '../../../../domain/schemas/entity/users.schema';
-import { AbstractGetService } from '../../abstract/abstract-get.service';
+import { GenericGetService } from '../../abstract/generic-get.service';
 import { Search } from '../../../dto/search/search.dto';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
@@ -13,12 +13,7 @@ import { GetTranslationService } from '../../translation/get-translation.service
 import { ErrorService } from '../../configuration/error-schema/error.service';
 
 @Injectable()
-export class GetUserService extends AbstractGetService<
-  User,
-  UserDocument,
-  User,
-  Search
-> {
+export class GetUserService extends GenericGetService<User, User, Search> {
   constructor(
     protected readonly repository: UsersRepository,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)

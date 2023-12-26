@@ -4,9 +4,7 @@ import {
   Pet,
   PetDocument
 } from '../../../../domain/schemas/entity/pets.schema';
-import { GetColorService } from '../colors/get-color.service';
 import { GetAnimalService } from '../animals/get-animal.service';
-import { GetRaceService } from '../races/get-race.service';
 import { AbstractUpdateService } from '../../abstract/abstract-update.service';
 import { PetResponse } from '../../../dto/response/pet.response';
 import { PetBodyDto } from '../../../dto/body/pet-body.dto';
@@ -18,6 +16,10 @@ import { UpdateExpenseService } from '../expenses/update-expense.service';
 import { GetExpenseService } from '../expenses/get-Expense.service';
 import { GetTranslationService } from '../../translation/get-translation.service';
 import { ErrorService } from '../../configuration/error-schema/error.service';
+import { Color } from 'src/microservice/domain/schemas/entity/colors.schema';
+import { GenericGetService } from '../../abstract/generic-get.service';
+import { Race } from 'src/microservice/domain/schemas/entity/races.schema';
+import { Search } from 'src/microservice/application/dto/search/search.dto';
 
 @Injectable()
 export class UpdatePetService extends AbstractUpdateService<
@@ -29,9 +31,15 @@ export class UpdatePetService extends AbstractUpdateService<
 > {
   constructor(
     protected readonly repository: PetsRepository,
-    protected readonly getColorsService: GetColorService,
+    @Inject(`GENERIC_GET_SERVICE_${Color.name}`)
+    protected readonly getColorsService: GenericGetService<
+      Color,
+      Color,
+      Search
+    >,
     protected readonly getAnimalsService: GetAnimalService,
-    protected readonly getRacesService: GetRaceService,
+    @Inject(`GENERIC_GET_SERVICE_${Race.name}`)
+    protected readonly getRacesService: GenericGetService<Race, Race, Search>,
     protected readonly getExpensesService: GetExpenseService,
     protected readonly updateExpensesService: UpdateExpenseService,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)

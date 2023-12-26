@@ -6,9 +6,7 @@ import {
   PetsSchema
 } from 'src/microservice/domain/schemas/entity/pets.schema';
 import { GetPetService } from 'src/microservice/application/service/entity/pets/get-pet.service';
-import { ColorsModule } from './colors.module';
 import { AnimalsModule } from './animals.module';
-import { RacesModule } from './races.module';
 import { UpdatePetService } from '../../service/entity/pets/update-pet.service';
 import { CreatePetService } from '../../service/entity/pets/create-pet.service';
 import { UsersModule } from './users.module';
@@ -21,13 +19,22 @@ import { EntitySchemasModule } from '../configuration/entity-schemas.module';
 import { TranslationsModule } from '../translation/translation.module';
 import { ErrorSchemasModule } from '../configuration/error-schemas.module';
 import { PetsController } from '../../../adapter/controller/pets.controller';
+import { GenericModule } from '../generic.module';
+import {
+  Color,
+  ColorsSchema
+} from 'src/microservice/domain/schemas/entity/colors.schema';
+import {
+  Race,
+  RacesSchema
+} from 'src/microservice/domain/schemas/entity/races.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Pet.name, schema: PetsSchema }]),
-    ColorsModule,
+    GenericModule.forFeature<Color>(Color.name, ColorsSchema, 'colors'),
     AnimalsModule,
-    RacesModule,
+    GenericModule.forFeature<Race>(Race.name, RacesSchema, 'races'),
     UsersModule,
     forwardRef(() => ExpensesModule),
     ExpenseCategoriesModule,

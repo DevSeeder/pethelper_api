@@ -1,5 +1,5 @@
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
-import { AbstractGetService } from '../../abstract/abstract-get.service';
+import { GenericGetService } from '../../abstract/generic-get.service';
 import { ExpensesRepository } from 'src/microservice/adapter/repository/entity/expenses.repository';
 import {
   Expense,
@@ -21,9 +21,8 @@ import { GetTranslationService } from '../../translation/get-translation.service
 import { ErrorService } from '../../configuration/error-schema/error.service';
 
 @Injectable()
-export class GetExpenseService extends AbstractGetService<
+export class GetExpenseService extends GenericGetService<
   Expense,
-  ExpenseDocument,
   ExpenseResponse,
   SearchExpenseDto
 > {
