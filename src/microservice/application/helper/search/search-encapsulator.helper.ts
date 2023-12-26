@@ -1,3 +1,4 @@
+import { object } from 'joi';
 import { MAX_ENCAPSULATED_OPERATORS } from '../../app.constants';
 
 export class SearchEncapsulatorHelper {
@@ -66,5 +67,18 @@ export class SearchEncapsulatorHelper {
       },
       ...notEncapObj
     };
+  }
+
+  static buildParentEncapsulator(obj: object, entity: string): object {
+    const regexPattern = `^\\$parent\\.${entity}\\.\\w+$`;
+    const regexParent = new RegExp(regexPattern);
+    const objItem = { ...obj };
+    Object.keys(objItem).forEach((key) => {
+      if (regexParent.test(key)) {
+        objItem[key.split('.')[2]] = obj[key];
+        delete objItem[key];
+      }
+    });
+    return objItem;
   }
 }

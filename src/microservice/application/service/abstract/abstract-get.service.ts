@@ -128,7 +128,10 @@ export abstract class AbstractGetService<
     const fields = this.fieldSchemaDb.filter((field) =>
       new FieldSchemaBuilder(
         this.errorService,
-        this.translationService
+        this.translationService,
+        this.entityLabels,
+        this.entitySchemaData,
+        this.entity
       ).getFormFilterCondition(page, field)
     );
     const orderFields = this.fieldSchemaDb.filter((fields) => fields.orderBy);

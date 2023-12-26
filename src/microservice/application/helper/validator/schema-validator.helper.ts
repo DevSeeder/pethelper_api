@@ -8,15 +8,59 @@ import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schem
 import { SearchEncapsulatorHelper } from '../search/search-encapsulator.helper';
 import { ErrorService } from '../../service/configuration/error-schema/error.service';
 import { GetTranslationService } from '../../service/translation/get-translation.service';
-import { CustomErrorException } from '@devseeder/microservices-exceptions';
 import { ErrorSchemaException } from 'src/core/exceptions/error-schema.exception';
+import { RequestSchema } from 'src/microservice/domain/interface/input-schema.interface';
+import { GLOBAL_ENTITY } from '../../app.constants';
+import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 
 export class SchemaValidator {
   private logger = new Logger(SchemaValidator.name);
   constructor(
     private readonly errorService: ErrorService,
-    private readonly translationService: GetTranslationService
+    private readonly translationService: GetTranslationService,
+    private readonly entity: string,
+    private readonly entityLabels?: string[],
+    private readonly entitySchemaData?: EntitySchema[]
   ) {}
+
+  async validateRequestSchema(
+    schema: RequestSchema,
+    requestMethod: string,
+    obj: object,
+    fieldSchemasDb: FieldSchema[] = [],
+    encapsulate = false
+  ) {
+    await this.validateSchema(
+      schema.entity[requestMethod],
+      obj,
+      fieldSchemasDb.filter(
+        (schema) =>
+          this.entityLabels.includes(schema.entity) ||
+          schema.entity === GLOBAL_ENTITY ||
+          schema.entity === this.entity
+      ),
+      encapsulate
+    );
+
+    for await (const parent of Object.keys(schema.parents)) {
+      const entitySchema = this.entitySchemaData.filter(
+        (entSchema) => entSchema.entity === parent
+      );
+
+      await this.validateSchema(
+        schema.parents[parent][requestMethod],
+        SearchEncapsulatorHelper.buildParentEncapsulator(obj, parent),
+        fieldSchemasDb.filter(
+          (schema) =>
+            (entitySchema[0].extendedEntities &&
+              entitySchema[0].extendedEntities.includes(schema.entity)) ||
+            schema.entity === GLOBAL_ENTITY ||
+            schema.entity === parent
+        ),
+        encapsulate
+      );
+    }
+  }
 
   async validateSchema(
     schema: ObjectSchema,

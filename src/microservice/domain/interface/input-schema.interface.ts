@@ -10,3 +10,13 @@ export interface InputSchema {
   cloneMany?: ObjectSchema;
   activation?: ObjectSchema;
 }
+
+export interface RequestSchema {
+  entity: InputSchema;
+  parents?: {
+    [key: string]: InputSchema[];
+  };
+  children?: {
+    [key: string]: InputSchema[];
+  };
+}

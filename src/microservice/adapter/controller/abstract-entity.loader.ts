@@ -28,7 +28,8 @@ export abstract class AbstractEntityLoader {
     this.fieldSchemaDb = this.fieldSchemaData.filter(
       (schema) =>
         this.entityLabels.includes(schema.entity) ||
-        schema.entity === GLOBAL_ENTITY
+        schema.entity === GLOBAL_ENTITY ||
+        schema.entity == this.entitySchema.entity
     );
   }
 }

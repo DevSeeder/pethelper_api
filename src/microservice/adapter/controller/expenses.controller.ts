@@ -54,7 +54,11 @@ export class ExpensesController extends AbstractController<
   async groupByPetsAndCategory(
     @Query() params: SearchExpenseDto
   ): Promise<GroupExpensesByPetAndCategoryResponse[]> {
-    await this.schemaValidator.validateSchema(this.inputSchema.search, params);
+    await this.schemaValidator.validateRequestSchema(
+      this.requestSchema,
+      'search',
+      params
+    );
     return this.getService.groupByPetsAndCategory(params);
   }
 
@@ -62,7 +66,11 @@ export class ExpensesController extends AbstractController<
   async groupByCategoryAndPet(
     @Query() params: SearchExpenseDto
   ): Promise<GroupExpensesByPetAndCategoryResponse[]> {
-    await this.schemaValidator.validateSchema(this.inputSchema.search, params);
+    await this.schemaValidator.validateRequestSchema(
+      this.requestSchema,
+      'search',
+      params
+    );
     return this.getService.groupByCategoryAndPet(params);
   }
 }
