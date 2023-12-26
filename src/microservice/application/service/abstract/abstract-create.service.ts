@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { AbstractDBService } from './abstract-db.service';
 import { MongoDBException } from '@devseeder/microservices-exceptions';
 import { ClientSession, ObjectId } from 'mongoose';
-import { AbstractRepository } from 'src/microservice/adapter/repository/abstract.repository';
+import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';
 import { StringHelper } from '../../helper/types/string.helper';
 import {
   CloneManyResponse,
@@ -25,10 +25,7 @@ export abstract class AbstractCreateService<
   BodyDto
 > extends AbstractDBService<Collection, MongooseModel, ResponseModel> {
   constructor(
-    protected readonly repository: AbstractRepository<
-      Collection,
-      MongooseModel
-    >,
+    protected readonly repository: GenericRepository<Collection>,
     protected readonly entity: string,
     protected readonly updateService: AbstractUpdateService<
       Collection,

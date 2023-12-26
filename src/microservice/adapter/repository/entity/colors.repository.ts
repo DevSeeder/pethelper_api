@@ -5,10 +5,10 @@ import {
   Color,
   ColorDocument
 } from 'src/microservice/domain/schemas/entity/colors.schema';
-import { AbstractRepository } from '../abstract.repository';
+import { GenericRepository } from '../generic.repository';
 
 @Injectable()
-export class ColorsRepository extends AbstractRepository<Color, ColorDocument> {
+export class ColorsRepository extends GenericRepository<Color> {
   constructor(
     @InjectModel(Color.name)
     model: Model<ColorDocument>

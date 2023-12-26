@@ -5,10 +5,10 @@ import {
   User,
   UserDocument
 } from '../../../domain/schemas/entity/users.schema';
-import { AbstractRepository } from '../abstract.repository';
+import { GenericRepository } from '../generic.repository';
 
 @Injectable()
-export class UsersRepository extends AbstractRepository<User, UserDocument> {
+export class UsersRepository extends GenericRepository<User> {
   constructor(
     @InjectModel(User.name)
     model: Model<UserDocument>

@@ -5,13 +5,10 @@ import {
   ExpenseCategory,
   ExpenseCategoryDocument
 } from 'src/microservice/domain/schemas/entity/expense-categories.schema';
-import { AbstractRepository } from '../abstract.repository';
+import { GenericRepository } from '../generic.repository';
 
 @Injectable()
-export class ExpenseCategoriesRepository extends AbstractRepository<
-  ExpenseCategory,
-  ExpenseCategoryDocument
-> {
+export class ExpenseCategoriesRepository extends GenericRepository<ExpenseCategory> {
   constructor(
     @InjectModel(ExpenseCategory.name)
     model: Model<ExpenseCategoryDocument>

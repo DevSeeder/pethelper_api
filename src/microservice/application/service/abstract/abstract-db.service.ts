@@ -1,5 +1,3 @@
-import { InvalidDataException } from '@devseeder/microservices-exceptions';
-import { MongooseRepository } from '@devseeder/nestjs-microservices-commons';
 import { Relation } from 'src/microservice/domain/interface/relation.interface';
 import { SearchEgineOperators } from 'src/microservice/domain/interface/search-engine.interface';
 import { AbstractDocument } from 'src/microservice/domain/schemas/abstract.schema';
@@ -12,6 +10,7 @@ import { AbstractEntityLoader } from '../../loader/abstract-entity.loader';
 import { GetTranslationService } from '../translation/get-translation.service';
 import { ErrorService } from '../configuration/error-schema/error.service';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
+import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';
 
 export class AbstractDBService<
   Collection,
@@ -19,10 +18,7 @@ export class AbstractDBService<
   ResponseModel
 > extends AbstractEntityLoader {
   constructor(
-    protected readonly repository: MongooseRepository<
-      Collection,
-      MongooseModel
-    >,
+    protected readonly repository: GenericRepository<Collection>,
     protected readonly entity: string,
     protected readonly fieldSchemaData: FieldSchema[] = [],
     protected readonly entitySchemaData: EntitySchema[] = [],

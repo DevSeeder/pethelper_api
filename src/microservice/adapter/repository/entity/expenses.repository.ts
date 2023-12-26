@@ -5,15 +5,12 @@ import {
   Expense,
   ExpenseDocument
 } from 'src/microservice/domain/schemas/entity/expenses.schema';
-import { AbstractRepository } from '../abstract.repository';
+import { GenericRepository } from '../generic.repository';
 import { AggExpensesByPetAndCategoryDto } from 'src/microservice/application/dto/aggregate/agg-expenses-by-pet-and-category.dto';
 import { SearchExpenseDto } from 'src/microservice/application/dto/search/search-expense.dto';
 
 @Injectable()
-export class ExpensesRepository extends AbstractRepository<
-  Expense,
-  ExpenseDocument
-> {
+export class ExpensesRepository extends GenericRepository<Expense> {
   constructor(
     @InjectModel(Expense.name)
     model: Model<ExpenseDocument>

@@ -1,4 +1,3 @@
-import { MongooseRepository } from '@devseeder/nestjs-microservices-commons';
 import { SearchEgineOperators } from 'src/microservice/domain/interface/search-engine.interface';
 import { SchemaValidator } from '../../helper/validator/schema-validator.helper';
 import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.interface';
@@ -11,6 +10,7 @@ import { SearchEncapsulatorHelper } from '../../helper/search/search-encapsulato
 import { GetTranslationService } from '../translation/get-translation.service';
 import { ErrorService } from '../configuration/error-schema/error.service';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
+import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';
 
 export class AbstractSearchService<
   Collection,
@@ -19,10 +19,7 @@ export class AbstractSearchService<
   SearchParams extends Search
 > extends AbstractDBService<Collection, MongooseModel, ResponseModel> {
   constructor(
-    protected readonly repository: MongooseRepository<
-      Collection,
-      MongooseModel
-    >,
+    protected readonly repository: GenericRepository<Collection>,
     protected readonly entity: string,
     protected readonly fieldSchemaData: FieldSchema[] = [],
     protected readonly entitySchemaData: EntitySchema[] = [],

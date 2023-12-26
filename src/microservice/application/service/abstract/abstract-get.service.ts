@@ -6,7 +6,7 @@ import {
 } from 'src/microservice/domain/interface/field-schema.interface';
 import { FieldSchemaBuilder } from '../../helper/validator/field-schema.builder';
 import { SortHelper } from '../../helper/search/sort.helper';
-import { AbstractRepository } from 'src/microservice/adapter/repository/abstract.repository';
+import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';
 import {
   CountResponse,
   PaginatedMeta,
@@ -39,10 +39,7 @@ export abstract class AbstractGetService<
   SearchParams
 > {
   constructor(
-    protected readonly repository: AbstractRepository<
-      Collection,
-      MongooseModel
-    >,
+    protected readonly repository: GenericRepository<Collection>,
     protected readonly entity: string,
     protected readonly fieldSchemaData: FieldSchema[] = [],
     protected readonly entitySchemaData: EntitySchema[] = [],

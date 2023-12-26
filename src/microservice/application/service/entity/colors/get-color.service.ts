@@ -4,12 +4,12 @@ import {
   Color,
   ColorDocument
 } from '../../../../domain/schemas/entity/colors.schema';
-import { ColorsRepository } from 'src/microservice/adapter/repository/entity/colors.repository';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { GetTranslationService } from '../../translation/get-translation.service';
 import { ErrorService } from '../../configuration/error-schema/error.service';
+import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';
 
 @Injectable()
 export class GetColorService extends AbstractGetService<
@@ -19,7 +19,8 @@ export class GetColorService extends AbstractGetService<
   any
 > {
   constructor(
-    protected readonly repository: ColorsRepository,
+    @Inject(`GENERIC_REPOSITORY_${Color.name}`)
+    protected readonly repository: GenericRepository<Color>,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
     protected readonly fieldSchemaData: FieldSchema[],
     @Inject(DependecyTokens.ENTITY_SCHEMA_DB)

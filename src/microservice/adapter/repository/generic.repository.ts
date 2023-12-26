@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { ClientSession, Connection, Model } from 'mongoose';
+import { Document, Model } from 'mongoose';
 import { MongooseRepository } from '@devseeder/nestjs-microservices-commons';
 import { Search } from 'src/microservice/application/dto/search/search.dto';
 import { AggregatedDto } from 'src/microservice/application/dto/aggregate/aggregated.dto';
 
 @Injectable()
-export abstract class AbstractRepository<
+export class GenericRepository<Collection> extends MongooseRepository<
   Collection,
-  CollectionDocument
-> extends MongooseRepository<Collection, CollectionDocument> {
-  constructor(model: Model<CollectionDocument>) {
+  Collection & Document
+> {
+  constructor(model: Model<Collection & Document>) {
     super(model);
   }
 

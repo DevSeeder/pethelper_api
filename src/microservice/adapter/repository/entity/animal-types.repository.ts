@@ -5,13 +5,10 @@ import {
   AnimalType,
   AnimalTypeDocument
 } from 'src/microservice/domain/schemas/entity/animal-type.schema';
-import { AbstractRepository } from '../abstract.repository';
+import { GenericRepository } from '../generic.repository';
 
 @Injectable()
-export class AnimalTypesRepository extends AbstractRepository<
-  AnimalType,
-  AnimalTypeDocument
-> {
+export class AnimalTypesRepository extends GenericRepository<AnimalType> {
   constructor(
     @InjectModel(AnimalType.name)
     model: Model<AnimalTypeDocument>

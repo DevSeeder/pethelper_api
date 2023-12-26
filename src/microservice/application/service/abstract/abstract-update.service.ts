@@ -1,7 +1,4 @@
-import {
-  DateHelper,
-  MongooseRepository
-} from '@devseeder/nestjs-microservices-commons';
+import { DateHelper } from '@devseeder/nestjs-microservices-commons';
 import {
   BadRequestException,
   ConflictException,
@@ -18,7 +15,7 @@ import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 import { ErrorService } from '../configuration/error-schema/error.service';
 import { InactivationReason } from 'src/microservice/domain/enum/inactivation-reason.enum';
 import { ClientSession } from 'mongoose';
-import { AbstractRepository } from 'src/microservice/adapter/repository/abstract.repository';
+import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';
 
 @Injectable()
 export abstract class AbstractUpdateService<
@@ -34,10 +31,7 @@ export abstract class AbstractUpdateService<
   SearchParams
 > {
   constructor(
-    protected readonly repository: AbstractRepository<
-      Collection,
-      MongooseModel
-    >,
+    protected readonly repository: GenericRepository<Collection>,
     protected readonly entity: string,
     protected readonly fieldSchemaData: FieldSchema[],
     protected readonly entitySchemaData: EntitySchema[],
