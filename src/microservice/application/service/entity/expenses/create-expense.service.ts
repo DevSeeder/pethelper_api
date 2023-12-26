@@ -7,15 +7,20 @@ import {
 import { ExpenseResponse } from '../../../dto/response/expense.response';
 import { ExpenseBodyDto } from '../../../dto/body/expense-body.dto';
 import { GetPetService } from '../pets/get-pet.service';
-import { GetExpenseCategoriesService } from '../expense-categories/get-expense-category.service';
 import { GetUserService } from '../users/get-user.service';
 import { AbstractCreateService } from '../../abstract/abstract-create.service';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
-import { DependecyTokens } from 'src/microservice/application/app.constants';
+import {
+  DependecyTokens,
+  DependencyEntityTokens
+} from 'src/microservice/application/app.constants';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { GetTranslationService } from '../../translation/get-translation.service';
 import { ErrorService } from '../../configuration/error-schema/error.service';
 import { UpdateExpenseService } from './update-expense.service';
+import { ExpenseCategory } from 'src/microservice/domain/schemas/entity/expense-categories.schema';
+import { Search } from 'src/microservice/application/dto/search/search.dto';
+import { GenericGetService } from '../../abstract/generic-get.service';
 
 @Injectable()
 export class CreateExpenseService extends AbstractCreateService<
@@ -26,9 +31,13 @@ export class CreateExpenseService extends AbstractCreateService<
 > {
   constructor(
     protected readonly repository: ExpensesRepository,
-    protected readonly updateService: UpdateExpenseService,
     protected readonly getPetsService: GetPetService,
-    protected readonly getExpenseCategoriesService: GetExpenseCategoriesService,
+    @Inject(`GENERIC_GET_SERVICE_${DependencyEntityTokens.EXPENSE_CATEGORY}`)
+    protected readonly getExpenseCategoriesService: GenericGetService<
+      ExpenseCategory,
+      ExpenseCategory,
+      Search
+    >,
     protected readonly getUsersService: GetUserService,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
     protected readonly fieldSchemaData: FieldSchema[],
@@ -40,7 +49,6 @@ export class CreateExpenseService extends AbstractCreateService<
     super(
       repository,
       'expenses',
-      updateService,
       fieldSchemaData,
       entitySchemaData,
       translationService,

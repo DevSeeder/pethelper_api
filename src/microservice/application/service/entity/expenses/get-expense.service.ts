@@ -1,24 +1,29 @@
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { GenericGetService } from '../../abstract/generic-get.service';
 import { ExpensesRepository } from 'src/microservice/adapter/repository/entity/expenses.repository';
-import {
-  Expense,
-  ExpenseDocument
-} from '../../../../domain/schemas/entity/expenses.schema';
+import { Expense } from '../../../../domain/schemas/entity/expenses.schema';
 import { ExpenseResponse } from 'src/microservice/application/dto/response/expense.response';
 import { SearchExpenseDto } from 'src/microservice/application/dto/search/search-expense.dto';
 import { GetUserService } from '../users/get-user.service';
 import { GetPetService } from '../pets/get-pet.service';
-import { GetExpenseCategoriesService } from '../expense-categories/get-expense-category.service';
 import {
   GroupExpensesByPetAndCategoryResponse,
   GroupedCostByCategory
 } from 'src/microservice/application/dto/response/groupby/group-expenses-by-pet-and-category.response';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
-import { DependecyTokens } from 'src/microservice/application/app.constants';
+import {
+  DependecyTokens,
+  DependencyEntityTokens
+} from 'src/microservice/application/app.constants';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { GetTranslationService } from '../../translation/get-translation.service';
 import { ErrorService } from '../../configuration/error-schema/error.service';
+import {
+  ExpenseCategory,
+  ExpenseCategoryDocument
+} from 'src/microservice/domain/schemas/entity/expense-categories.schema';
+import { Search } from '@devseeder/nestjs-microservices-commons';
+import { SearchDomainDto } from 'src/microservice/application/dto/search/search-domain.dto';
 
 @Injectable()
 export class GetExpenseService extends GenericGetService<
@@ -31,7 +36,12 @@ export class GetExpenseService extends GenericGetService<
     @Inject(forwardRef(() => GetPetService))
     protected readonly getPetsService: GetPetService,
     protected readonly getUsersService: GetUserService,
-    protected readonly getExpenseCategoriesService: GetExpenseCategoriesService,
+    @Inject(`GENERIC_GET_SERVICE_${DependencyEntityTokens.EXPENSE_CATEGORY}`)
+    protected readonly getExpenseCategoriesService: GenericGetService<
+      ExpenseCategory,
+      ExpenseCategoryDocument,
+      SearchDomainDto
+    >,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
     protected readonly fieldSchemaData: FieldSchema[],
     @Inject(DependecyTokens.ENTITY_SCHEMA_DB)

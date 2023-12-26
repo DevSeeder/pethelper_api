@@ -13,6 +13,8 @@ import { ErrorSchemasModule } from './configuration/error-schemas.module';
 import { TranslationsModule } from './translation/translation.module';
 import { EntitySchemasModule } from './configuration/entity-schemas.module';
 import { FieldSchemasModule } from './configuration/field-schemas.module';
+import { GenericUpdateService } from '../service/abstract/generic-update.service';
+import { AbstractBodyDto } from '../dto/body/abtract-body.dto';
 
 @Module({})
 export class GenericModule {
@@ -22,14 +24,14 @@ export class GenericModule {
     entity: string
   ): DynamicModule {
     const repositoryProvider: Provider = {
-      provide: `GENERIC_REPOSITORY_${modelName}`,
+      provide: `GENERIC_REPOSITORY_${entity}`,
       useFactory: (model: Model<any>) =>
         new GenericRepository<Collection>(model),
       inject: [getModelToken(modelName)]
     };
 
     const getServiceProvider: Provider = {
-      provide: `GENERIC_GET_SERVICE_${modelName}`,
+      provide: `GENERIC_GET_SERVICE_${entity}`,
       useFactory: (
         repository: GenericRepository<Collection>,
         fieldSchemaData: FieldSchema[],
@@ -47,7 +49,39 @@ export class GenericModule {
         );
       },
       inject: [
-        `GENERIC_REPOSITORY_${modelName}`,
+        `GENERIC_REPOSITORY_${entity}`,
+        DependecyTokens.FIELD_SCHEMA_DB,
+        DependecyTokens.ENTITY_SCHEMA_DB,
+        GetTranslationService,
+        ErrorService
+      ]
+    };
+
+    const updateServiceProvider: Provider = {
+      provide: `GENERIC_UPDATE_SERVICE_${entity}`,
+      useFactory: (
+        repository: GenericRepository<Collection>,
+        fieldSchemaData: FieldSchema[],
+        entitySchemaData: EntitySchema[],
+        translationService?: GetTranslationService,
+        errorService?: ErrorService
+      ) => {
+        return new GenericUpdateService<
+          Collection,
+          Collection & Document,
+          Search,
+          AbstractBodyDto
+        >(
+          repository,
+          entity,
+          fieldSchemaData,
+          entitySchemaData,
+          translationService,
+          errorService
+        );
+      },
+      inject: [
+        `GENERIC_REPOSITORY_${entity}`,
         DependecyTokens.FIELD_SCHEMA_DB,
         DependecyTokens.ENTITY_SCHEMA_DB,
         GetTranslationService,
@@ -64,8 +98,12 @@ export class GenericModule {
         ErrorSchemasModule,
         TranslationsModule
       ],
-      providers: [repositoryProvider, getServiceProvider],
-      exports: [repositoryProvider, getServiceProvider]
+      providers: [
+        repositoryProvider,
+        getServiceProvider,
+        updateServiceProvider
+      ],
+      exports: [repositoryProvider, getServiceProvider, updateServiceProvider]
     };
   }
 }

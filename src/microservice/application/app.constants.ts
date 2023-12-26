@@ -27,3 +27,15 @@ export enum DependecyTokens {
   ERROR_SCHEMA_DB = 'ERROR_SCHEMA_DB',
   SERVICE_KEY_TRANSLATION_DB = 'SERVICE_KEY_TRANSLATION_DB'
 }
+
+export enum DependencyEntityTokens {
+  COLOR = 'colors',
+  ANIMAL_GROUP = 'animalGroups',
+  ANIMAL_TYPE = 'animalTypes',
+  RACE = 'races',
+  EXPENSE_CATEGORY = 'expenseCategories',
+  ANIMAL = 'animals',
+  PET = 'pets',
+  EXPENSE = 'expenses',
+  USER = 'users'
+}

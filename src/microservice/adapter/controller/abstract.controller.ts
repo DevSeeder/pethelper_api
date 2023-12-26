@@ -2,7 +2,7 @@ import { Body, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { Search } from 'src/microservice/application/dto/search/search.dto';
 import { SchemaValidator } from 'src/microservice/application/helper/validator/schema-validator.helper';
 import { GenericGetService } from 'src/microservice/application/service/abstract/generic-get.service';
-import { AbstractUpdateService } from 'src/microservice/application/service/abstract/abstract-update.service';
+import { GenericUpdateService } from 'src/microservice/application/service/abstract/generic-update.service';
 import {
   InputSchema,
   RequestSchema
@@ -51,9 +51,8 @@ export abstract class AbstractController<
       GetResponse,
       SearchParams
     >,
-    protected readonly updateService?: AbstractUpdateService<
+    protected readonly updateService?: GenericUpdateService<
       Collection,
-      MongooseModel,
       GetResponse,
       BodyDto,
       SearchParams

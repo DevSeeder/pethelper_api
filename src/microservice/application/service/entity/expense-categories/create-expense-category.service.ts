@@ -3,15 +3,17 @@ import {
   ExpenseCategory,
   ExpenseCategoryDocument
 } from '../../../../domain/schemas/entity/expense-categories.schema';
-import { ExpenseCategoriesRepository } from 'src/microservice/adapter/repository/entity/expense-categories.repository';
 import { DomainBodyDto } from '../../../dto/body/domain-body.dto';
 import { AbstractCreateService } from '../../abstract/abstract-create.service';
-import { DependecyTokens } from 'src/microservice/application/app.constants';
+import {
+  DependecyTokens,
+  DependencyEntityTokens
+} from 'src/microservice/application/app.constants';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { GetTranslationService } from '../../translation/get-translation.service';
 import { ErrorService } from '../../configuration/error-schema/error.service';
-import { UpdateExpenseCategoryService } from './update-expense-category.service';
+import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';
 
 @Injectable()
 export class CreateExpenseCategoryService extends AbstractCreateService<
@@ -21,8 +23,8 @@ export class CreateExpenseCategoryService extends AbstractCreateService<
   DomainBodyDto
 > {
   constructor(
-    protected readonly repository: ExpenseCategoriesRepository,
-    protected readonly updateService: UpdateExpenseCategoryService,
+    @Inject(`GENERIC_REPOSITORY_${DependencyEntityTokens.EXPENSE_CATEGORY}`)
+    protected readonly repository: GenericRepository<ExpenseCategory>,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
     protected readonly fieldSchemaData: FieldSchema[],
     @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
@@ -33,7 +35,6 @@ export class CreateExpenseCategoryService extends AbstractCreateService<
     super(
       repository,
       'expenseCategories',
-      updateService,
       fieldSchemaData,
       entitySchemaData,
       translationService,

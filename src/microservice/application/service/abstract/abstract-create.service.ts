@@ -14,7 +14,7 @@ import { GetTranslationService } from '../translation/get-translation.service';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 import { ErrorService } from '../configuration/error-schema/error.service';
 import { AbstractSchema } from 'src/microservice/domain/schemas/abstract.schema';
-import { AbstractUpdateService } from './abstract-update.service';
+import { GenericUpdateService } from './generic-update.service';
 import { Search } from '@devseeder/nestjs-microservices-commons';
 
 @Injectable()
@@ -27,13 +27,6 @@ export abstract class AbstractCreateService<
   constructor(
     protected readonly repository: GenericRepository<Collection>,
     protected readonly entity: string,
-    protected readonly updateService: AbstractUpdateService<
-      Collection,
-      MongooseModel,
-      ResponseModel,
-      BodyDto,
-      Search
-    >,
     protected readonly fieldSchemaData: FieldSchema[],
     protected readonly entitySchemaData: EntitySchema[],
     protected readonly translationService?: GetTranslationService,

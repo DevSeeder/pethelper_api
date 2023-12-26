@@ -6,7 +6,10 @@ import { GetAnimalService } from '../animals/get-animal.service';
 import { PetResponse } from 'src/microservice/application/dto/response/pet.response';
 import { GetUserService } from '../users/get-user.service';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
-import { DependecyTokens } from 'src/microservice/application/app.constants';
+import {
+  DependecyTokens,
+  DependencyEntityTokens
+} from 'src/microservice/application/app.constants';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { GetTranslationService } from '../../translation/get-translation.service';
 import { ErrorService } from '../../configuration/error-schema/error.service';
@@ -24,7 +27,7 @@ export class GetPetService extends GenericGetService<
 > {
   constructor(
     protected readonly repository: PetsRepository,
-    @Inject(`GENERIC_GET_SERVICE_${Color.name}`)
+    @Inject(`GENERIC_GET_SERVICE_${DependencyEntityTokens.COLOR}`)
     protected readonly getColorsService: GenericGetService<
       Color,
       Color,
@@ -32,7 +35,7 @@ export class GetPetService extends GenericGetService<
     >,
     protected readonly getAnimalsService: GetAnimalService,
     protected readonly getUsersService: GetUserService,
-    @Inject(`GENERIC_GET_SERVICE_${Race.name}`)
+    @Inject(`GENERIC_GET_SERVICE_${DependencyEntityTokens.RACE}`)
     protected readonly getRacesService: GenericGetService<Race, Race, Search>,
     protected readonly getExpensesService: GetExpenseService,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)

@@ -4,11 +4,14 @@ import {
   Animal,
   AnimalDocument
 } from '../../../../domain/schemas/entity/animals.schema';
-import { AbstractUpdateService } from '../../abstract/abstract-update.service';
+import { GenericUpdateService } from '../../abstract/generic-update.service';
 import { AnimalResponse } from '../../../dto/response/animal.response';
 import { AnimalBodyDto } from '../../../dto/body/animal-body.dto';
 import { SearchAnimalDto } from '../../../dto/search/search-animal.dto';
-import { DependecyTokens } from 'src/microservice/application/app.constants';
+import {
+  DependecyTokens,
+  DependencyEntityTokens
+} from 'src/microservice/application/app.constants';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { GetTranslationService } from '../../translation/get-translation.service';
@@ -18,16 +21,15 @@ import { AnimalGroup } from 'src/microservice/domain/schemas/entity/animal-group
 import { Search } from 'src/microservice/application/dto/search/search.dto';
 
 @Injectable()
-export class UpdateAnimalService extends AbstractUpdateService<
+export class UpdateAnimalService extends GenericUpdateService<
   Animal,
-  AnimalDocument,
   AnimalResponse,
   AnimalBodyDto,
   SearchAnimalDto
 > {
   constructor(
     protected readonly repository: AnimalsRepository,
-    @Inject(`GENERIC_GET_SERVICE_${AnimalGroup.name}`)
+    @Inject(`GENERIC_GET_SERVICE_${DependencyEntityTokens.ANIMAL_GROUP}`)
     protected readonly getAnimalGroupsService: GenericGetService<
       AnimalGroup,
       AnimalGroup,

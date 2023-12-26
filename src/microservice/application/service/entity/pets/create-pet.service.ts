@@ -12,11 +12,13 @@ import { GetUserService } from '../users/get-user.service';
 import { CreateExpenseService } from '../expenses/create-expense.service';
 import { GetExpenseService } from '../expenses/get-Expense.service';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
-import { DependecyTokens } from 'src/microservice/application/app.constants';
+import {
+  DependecyTokens,
+  DependencyEntityTokens
+} from 'src/microservice/application/app.constants';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { GetTranslationService } from '../../translation/get-translation.service';
 import { ErrorService } from '../../configuration/error-schema/error.service';
-import { UpdatePetService } from './update-pet.service';
 import { GenericGetService } from '../../abstract/generic-get.service';
 import { Color } from 'src/microservice/domain/schemas/entity/colors.schema';
 import { Search } from 'src/microservice/application/dto/search/search.dto';
@@ -31,15 +33,14 @@ export class CreatePetService extends AbstractCreateService<
 > {
   constructor(
     protected readonly repository: PetsRepository,
-    protected readonly updateService: UpdatePetService,
-    @Inject(`GENERIC_GET_SERVICE_${Color.name}`)
+    @Inject(`GENERIC_GET_SERVICE_${DependencyEntityTokens.COLOR}`)
     protected readonly getColorsService: GenericGetService<
       Color,
       Color,
       Search
     >,
     protected readonly getAnimalsService: GetAnimalService,
-    @Inject(`GENERIC_GET_SERVICE_${Race.name}`)
+    @Inject(`GENERIC_GET_SERVICE_${DependencyEntityTokens.RACE}`)
     protected readonly getRacesService: GenericGetService<Race, Race, Search>,
     protected readonly getUsersService: GetUserService,
     protected readonly getExpensesService: GetExpenseService,
@@ -54,7 +55,6 @@ export class CreatePetService extends AbstractCreateService<
     super(
       repository,
       'pets',
-      updateService,
       fieldSchemaData,
       entitySchemaData,
       translationService,

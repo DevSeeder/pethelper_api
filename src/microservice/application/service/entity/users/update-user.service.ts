@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { UsersRepository } from '../../../../adapter/repository/entity/users.repository';
 import { UserDTO } from '../../../../domain/model/dto/users/user.dto';
-import { AbstractUpdateService } from '../../abstract/abstract-update.service';
+import { GenericUpdateService } from '../../abstract/generic-update.service';
 import {
   User,
   UserDocument
@@ -14,9 +14,8 @@ import { GetTranslationService } from '../../translation/get-translation.service
 import { ErrorService } from '../../configuration/error-schema/error.service';
 
 @Injectable()
-export class UpdateUserService extends AbstractUpdateService<
+export class UpdateUserService extends GenericUpdateService<
   User,
-  UserDocument,
   User,
   UserDTO,
   Search

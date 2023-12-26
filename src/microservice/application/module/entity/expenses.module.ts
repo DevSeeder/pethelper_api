@@ -16,13 +16,23 @@ import { FieldSchemasModule } from '../configuration/field-schemas.module';
 import { EntitySchemasModule } from '../configuration/entity-schemas.module';
 import { TranslationsModule } from '../translation/translation.module';
 import { ErrorSchemasModule } from '../configuration/error-schemas.module';
+import { GenericModule } from '../generic.module';
+import {
+  ExpenseCategoriesSchema,
+  ExpenseCategory
+} from 'src/microservice/domain/schemas/entity/expense-categories.schema';
+import { DependencyEntityTokens } from '../../app.constants';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Expense.name, schema: ExpensesSchema }]),
     forwardRef(() => PetsModule),
     UsersModule,
-    ExpenseCategoriesModule,
+    GenericModule.forFeature<ExpenseCategory>(
+      ExpenseCategory.name,
+      ExpenseCategoriesSchema,
+      DependencyEntityTokens.EXPENSE_CATEGORY
+    ),
     FieldSchemasModule,
     EntitySchemasModule,
     TranslationsModule,

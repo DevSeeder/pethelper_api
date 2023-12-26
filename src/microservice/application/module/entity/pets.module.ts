@@ -28,16 +28,33 @@ import {
   Race,
   RacesSchema
 } from 'src/microservice/domain/schemas/entity/races.schema';
+import { DependencyEntityTokens } from '../../app.constants';
+import {
+  ExpenseCategoriesSchema,
+  ExpenseCategory
+} from 'src/microservice/domain/schemas/entity/expense-categories.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Pet.name, schema: PetsSchema }]),
-    GenericModule.forFeature<Color>(Color.name, ColorsSchema, 'colors'),
+    GenericModule.forFeature<Color>(
+      Color.name,
+      ColorsSchema,
+      DependencyEntityTokens.COLOR
+    ),
     AnimalsModule,
-    GenericModule.forFeature<Race>(Race.name, RacesSchema, 'races'),
+    GenericModule.forFeature<Race>(
+      Race.name,
+      RacesSchema,
+      DependencyEntityTokens.RACE
+    ),
     UsersModule,
     forwardRef(() => ExpensesModule),
-    ExpenseCategoriesModule,
+    GenericModule.forFeature<ExpenseCategory>(
+      ExpenseCategory.name,
+      ExpenseCategoriesSchema,
+      DependencyEntityTokens.EXPENSE_CATEGORY
+    ),
     FieldSchemasModule,
     EntitySchemasModule,
     TranslationsModule,

@@ -1,10 +1,5 @@
 import { DateHelper } from '@devseeder/nestjs-microservices-commons';
-import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-  NotFoundException
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { AbstractBodyDto } from '../../dto/body/abtract-body.dto';
 import { AbstractSchema } from 'src/microservice/domain/schemas/abstract.schema';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
@@ -18,15 +13,14 @@ import { ClientSession } from 'mongoose';
 import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';
 
 @Injectable()
-export abstract class AbstractUpdateService<
+export class GenericUpdateService<
   Collection,
-  MongooseModel extends AbstractSchema,
   ResponseModel,
   BodyDto extends AbstractBodyDto,
   SearchParams
 > extends AbstractSearchService<
   Collection,
-  MongooseModel,
+  Collection & Document,
   ResponseModel,
   SearchParams
 > {
