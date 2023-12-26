@@ -7,9 +7,7 @@ import {
   ExpensesSchema
 } from 'src/microservice/domain/schemas/entity/expenses.schema';
 import { GetExpenseService } from '../../service/entity/expenses/get-expense.service';
-import { UsersModule } from './users.module';
 import { PetsModule } from './pets.module';
-import { ExpenseCategoriesModule } from './expense-categories.module';
 import { UpdateExpenseService } from '../../service/entity/expenses/update-expense.service';
 import { CreateExpenseService } from '../../service/entity/expenses/create-expense.service';
 import { FieldSchemasModule } from '../configuration/field-schemas.module';
@@ -22,12 +20,20 @@ import {
   ExpenseCategory
 } from 'src/microservice/domain/schemas/entity/expense-categories.schema';
 import { DependencyEntityTokens } from '../../app.constants';
+import {
+  User,
+  UsersSchema
+} from 'src/microservice/domain/schemas/entity/users.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Expense.name, schema: ExpensesSchema }]),
     forwardRef(() => PetsModule),
-    UsersModule,
+    GenericModule.forFeature<User>(
+      User.name,
+      UsersSchema,
+      DependencyEntityTokens.USER
+    ),
     GenericModule.forFeature<ExpenseCategory>(
       ExpenseCategory.name,
       ExpenseCategoriesSchema,

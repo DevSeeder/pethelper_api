@@ -3,7 +3,6 @@ import {
   ExpenseCategory,
   ExpenseCategoriesSchema
 } from 'src/microservice/domain/schemas/entity/expense-categories.schema';
-import { CreateExpenseCategoryService } from '../../service/entity/expense-categories/create-expense-category.service';
 import { ExpenseCategoriesController } from 'src/microservice/adapter/controller/expense-categories.controller';
 import { GenericModule } from '../generic.module';
 import { FieldSchemasModule } from '../configuration/field-schemas.module';
@@ -25,7 +24,7 @@ import { DependencyEntityTokens } from '../../app.constants';
     TranslationsModule
   ],
   controllers: [ExpenseCategoriesController],
-  providers: [CreateExpenseCategoryService],
-  exports: [CreateExpenseCategoryService]
+  providers: [],
+  exports: []
 })
 export class ExpenseCategoriesModule {}

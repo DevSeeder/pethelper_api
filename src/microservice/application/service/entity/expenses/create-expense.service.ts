@@ -4,7 +4,6 @@ import { Expense } from '../../../../domain/schemas/entity/expenses.schema';
 import { ExpenseResponse } from '../../../dto/response/expense.response';
 import { ExpenseBodyDto } from '../../../dto/body/expense-body.dto';
 import { GetPetService } from '../pets/get-pet.service';
-import { GetUserService } from '../users/get-user.service';
 import { GenericCreateService } from '../../abstract/generic-create.service';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import {
@@ -17,6 +16,7 @@ import { ErrorService } from '../../configuration/error-schema/error.service';
 import { ExpenseCategory } from 'src/microservice/domain/schemas/entity/expense-categories.schema';
 import { Search } from 'src/microservice/application/dto/search/search.dto';
 import { GenericGetService } from '../../abstract/generic-get.service';
+import { User } from 'src/microservice/domain/schemas/entity/users.schema';
 
 @Injectable()
 export class CreateExpenseService extends GenericCreateService<
@@ -33,7 +33,8 @@ export class CreateExpenseService extends GenericCreateService<
       ExpenseCategory,
       Search
     >,
-    protected readonly getUsersService: GetUserService,
+    @Inject(`GENERIC_GET_SERVICE_${DependencyEntityTokens.USER}`)
+    protected readonly getUsersService: GenericGetService<User, User, Search>,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
     protected readonly fieldSchemaData: FieldSchema[],
     @Inject(DependecyTokens.ENTITY_SCHEMA_DB)

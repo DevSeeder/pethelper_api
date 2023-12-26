@@ -9,11 +9,9 @@ import { GetPetService } from 'src/microservice/application/service/entity/pets/
 import { AnimalsModule } from './animals.module';
 import { UpdatePetService } from '../../service/entity/pets/update-pet.service';
 import { CreatePetService } from '../../service/entity/pets/create-pet.service';
-import { UsersModule } from './users.module';
 import { ExpensesModule } from './expenses.module';
 import { ExpensesController } from 'src/microservice/adapter/controller/expenses.controller';
 import { GetExpenseService } from '../../service/entity/expenses/get-Expense.service';
-import { ExpenseCategoriesModule } from './expense-categories.module';
 import { FieldSchemasModule } from '../configuration/field-schemas.module';
 import { EntitySchemasModule } from '../configuration/entity-schemas.module';
 import { TranslationsModule } from '../translation/translation.module';
@@ -33,6 +31,10 @@ import {
   ExpenseCategoriesSchema,
   ExpenseCategory
 } from 'src/microservice/domain/schemas/entity/expense-categories.schema';
+import {
+  User,
+  UsersSchema
+} from 'src/microservice/domain/schemas/entity/users.schema';
 
 @Module({
   imports: [
@@ -48,7 +50,11 @@ import {
       RacesSchema,
       DependencyEntityTokens.RACE
     ),
-    UsersModule,
+    GenericModule.forFeature<User>(
+      User.name,
+      UsersSchema,
+      DependencyEntityTokens.USER
+    ),
     forwardRef(() => ExpensesModule),
     GenericModule.forFeature<ExpenseCategory>(
       ExpenseCategory.name,

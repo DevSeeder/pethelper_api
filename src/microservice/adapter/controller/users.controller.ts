@@ -18,13 +18,16 @@ import { GetUser } from '../../domain/decorators/get-user.decorator';
 import { AbstractController } from './abstract.controller';
 import { Search } from 'src/microservice/application/dto/search/search.dto';
 import { AbstractBodyDto } from 'src/microservice/application/dto/body/abtract-body.dto';
-import { GetUserService } from 'src/microservice/application/service/entity/users/get-user.service';
-import { UpdateUserService } from 'src/microservice/application/service/entity/users/update-user.service';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
-import { DependecyTokens } from 'src/microservice/application/app.constants';
+import {
+  DependecyTokens,
+  DependencyEntityTokens
+} from 'src/microservice/application/app.constants';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { ErrorService } from 'src/microservice/application/service/configuration/error-schema/error.service';
 import { GetTranslationService } from 'src/microservice/application/service/translation/get-translation.service';
+import { GenericGetService } from 'src/microservice/application/service/abstract/generic-get.service';
+import { GenericUpdateService } from 'src/microservice/application/service/abstract/generic-update.service';
 
 @Controller('users')
 export class UsersController extends AbstractController<
@@ -35,8 +38,15 @@ export class UsersController extends AbstractController<
   AbstractBodyDto
 > {
   constructor(
-    protected readonly getUsersService: GetUserService,
-    protected readonly updateUserService: UpdateUserService,
+    @Inject(`GENERIC_GET_SERVICE_${DependencyEntityTokens.USER}`)
+    protected readonly getUsersService: GenericGetService<User, User, Search>,
+    @Inject(`GENERIC_UPDATE_SERVICE_${DependencyEntityTokens.USER}`)
+    protected readonly updateUserService: GenericUpdateService<
+      User,
+      User,
+      Search,
+      AbstractBodyDto
+    >,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
     protected readonly fieldSchemaData?: FieldSchema[],
     @Inject(DependecyTokens.ENTITY_SCHEMA_DB)

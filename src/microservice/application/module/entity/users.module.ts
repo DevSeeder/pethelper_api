@@ -10,22 +10,26 @@ import { HttpModule } from '@nestjs/axios';
 import { UsersController } from '../../../adapter/controller/users.controller';
 import { GetUserValidationService } from '../../service/entity/users/get-user-validation.service';
 import { AuthJwtModule } from '../auth/auth-jwt.module';
-import { GetUserService } from '../../service/entity/users/get-user.service';
 import { FieldSchemasModule } from '../configuration/field-schemas.module';
-import { UpdateUserService } from '../../service/entity/users/update-user.service';
 import { EntitySchemasModule } from '../configuration/entity-schemas.module';
 import { TranslationsModule } from '../translation/translation.module';
 import { ErrorSchemasModule } from '../configuration/error-schemas.module';
+import { DependencyEntityTokens } from '../../app.constants';
+import { GenericModule } from '../generic.module';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: User.name, schema: UsersSchema }]),
     // ConfigModule.forRoot({
     //   isGlobal: true,
     //   load: [configuration]
     // }),
     // AuthJwtModule,
     // HttpModule,
+    GenericModule.forFeature<User>(
+      User.name,
+      UsersSchema,
+      DependencyEntityTokens.USER
+    ),
     FieldSchemasModule,
     EntitySchemasModule,
     TranslationsModule,
@@ -33,14 +37,11 @@ import { ErrorSchemasModule } from '../configuration/error-schemas.module';
   ],
   controllers: [UsersController],
   providers: [
-    UsersRepository,
-    GetUserService,
-    UpdateUserService
     // CreateUserService,
     // ClientAuthService,
     // GetUserValidationService,
     // UpdateUserService
   ],
-  exports: [GetUserService, UpdateUserService]
+  exports: []
 })
 export class UsersModule {}
