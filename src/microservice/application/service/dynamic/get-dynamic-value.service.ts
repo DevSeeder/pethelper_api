@@ -1,6 +1,5 @@
 import { DynamicValuesEnum } from 'src/microservice/domain/enum/dynamic-values.enum';
 import { DateHelper } from '../../helper/types/date.helper';
-import { DEFAULT_LANG } from '../../app.constants';
 import { GetTranslationService } from '../translation/get-translation.service';
 
 export class DynamicValueService {
@@ -25,8 +24,19 @@ export class DynamicValueService {
       case DynamicValuesEnum.CUR_USER:
         return 1;
       default:
-        return value;
+        return DynamicValueService.testRegexDynamicValues(value);
     }
+  }
+
+  static testRegexDynamicValues(value: any): any {
+    if (DynamicValueService.testRegex(DynamicValuesEnum.REGEX_CALCULATE, value))
+      return 0;
+    return value;
+  }
+
+  static testRegex(dynamicValue: DynamicValuesEnum, value: any): boolean {
+    const regex = new RegExp(dynamicValue);
+    return regex.test(value);
   }
 
   getValueMessage(dynamicValue: DynamicValuesEnum, value: any): any {
