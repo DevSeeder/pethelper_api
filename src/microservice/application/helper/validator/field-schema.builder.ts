@@ -29,18 +29,21 @@ import { EntitySchema } from 'src/microservice/domain/schemas/configuration-sche
 
 export class FieldSchemaBuilder {
   private schemaValidator: SchemaValidator;
+  private entitySchema: EntitySchema;
+
   constructor(
     protected readonly errorService: ErrorService,
     translationService: GetTranslationService,
-    entityLabels: string[],
-    private readonly entitySchemaData: EntitySchema[],
-    entity?: string
+    entity: string,
+    private readonly entitySchemaData: EntitySchema[]
   ) {
+    this.entitySchema = entitySchemaData.filter(
+      (ent) => ent.entity == entity
+    )[0];
     this.schemaValidator = new SchemaValidator(
       errorService,
       translationService,
-      entity,
-      entityLabels,
+      this.entitySchema,
       entitySchemaData
     );
   }
@@ -50,6 +53,7 @@ export class FieldSchemaBuilder {
     fieldSchemaData: FieldItemSchema[]
   ): RequestSchema {
     const parentSchemas = {};
+    const childrenSchemas = {};
 
     entityFields
       .filter((field) => field.type === 'externalId')
@@ -71,9 +75,27 @@ export class FieldSchemaBuilder {
         );
       });
 
+    this.entitySchema.subRelations.forEach((sub) => {
+      const relation = sub.service;
+      const entitySchema = this.entitySchemaData.filter(
+        (sc) => sc.entity === relation
+      );
+
+      childrenSchemas[relation] = this.buildSchemas(
+        fieldSchemaData.filter(
+          (schema) =>
+            (entitySchema[0].extendedEntities &&
+              entitySchema[0].extendedEntities.includes(schema.entity)) ||
+            schema.entity === GLOBAL_ENTITY ||
+            schema.entity === relation
+        )
+      );
+    });
+
     return {
       entity: this.buildSchemas(entityFields),
-      parents: parentSchemas
+      parents: parentSchemas,
+      children: childrenSchemas
     };
   }
 

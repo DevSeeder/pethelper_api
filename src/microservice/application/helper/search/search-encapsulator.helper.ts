@@ -8,9 +8,9 @@ export class SearchEncapsulatorHelper {
     const objIndex = [];
 
     const regex = /^(and|or)\d+_/;
-    const regexParent = /^\$parent\.\w+\.\w+$/;
+    const regexFamily = /^\$(parent|children)\.\w+\.\w+$/;
     Object.keys(obj).forEach((key) => {
-      if (!regex.test(key) && !regexParent.test(key)) {
+      if (!regex.test(key) && !regexFamily.test(key)) {
         notEncapObj[key] = obj[key];
         return;
       }
@@ -69,8 +69,8 @@ export class SearchEncapsulatorHelper {
     };
   }
 
-  static buildParentEncapsulator(obj: object, entity: string): object {
-    const regexPattern = `^\\$parent\\.${entity}\\.\\w+$`;
+  static buildFamilyEncapsulator(obj: object, entity: string): object {
+    const regexPattern = `^\\$(parent|children)\\.${entity}\\.\\w+$`;
     const regexParent = new RegExp(regexPattern);
     const objItem = { ...obj };
     Object.keys(objItem).forEach((key) => {

@@ -75,16 +75,14 @@ export abstract class AbstractController<
     this.requestSchema = new FieldSchemaBuilder(
       errorService,
       translationService,
-      this.entityLabels,
-      this.entitySchemaData,
-      this.entity
+      entity,
+      entitySchemaData
     ).buildRequestSchemas(this.fieldSchemaDb, this.fieldSchemaData);
 
     this.schemaValidator = new SchemaValidator(
       errorService,
       translationService,
-      this.entity,
-      this.entityLabels,
+      this.entitySchema,
       this.entitySchemaData
     );
   }

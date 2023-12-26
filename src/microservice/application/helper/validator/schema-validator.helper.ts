@@ -9,7 +9,10 @@ import { SearchEncapsulatorHelper } from '../search/search-encapsulator.helper';
 import { ErrorService } from '../../service/configuration/error-schema/error.service';
 import { GetTranslationService } from '../../service/translation/get-translation.service';
 import { ErrorSchemaException } from 'src/core/exceptions/error-schema.exception';
-import { RequestSchema } from 'src/microservice/domain/interface/input-schema.interface';
+import {
+  InputSchema,
+  RequestSchema
+} from 'src/microservice/domain/interface/input-schema.interface';
 import { GLOBAL_ENTITY } from '../../app.constants';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 
@@ -18,8 +21,7 @@ export class SchemaValidator {
   constructor(
     private readonly errorService: ErrorService,
     private readonly translationService: GetTranslationService,
-    private readonly entity: string,
-    private readonly entityLabels?: string[],
+    private readonly entitySchema: EntitySchema,
     private readonly entitySchemaData?: EntitySchema[]
   ) {}
 
@@ -35,27 +37,51 @@ export class SchemaValidator {
       obj,
       fieldSchemasDb.filter(
         (schema) =>
-          this.entityLabels.includes(schema.entity) ||
+          this.entitySchema.extendedEntities.includes(schema.entity) ||
           schema.entity === GLOBAL_ENTITY ||
-          schema.entity === this.entity
+          schema.entity === this.entitySchema.entity
       ),
       encapsulate
     );
 
-    for await (const parent of Object.keys(schema.parents)) {
+    await this.validateFamilySchema(
+      schema.parents,
+      requestMethod,
+      obj,
+      fieldSchemasDb,
+      encapsulate
+    );
+
+    await this.validateFamilySchema(
+      schema.children,
+      requestMethod,
+      obj,
+      fieldSchemasDb,
+      encapsulate
+    );
+  }
+
+  async validateFamilySchema(
+    schemaRelation: InputSchema,
+    requestMethod: string,
+    obj: object,
+    fieldSchemasDb: FieldSchema[],
+    encapsulate = false
+  ): Promise<void> {
+    for await (const relation of Object.keys(schemaRelation)) {
       const entitySchema = this.entitySchemaData.filter(
-        (entSchema) => entSchema.entity === parent
+        (entSchema) => entSchema.entity === relation
       );
 
       await this.validateSchema(
-        schema.parents[parent][requestMethod],
-        SearchEncapsulatorHelper.buildParentEncapsulator(obj, parent),
+        schemaRelation[relation][requestMethod],
+        SearchEncapsulatorHelper.buildFamilyEncapsulator(obj, relation),
         fieldSchemasDb.filter(
           (schema) =>
             (entitySchema[0].extendedEntities &&
               entitySchema[0].extendedEntities.includes(schema.entity)) ||
             schema.entity === GLOBAL_ENTITY ||
-            schema.entity === parent
+            schema.entity === relation
         ),
         encapsulate
       );
