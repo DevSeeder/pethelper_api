@@ -278,6 +278,8 @@ export class AbstractSearchService<
       };
     }
 
+    this.validateSearchRelation(searchParams, 'parent');
+
     return searchParams;
   }
 
@@ -322,7 +324,24 @@ export class AbstractSearchService<
         ? `${searchParams['_ids']},${relatedIds}`
         : relatedIds;
     }
+    this.validateSearchRelation(searchParams, 'children');
 
     return searchParams;
+  }
+
+  private validateSearchRelation(
+    searchParams: SearchParams,
+    familyKey: string
+  ): void {
+    const pattern = `^\$${familyKey}\.\w+\.\w+$`;
+    const regexFamily = new RegExp(pattern);
+
+    Object.keys(searchParams).forEach((key) => {
+      if (regexFamily.test(key))
+        this.errorService.throwError(ErrorKeys.INVALID_DATA, {
+          key: 'Relation',
+          value: key.split('.')[1]
+        });
+    });
   }
 }

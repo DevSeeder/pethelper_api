@@ -37,7 +37,8 @@ export class SchemaValidator {
       obj,
       fieldSchemasDb.filter(
         (schema) =>
-          this.entitySchema.extendedEntities.includes(schema.entity) ||
+          (this.entitySchema.extendedEntities &&
+            this.entitySchema.extendedEntities.includes(schema.entity)) ||
           schema.entity === GLOBAL_ENTITY ||
           schema.entity === this.entitySchema.entity
       ),
