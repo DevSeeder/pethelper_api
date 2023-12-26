@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { AbstractGetService } from '../../abstract/abstract-get.service';
 import { ExpensesRepository } from 'src/microservice/adapter/repository/entity/expenses.repository';
 import {
@@ -29,6 +29,7 @@ export class GetExpenseService extends AbstractGetService<
 > {
   constructor(
     protected readonly repository: ExpensesRepository,
+    @Inject(forwardRef(() => GetPetService))
     protected readonly getPetsService: GetPetService,
     protected readonly getUsersService: GetUserService,
     protected readonly getExpenseCategoriesService: GetExpenseCategoriesService,

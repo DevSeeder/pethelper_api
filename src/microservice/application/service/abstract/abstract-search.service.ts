@@ -201,6 +201,7 @@ export class AbstractSearchService<
     );
     const searchEngs = await this.buildSearchEgines(searchParams);
     await this.joinParentSearch(searchEngs as SearchParams);
+    await this.joinChildrenSearch(searchEngs as SearchParams);
     return searchEngs;
   }
 
@@ -243,39 +244,83 @@ export class AbstractSearchService<
   }
 
   async joinParentSearch(searchParams: SearchParams): Promise<SearchParams> {
-    const keys = Object.keys(searchParams).filter((key) =>
-      key.startsWith('$parent.')
-    );
-
-    for await (const key of keys) {
-      const splitKey = key.split('.');
-      this.logger.log(`Relation: ${splitKey[1]} && Key: ${splitKey[2]}`);
-      const relation = this.fieldSchemaDb.filter(
-        (field) =>
-          field.externalRelation &&
-          field.externalRelation.service === splitKey[1]
+    for await (const field of this.fieldSchemaDb.filter(
+      (field) => field.externalRelation
+    )) {
+      const relation = field.externalRelation.service;
+      const keys = Object.keys(searchParams).filter((key) =>
+        key.startsWith(`$parent.${relation}`)
       );
 
-      if (!relation.length)
-        this.errorService.throwError(ErrorKeys.INVALID_DATA, {
-          key: 'Relation',
-          value: splitKey[1]
-        });
+      if (!keys.length) continue;
+
+      const relationWhere = {};
+
+      for await (const key of keys) {
+        const splitKey = key.split('.');
+        this.logger.log(`Relation: ${splitKey[1]} && Key: ${splitKey[2]}`);
+        relationWhere[splitKey[2]] = searchParams[key];
+        delete searchParams[key];
+      }
 
       const parentItems = await this[
-        `get${relation[0].externalRelation.service.capitalizeFirstLetter()}Service`
+        `get${relation.capitalizeFirstLetter()}Service`
       ].search(
         {
-          [splitKey[2]]: searchParams[key],
+          ...relationWhere,
           select: 'name'
         },
         false,
         false
       );
-      searchParams[relation[0].key] = {
+      searchParams[field.key] = {
         $in: parentItems.items.map((item) => item._id)
       };
-      delete searchParams[key];
+    }
+
+    return searchParams;
+  }
+
+  async joinChildrenSearch(searchParams: SearchParams): Promise<SearchParams> {
+    for await (const sub of this.entitySchema.subRelations) {
+      const relation = sub.service;
+      const keys = Object.keys(searchParams).filter((key) =>
+        key.startsWith(`$children.${relation}`)
+      );
+
+      if (!keys.length) continue;
+
+      const relationWhere = {};
+
+      for await (const key of keys) {
+        const splitKey = key.split('.');
+        this.logger.log(`Relation: ${splitKey[1]} && Key: ${splitKey[2]}`);
+        relationWhere[splitKey[2]] = searchParams[key];
+        delete searchParams[key];
+      }
+
+      this.logger.log(`get${relation.capitalizeFirstLetter()}Service`);
+
+      const parentItems = await this[
+        `get${relation.capitalizeFirstLetter()}Service`
+      ].search(
+        {
+          ...relationWhere,
+          select: 'name'
+        },
+        false,
+        false
+      );
+
+      this.logger.log(`Itens: ${JSON.stringify(parentItems.items)}`);
+
+      if (!parentItems.items.length)
+        this.errorService.throwError(ErrorKeys.NOT_FOUND);
+
+      const relatedIds = parentItems.items.map((item) => item._id).join(',');
+      searchParams['_ids'] = searchParams['_ids']
+        ? `${searchParams['_ids']},${relatedIds}`
+        : relatedIds;
     }
 
     return searchParams;

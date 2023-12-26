@@ -13,6 +13,7 @@ import {
   PaginatedResponse
 } from '../../dto/response/paginated.response';
 import {
+  CustomErrorException,
   InvalidDataException,
   NotFoundException
 } from '@devseeder/microservices-exceptions';
@@ -56,7 +57,16 @@ export abstract class AbstractGetService<
     paginate = true,
     convertOutput = true
   ): Promise<PaginatedResponse<ResponseModel>> {
-    const searchWhere = await this.buildSearchParams(searchParams);
+    let searchWhere;
+
+    try {
+      searchWhere = await this.buildSearchParams(searchParams);
+    } catch (err) {
+      if (err instanceof CustomErrorException)
+        if (err.errCode === 404) return { items: [] };
+      throw err;
+    }
+
     const { page, pageSize } = this.getPagination(searchParams, searchWhere);
     const { sort, sortExternal, hasExternal } = this.validateOrderField(
       searchWhere,

@@ -16,6 +16,7 @@ import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { GetTranslationService } from '../../translation/get-translation.service';
 import { ErrorService } from '../../configuration/error-schema/error.service';
+import { GetExpenseService } from '../expenses/get-Expense.service';
 
 @Injectable()
 export class GetPetService extends AbstractGetService<
@@ -30,6 +31,7 @@ export class GetPetService extends AbstractGetService<
     protected readonly getAnimalsService: GetAnimalService,
     protected readonly getUsersService: GetUserService,
     protected readonly getRacesService: GetRaceService,
+    protected readonly getExpensesService: GetExpenseService,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
     protected readonly fieldSchemaData: FieldSchema[] = [],
     @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
