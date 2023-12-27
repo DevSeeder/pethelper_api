@@ -42,6 +42,7 @@ import {
   Expense,
   ExpensesSchema
 } from 'src/microservice/domain/schemas/entity/expenses.schema';
+import { ExpensesRepository } from 'src/microservice/adapter/repository/entity/expenses.repository';
 
 @Module({
   imports: [
@@ -70,7 +71,7 @@ import {
       Expense.name,
       ExpensesSchema,
       DependencyEntityTokens.EXPENSE,
-      { get: GetExpenseService }
+      { get: GetExpenseService, repository: ExpensesRepository }
     ),
     GenericModule.forFeature<ExpenseCategory>(
       ExpenseCategory.name,

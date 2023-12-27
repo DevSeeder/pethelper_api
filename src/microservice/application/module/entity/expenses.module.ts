@@ -20,6 +20,7 @@ import {
   UsersSchema
 } from 'src/microservice/domain/schemas/entity/users.schema';
 import { GetExpenseService } from '../../service/entity/expenses/get-expense.service';
+import { ExpensesRepository } from 'src/microservice/adapter/repository/entity/expenses.repository';
 
 @Module({
   imports: [
@@ -27,7 +28,7 @@ import { GetExpenseService } from '../../service/entity/expenses/get-expense.ser
       Expense.name,
       ExpensesSchema,
       DependencyEntityTokens.EXPENSE,
-      { get: GetExpenseService }
+      { get: GetExpenseService, repository: ExpensesRepository }
     ),
     forwardRef(() => PetsModule),
     GenericModule.forFeature<User>(

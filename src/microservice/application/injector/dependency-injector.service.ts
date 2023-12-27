@@ -47,12 +47,17 @@ export class DependencyInjectorService {
 
   static injectRepository<Collection>(
     entity: string,
-    modelName: string
+    modelName: string,
+    customProvider?: CustomProvider
   ): Provider {
     return {
       provide: `GENERIC_REPOSITORY_${entity}`,
-      useFactory: (model: Model<any>) =>
-        new GenericRepository<Collection>(model),
+      useFactory: (model: Model<any>) => {
+        let classService = GenericRepository<Collection>;
+        if (customProvider && customProvider.repository)
+          classService = customProvider.repository;
+        return createInstance(classService, model);
+      },
       inject: [getModelToken(modelName)]
     };
   }
@@ -77,7 +82,6 @@ export class DependencyInjectorService {
 
     for (const parent of this.parentFields) {
       const relation = parent.externalRelation.service;
-      // const relModel = modelExt[relation];
       const relModel = this.moduleRef.get(
         getModelToken(ModelEntityTokens[relation].modelName),
         {

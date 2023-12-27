@@ -14,8 +14,6 @@ import { DependecyTokens } from '../app.constants';
 import { ModuleRef } from '@nestjs/core';
 import { EntityModelTokenBuilder } from '../injector/entity/model-entity-token.injector';
 import { CustomProvider } from '../dto/provider/custom-provider.dto';
-import { AbstractDBService } from '../service/abstract/abstract-db.service';
-import { GenericGetService } from '../service/abstract/generic-get.service';
 
 @Module({})
 export class GenericModule {
@@ -27,7 +25,8 @@ export class GenericModule {
   ): DynamicModule {
     const repositoryProvider = DependencyInjectorService.injectRepository(
       entity,
-      modelName
+      modelName,
+      customProvider
     );
     return {
       module: GenericModule,
@@ -43,8 +42,8 @@ export class GenericModule {
       providers: [
         repositoryProvider,
         GenericModule.loadServiceProvider(entity, 'get', customProvider),
-        GenericModule.loadServiceProvider(entity, 'update'),
-        GenericModule.loadServiceProvider(entity, 'create')
+        GenericModule.loadServiceProvider(entity, 'update', customProvider),
+        GenericModule.loadServiceProvider(entity, 'create', customProvider)
       ],
       exports: [
         repositoryProvider,
@@ -60,7 +59,6 @@ export class GenericModule {
     providerKey: string,
     customProvider?: CustomProvider
   ) {
-    const models = EntityModelTokenBuilder.buildMongooseModelTokens();
     return {
       provide: `GENERIC_${providerKey.toUpperCase()}_SERVICE_${entity}`,
       useFactory: async (
@@ -92,8 +90,7 @@ export class GenericModule {
         DependecyTokens.FIELD_SCHEMA_DB,
         DependecyTokens.ENTITY_SCHEMA_DB,
         GetTranslationService,
-        ErrorService,
-        ...models
+        ErrorService
       ]
     };
   }
