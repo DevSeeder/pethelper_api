@@ -75,7 +75,8 @@ export class AbstractDBService<
         item,
         itemResponse,
         rel,
-        key
+        key,
+        validateInput
       );
 
       if (!validationRes) isNormalValidation = false;
@@ -94,7 +95,8 @@ export class AbstractDBService<
     item: Partial<MongooseModel> | Partial<AbstractDocument>,
     itemResponse: ResponseModel,
     relation: Relation,
-    operator: SearchEgineOperators | ''
+    operator: SearchEgineOperators | '',
+    validateInput = true
   ): Promise<boolean> {
     let value = item[key];
 
@@ -107,7 +109,7 @@ export class AbstractDBService<
       const relPromises = value.map(async (val) => {
         return {
           id: val,
-          value: await this.convertValueRelation(relation, val)
+          value: await this.convertValueRelation(relation, val, validateInput)
         };
       });
 

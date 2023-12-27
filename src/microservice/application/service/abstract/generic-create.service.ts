@@ -75,13 +75,14 @@ export class GenericCreateService<
     changeUniqueIndex = true,
     relationsToClone = [],
     cloneBody = {},
-    session: ClientSession = null
+    session: ClientSession = null,
+    validateInput = true
   ): Promise<CloneOneResponse> {
     this.logger.log(`Cloning ${this.entitySchema.itemLabel} '${id}'...`);
 
     const cloneTarget = await this.validateId(id);
 
-    await this.convertRelation(cloneBody);
+    await this.convertRelation(cloneBody, validateInput);
 
     const bodyCreate = {
       ...cloneTarget,
@@ -172,7 +173,8 @@ export class GenericCreateService<
         `get${rel.entity.capitalizeFirstLetter()}Service`
       ].search(
         {
-          [rel.key]: cloneId
+          [rel.key]: cloneId,
+          select: 'name'
         },
         false,
         false
@@ -192,7 +194,8 @@ export class GenericCreateService<
           {
             [rel.key]: rel.array ? [newId] : newId
           },
-          session
+          session,
+          false
         );
       }
       this.logger.log(`Relation '${rel.service}' successfully cloned!`);
@@ -212,8 +215,10 @@ export class GenericCreateService<
     });
 
     delete bodyCreate['_id'];
+    delete bodyCreate['__v'];
     delete bodyCreate['createdAt'];
     delete bodyCreate['updatedAt'];
     delete bodyCreate['inactivationDate'];
+    delete bodyCreate['inactivationReason'];
   }
 }
