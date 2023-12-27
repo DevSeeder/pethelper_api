@@ -25,11 +25,7 @@ import { GenericModule } from '../generic.module';
     // }),
     // AuthJwtModule,
     // HttpModule,
-    GenericModule.forFeature<User>(
-      User.name,
-      UsersSchema,
-      DependencyEntityTokens.USER
-    ),
+    GenericModule.forFeature<User>(User.name, DependencyEntityTokens.USER),
     FieldSchemasModule,
     EntitySchemasModule,
     TranslationsModule,

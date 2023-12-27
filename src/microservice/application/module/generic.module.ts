@@ -19,7 +19,6 @@ import { CustomProvider } from '../dto/provider/custom-provider.dto';
 export class GenericModule {
   static forFeature<Collection>(
     modelName: string,
-    schema: any,
     entity: string,
     customProvider?: CustomProvider
   ): DynamicModule {

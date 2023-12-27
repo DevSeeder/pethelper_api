@@ -1,8 +1,5 @@
 import { Module } from '@nestjs/common';
-import {
-  ExpenseCategory,
-  ExpenseCategoriesSchema
-} from 'src/microservice/domain/schemas/entity/expense-categories.schema';
+import { ExpenseCategory } from 'src/microservice/domain/schemas/entity/expense-categories.schema';
 import { ExpenseCategoriesController } from 'src/microservice/adapter/controller/expense-categories.controller';
 import { GenericModule } from '../generic.module';
 import { FieldSchemasModule } from '../configuration/field-schemas.module';
@@ -15,7 +12,6 @@ import { DependencyEntityTokens } from '../../app.constants';
   imports: [
     GenericModule.forFeature<ExpenseCategory>(
       ExpenseCategory.name,
-      ExpenseCategoriesSchema,
       DependencyEntityTokens.EXPENSE_CATEGORY
     ),
     FieldSchemasModule,
