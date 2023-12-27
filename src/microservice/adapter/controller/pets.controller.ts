@@ -1,20 +1,23 @@
 import { Controller, Inject } from '@nestjs/common';
 import { SearchPetDto } from 'src/microservice/application/dto/search/search-pet.dto';
-import { GetPetService } from 'src/microservice/application/service/entity/pets/get-pet.service';
 import { AbstractController } from './abstract.controller';
 import { PetResponse } from 'src/microservice/application/dto/response/pet.response';
 import {
   Pet,
   PetDocument
 } from 'src/microservice/domain/schemas/entity/pets.schema';
-import { UpdatePetService } from 'src/microservice/application/service/entity/pets/update-pet.service';
 import { PetBodyDto } from 'src/microservice/application/dto/body/pet-body.dto';
-import { CreatePetService } from 'src/microservice/application/service/entity/pets/create-pet.service';
-import { DependecyTokens } from 'src/microservice/application/app.constants';
+import {
+  DependecyTokens,
+  DependencyEntityTokens
+} from 'src/microservice/application/app.constants';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { ErrorService } from 'src/microservice/application/service/configuration/error-schema/error.service';
 import { GetTranslationService } from 'src/microservice/application/service/translation/get-translation.service';
+import { GenericGetService } from 'src/microservice/application/service/abstract/generic-get.service';
+import { GenericUpdateService } from 'src/microservice/application/service/abstract/generic-update.service';
+import { GenericCreateService } from 'src/microservice/application/service/abstract/generic-create.service';
 
 @Controller('pets')
 export class PetsController extends AbstractController<
@@ -25,9 +28,25 @@ export class PetsController extends AbstractController<
   PetBodyDto
 > {
   constructor(
-    protected readonly getService: GetPetService,
-    protected readonly updateService: UpdatePetService,
-    protected readonly createService: CreatePetService,
+    @Inject(`GENERIC_GET_SERVICE_${DependencyEntityTokens.PET}`)
+    protected readonly getService: GenericGetService<
+      Pet,
+      PetResponse,
+      SearchPetDto
+    >,
+    @Inject(`GENERIC_UPDATE_SERVICE_${DependencyEntityTokens.PET}`)
+    protected readonly updateService: GenericUpdateService<
+      Pet,
+      PetResponse,
+      PetBodyDto,
+      SearchPetDto
+    >,
+    @Inject(`GENERIC_CREATE_SERVICE_${DependencyEntityTokens.PET}`)
+    protected readonly createService: GenericCreateService<
+      Pet,
+      PetResponse,
+      SearchPetDto
+    >,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
     protected readonly fieldSchemaData?: FieldSchema[],
     @Inject(DependecyTokens.ENTITY_SCHEMA_DB)

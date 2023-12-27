@@ -1,13 +1,4 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { PetsRepository } from 'src/microservice/adapter/repository/entity/pets.repository';
-import {
-  Pet,
-  PetsSchema
-} from 'src/microservice/domain/schemas/entity/pets.schema';
-import { GetPetService } from 'src/microservice/application/service/entity/pets/get-pet.service';
-import { UpdatePetService } from '../../service/entity/pets/update-pet.service';
-import { CreatePetService } from '../../service/entity/pets/create-pet.service';
 import { GetExpenseService } from '../../service/entity/expenses/get-expense.service';
 import { FieldSchemasModule } from '../configuration/field-schemas.module';
 import { EntitySchemasModule } from '../configuration/entity-schemas.module';
@@ -23,10 +14,11 @@ import { User } from 'src/microservice/domain/schemas/entity/users.schema';
 import { Animal } from 'src/microservice/domain/schemas/entity/animals.schema';
 import { Expense } from 'src/microservice/domain/schemas/entity/expenses.schema';
 import { ExpensesRepository } from 'src/microservice/adapter/repository/entity/expenses.repository';
+import { Pet } from 'src/microservice/domain/schemas/entity/pets.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Pet.name, schema: PetsSchema }]),
+    GenericModule.forFeature<Color>(Pet.name, DependencyEntityTokens.PET),
     GenericModule.forFeature<Color>(Color.name, DependencyEntityTokens.COLOR),
     GenericModule.forFeature<Animal>(
       Animal.name,
@@ -49,12 +41,7 @@ import { ExpensesRepository } from 'src/microservice/adapter/repository/entity/e
     ErrorSchemasModule
   ],
   controllers: [PetsController],
-  providers: [
-    PetsRepository,
-    GetPetService,
-    UpdatePetService,
-    CreatePetService
-  ],
-  exports: [PetsRepository, GetPetService, UpdatePetService, CreatePetService]
+  providers: [],
+  exports: []
 })
 export class PetsModule {}

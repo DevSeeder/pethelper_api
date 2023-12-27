@@ -20,7 +20,9 @@ import { ModelEntityTokens } from './entity/model-entity-token.injector';
 export class DependencyInjectorService {
   private entitySchema: EntitySchema;
   private parentFields: FieldSchema[];
+  private serviceCache = {};
   constructor(
+    private originalEntity: string,
     private moduleRef: ModuleRef,
     @Inject(DependecyTokens.ERROR_SCHEMA_DB)
     private entitySchemaData: EntitySchema[],
@@ -62,13 +64,16 @@ export class DependencyInjectorService {
     };
   }
 
-  injectService<Collection, T>(
+  async injectService<Collection, T>(
     entity: string,
     repository: GenericRepository<any>,
     genericClass,
     providerKey: string,
-    customProvider?: CustomProvider
-  ): T {
+    customProvider?: CustomProvider,
+    children = true
+  ): Promise<T> {
+    const serviceKey = `${providerKey}${entity.capitalizeFirstLetter()}Service`;
+
     this.setSchema(entity);
 
     const { args, classService } = this.getInstance(
@@ -80,45 +85,95 @@ export class DependencyInjectorService {
     );
     const service = createInstance<any>(classService, ...args);
 
-    for (const parent of this.parentFields) {
-      const relation = parent.externalRelation.service;
-      const relModel = this.moduleRef.get(
-        getModelToken(ModelEntityTokens[relation].modelName),
-        {
-          strict: false
-        }
-      );
-      const relRepository = new GenericRepository<Collection>(relModel);
-      const relProvider = this.injectGetService(relation, relRepository);
-      service[`get${relation.capitalizeFirstLetter()}Service`] = relProvider;
-    }
+    await this.injectParents(service, 'get', serviceKey);
+    if (children) await this.injectChildren(service, 'get', serviceKey);
+    if (providerKey !== 'get' && children)
+      await this.injectChildren(service, providerKey, serviceKey);
+
+    this.serviceCache[serviceKey] = service;
+
     return service;
   }
 
-  injectGetService<Collection>(
+  private async injectParents(
+    service,
+    providerKey: string,
+    originalServiceKey: string
+  ) {
+    for await (const parent of this.parentFields) {
+      await this.injectFamily(
+        service,
+        providerKey,
+        parent.externalRelation.service,
+        originalServiceKey
+      );
+    }
+  }
+
+  private async injectChildren(
+    service,
+    providerKey: string,
+    originalServiceKey: string
+  ) {
+    for await (const sub of this.entitySchema.subRelations) {
+      await this.injectFamily(
+        service,
+        providerKey,
+        sub.service,
+        originalServiceKey,
+        true
+      );
+    }
+  }
+
+  private async injectFamily(
+    service,
+    providerKey: string,
+    relation: string,
+    originalServiceKey: string,
+    children = false
+  ) {
+    const serviceKey = `${providerKey}${relation.capitalizeFirstLetter()}Service`;
+
+    const relModel = this.moduleRef.get(
+      getModelToken(ModelEntityTokens[relation].modelName),
+      {
+        strict: false
+      }
+    );
+    const relRepository = new GenericRepository<Collection>(relModel);
+
+    const relProvider = await this[
+      `inject${providerKey.capitalizeFirstLetter()}Service`
+    ](relation, relRepository, {}, false);
+
+    if (children) relProvider[originalServiceKey] = service;
+
+    service[serviceKey] = relProvider;
+  }
+
+  async injectGetService<Collection>(
     entity: string,
     repository: GenericRepository<any>,
-    customProvider?: CustomProvider
-  ): GenericGetService<Collection, Collection, Search> {
+    customProvider?: CustomProvider,
+    children = true
+  ) {
     return this.injectService(
       entity,
       repository,
       GenericGetService<Collection, Collection, Search>,
       'get',
-      customProvider
+      customProvider,
+      children
     );
   }
 
-  injectUpdateService<Collection>(
+  async injectUpdateService<Collection>(
     entity: string,
     repository: GenericRepository<any>,
-    customProvider?: CustomProvider
-  ): GenericUpdateService<
-    Collection,
-    Collection & Document,
-    Search,
-    AbstractBodyDto
-  > {
+    customProvider?: CustomProvider,
+    children = true
+  ) {
     return this.injectService(
       entity,
       repository,
@@ -129,21 +184,24 @@ export class DependencyInjectorService {
         AbstractBodyDto
       >,
       'update',
-      customProvider
+      customProvider,
+      children
     );
   }
 
-  injectCreateService<Collection>(
+  async injectCreateService<Collection>(
     entity: string,
     repository: GenericRepository<any>,
-    customProvider?: CustomProvider
-  ): GenericCreateService<Collection, Collection & Document, AbstractBodyDto> {
+    customProvider?: CustomProvider,
+    children = true
+  ) {
     return this.injectService(
       entity,
       repository,
       GenericCreateService<Collection, Collection & Document, AbstractBodyDto>,
       'create',
-      customProvider
+      customProvider,
+      children
     );
   }
 

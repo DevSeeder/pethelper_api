@@ -125,6 +125,7 @@ export class GenericUpdateService<
       ].search(
         {
           [rel.key]: id,
+          select: 'name',
           active
         },
         false,

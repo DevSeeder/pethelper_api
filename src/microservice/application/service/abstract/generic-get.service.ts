@@ -51,6 +51,7 @@ export class GenericGetService<
     let searchWhere;
 
     try {
+      this.logger.log(`Build Search Params: ${JSON.stringify(searchParams)}`);
       searchWhere = await this.buildSearchParams(searchParams);
     } catch (err) {
       if (err instanceof CustomErrorException)

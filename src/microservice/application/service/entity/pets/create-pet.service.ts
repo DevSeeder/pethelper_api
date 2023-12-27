@@ -23,7 +23,6 @@ import { SearchAnimalDto } from 'src/microservice/application/dto/search/search-
 import { Expense } from 'src/microservice/domain/schemas/entity/expenses.schema';
 import { ExpenseResponse } from 'src/microservice/application/dto/response/expense.response';
 import { ExpenseBodyDto } from 'src/microservice/application/dto/body/expense-body.dto';
-import { SearchExpenseDto } from 'src/microservice/application/dto/search/search-expense.dto';
 import { GetExpenseService } from '../expenses/get-expense.service';
 
 @Injectable()

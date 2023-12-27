@@ -69,6 +69,7 @@ export class GenericModule {
         errorService: ErrorService
       ) => {
         const injectorService = new DependencyInjectorService(
+          entity,
           moduleRef,
           entitySchemaData,
           fieldSchemaData,

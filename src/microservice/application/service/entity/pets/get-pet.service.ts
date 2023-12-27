@@ -20,9 +20,6 @@ import { User } from 'src/microservice/domain/schemas/entity/users.schema';
 import { Animal } from 'src/microservice/domain/schemas/entity/animals.schema';
 import { AnimalResponse } from 'src/microservice/application/dto/response/animal.response';
 import { SearchAnimalDto } from 'src/microservice/application/dto/search/search-animal.dto';
-import { Expense } from 'src/microservice/domain/schemas/entity/expenses.schema';
-import { ExpenseResponse } from 'src/microservice/application/dto/response/expense.response';
-import { SearchExpenseDto } from 'src/microservice/application/dto/search/search-expense.dto';
 
 @Injectable()
 export class GetPetService extends GenericGetService<

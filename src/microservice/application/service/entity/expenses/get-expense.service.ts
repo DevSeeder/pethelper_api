@@ -3,7 +3,6 @@ import { GenericGetService } from '../../abstract/generic-get.service';
 import { Expense } from '../../../../domain/schemas/entity/expenses.schema';
 import { ExpenseResponse } from 'src/microservice/application/dto/response/expense.response';
 import { SearchExpenseDto } from 'src/microservice/application/dto/search/search-expense.dto';
-import { GetPetService } from '../pets/get-pet.service';
 import {
   GroupExpensesByPetAndCategoryResponse,
   GroupedCostByCategory
@@ -24,6 +23,9 @@ import { Search } from '@devseeder/nestjs-microservices-commons';
 import { SearchDomainDto } from 'src/microservice/application/dto/search/search-domain.dto';
 import { User } from 'src/microservice/domain/schemas/entity/users.schema';
 import { ExpensesRepository } from 'src/microservice/adapter/repository/entity/expenses.repository';
+import { Pet } from 'src/microservice/domain/schemas/entity/pets.schema';
+import { PetResponse } from 'src/microservice/application/dto/response/pet.response';
+import { SearchPetDto } from 'src/microservice/application/dto/search/search-pet.dto';
 
 @Injectable()
 export class GetExpenseService extends GenericGetService<
@@ -40,8 +42,12 @@ export class GetExpenseService extends GenericGetService<
     protected readonly entitySchemaData: EntitySchema[],
     protected readonly translationService?: GetTranslationService,
     protected readonly errorService?: ErrorService,
-    @Inject(forwardRef(() => GetPetService))
-    protected readonly getPetsService?: GetPetService,
+    @Inject(`GENERIC_GET_SERVICE_${DependencyEntityTokens.PET}`)
+    protected readonly getPetsService?: GenericGetService<
+      Pet,
+      PetResponse,
+      SearchPetDto
+    >,
     @Inject(`GENERIC_GET_SERVICE_${DependencyEntityTokens.USER}`)
     protected readonly getUsersService?: GenericGetService<User, User, Search>,
     @Inject(`GENERIC_GET_SERVICE_${DependencyEntityTokens.EXPENSE_CATEGORY}`)
