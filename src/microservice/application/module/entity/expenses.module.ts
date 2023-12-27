@@ -1,15 +1,10 @@
 import { Module, forwardRef } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
 import { ExpensesController } from 'src/microservice/adapter/controller/expenses.controller';
-import { ExpensesRepository } from 'src/microservice/adapter/repository/entity/expenses.repository';
 import {
   Expense,
   ExpensesSchema
 } from 'src/microservice/domain/schemas/entity/expenses.schema';
-import { GetExpenseService } from '../../service/entity/expenses/get-expense.service';
 import { PetsModule } from './pets.module';
-import { UpdateExpenseService } from '../../service/entity/expenses/update-expense.service';
-import { CreateExpenseService } from '../../service/entity/expenses/create-expense.service';
 import { FieldSchemasModule } from '../configuration/field-schemas.module';
 import { EntitySchemasModule } from '../configuration/entity-schemas.module';
 import { TranslationsModule } from '../translation/translation.module';
@@ -24,10 +19,16 @@ import {
   User,
   UsersSchema
 } from 'src/microservice/domain/schemas/entity/users.schema';
+import { GetExpenseService } from '../../service/entity/expenses/get-expense.service';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Expense.name, schema: ExpensesSchema }]),
+    GenericModule.forFeature<Expense>(
+      Expense.name,
+      ExpensesSchema,
+      DependencyEntityTokens.EXPENSE,
+      { get: GetExpenseService }
+    ),
     forwardRef(() => PetsModule),
     GenericModule.forFeature<User>(
       User.name,
@@ -45,17 +46,7 @@ import {
     ErrorSchemasModule
   ],
   controllers: [ExpensesController],
-  providers: [
-    ExpensesRepository,
-    GetExpenseService,
-    UpdateExpenseService,
-    CreateExpenseService
-  ],
-  exports: [
-    ExpensesRepository,
-    GetExpenseService,
-    UpdateExpenseService,
-    CreateExpenseService
-  ]
+  providers: [],
+  exports: []
 })
 export class ExpensesModule {}

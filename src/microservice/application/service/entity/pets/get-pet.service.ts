@@ -11,7 +11,7 @@ import {
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { GetTranslationService } from '../../translation/get-translation.service';
 import { ErrorService } from '../../configuration/error-schema/error.service';
-import { GetExpenseService } from '../expenses/get-Expense.service';
+import { GetExpenseService } from '../expenses/get-expense.service';
 import { Color } from 'src/microservice/domain/schemas/entity/colors.schema';
 import { Search } from 'src/microservice/application/dto/search/search.dto';
 import { SearchPetDto } from 'src/microservice/application/dto/search/search-pet.dto';
@@ -20,6 +20,9 @@ import { User } from 'src/microservice/domain/schemas/entity/users.schema';
 import { Animal } from 'src/microservice/domain/schemas/entity/animals.schema';
 import { AnimalResponse } from 'src/microservice/application/dto/response/animal.response';
 import { SearchAnimalDto } from 'src/microservice/application/dto/search/search-animal.dto';
+import { Expense } from 'src/microservice/domain/schemas/entity/expenses.schema';
+import { ExpenseResponse } from 'src/microservice/application/dto/response/expense.response';
+import { SearchExpenseDto } from 'src/microservice/application/dto/search/search-expense.dto';
 
 @Injectable()
 export class GetPetService extends GenericGetService<
@@ -45,6 +48,7 @@ export class GetPetService extends GenericGetService<
     protected readonly getUsersService: GenericGetService<User, User, Search>,
     @Inject(`GENERIC_GET_SERVICE_${DependencyEntityTokens.RACE}`)
     protected readonly getRacesService: GenericGetService<Race, Race, Search>,
+    @Inject(`GENERIC_GET_SERVICE_${DependencyEntityTokens.EXPENSE}`)
     protected readonly getExpensesService: GetExpenseService,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
     protected readonly fieldSchemaData: FieldSchema[] = [],

@@ -4,8 +4,6 @@ import { Pet } from '../../../../domain/schemas/entity/pets.schema';
 import { PetResponse } from '../../../dto/response/pet.response';
 import { GenericCreateService } from '../../abstract/generic-create.service';
 import { PetBodyDto } from '../../../dto/body/pet-body.dto';
-import { CreateExpenseService } from '../expenses/create-expense.service';
-import { GetExpenseService } from '../expenses/get-Expense.service';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import {
   DependecyTokens,
@@ -22,6 +20,11 @@ import { User } from 'src/microservice/domain/schemas/entity/users.schema';
 import { Animal } from 'src/microservice/domain/schemas/entity/animals.schema';
 import { AnimalResponse } from 'src/microservice/application/dto/response/animal.response';
 import { SearchAnimalDto } from 'src/microservice/application/dto/search/search-animal.dto';
+import { Expense } from 'src/microservice/domain/schemas/entity/expenses.schema';
+import { ExpenseResponse } from 'src/microservice/application/dto/response/expense.response';
+import { ExpenseBodyDto } from 'src/microservice/application/dto/body/expense-body.dto';
+import { SearchExpenseDto } from 'src/microservice/application/dto/search/search-expense.dto';
+import { GetExpenseService } from '../expenses/get-expense.service';
 
 @Injectable()
 export class CreatePetService extends GenericCreateService<
@@ -47,8 +50,14 @@ export class CreatePetService extends GenericCreateService<
     protected readonly getRacesService: GenericGetService<Race, Race, Search>,
     @Inject(`GENERIC_GET_SERVICE_${DependencyEntityTokens.USER}`)
     protected readonly getUsersService: GenericGetService<User, User, Search>,
+    @Inject(`GENERIC_GET_SERVICE_${DependencyEntityTokens.EXPENSE}`)
     protected readonly getExpensesService: GetExpenseService,
-    protected readonly createExpensesService: CreateExpenseService,
+    @Inject(`GENERIC_CREATE_SERVICE_${DependencyEntityTokens.EXPENSE}`)
+    protected readonly createExpensesService: GenericCreateService<
+      Expense,
+      ExpenseResponse,
+      ExpenseBodyDto
+    >,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
     protected readonly fieldSchemaData: FieldSchema[],
     @Inject(DependecyTokens.ENTITY_SCHEMA_DB)

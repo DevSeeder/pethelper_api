@@ -6,7 +6,6 @@ import {
 } from 'src/microservice/domain/schemas/entity/expense-categories.schema';
 import { DomainBodyDto } from 'src/microservice/application/dto/body/domain-body.dto';
 import { SearchDomainDto } from 'src/microservice/application/dto/search/search-domain.dto';
-import { CreateExpenseCategoryService } from 'src/microservice/application/service/entity/expense-categories/create-expense-category.service';
 import {
   DependecyTokens,
   DependencyEntityTokens

@@ -1,4 +1,4 @@
-import { Module, DynamicModule } from '@nestjs/common';
+import { Module, DynamicModule, Provider } from '@nestjs/common';
 import { MongooseModule, getModelToken } from '@nestjs/mongoose';
 import { ErrorSchemasModule } from './configuration/error-schemas.module';
 import { TranslationsModule } from './translation/translation.module';
@@ -13,13 +13,17 @@ import { ErrorService } from '../service/configuration/error-schema/error.servic
 import { DependecyTokens } from '../app.constants';
 import { ModuleRef } from '@nestjs/core';
 import { EntityModelTokenBuilder } from '../injector/entity/model-entity-token.injector';
+import { CustomProvider } from '../dto/provider/custom-provider.dto';
+import { AbstractDBService } from '../service/abstract/abstract-db.service';
+import { GenericGetService } from '../service/abstract/generic-get.service';
 
 @Module({})
 export class GenericModule {
   static forFeature<Collection>(
     modelName: string,
     schema: any,
-    entity: string
+    entity: string,
+    customProvider?: CustomProvider
   ): DynamicModule {
     const repositoryProvider = DependencyInjectorService.injectRepository(
       entity,
@@ -38,9 +42,9 @@ export class GenericModule {
       ],
       providers: [
         repositoryProvider,
-        GenericModule.loadServiceProvder(entity, 'get'),
-        GenericModule.loadServiceProvder(entity, 'update'),
-        GenericModule.loadServiceProvder(entity, 'create')
+        GenericModule.loadServiceProvider(entity, 'get', customProvider),
+        GenericModule.loadServiceProvider(entity, 'update'),
+        GenericModule.loadServiceProvider(entity, 'create')
       ],
       exports: [
         repositoryProvider,
@@ -51,7 +55,11 @@ export class GenericModule {
     };
   }
 
-  static loadServiceProvder<Collection>(entity: string, providerKey: string) {
+  static loadServiceProvider<Collection>(
+    entity: string,
+    providerKey: string,
+    customProvider?: CustomProvider
+  ) {
     const models = EntityModelTokenBuilder.buildMongooseModelTokens();
     return {
       provide: `GENERIC_${providerKey.toUpperCase()}_SERVICE_${entity}`,
@@ -64,18 +72,17 @@ export class GenericModule {
         errorService: ErrorService
       ) => {
         const injectorService = new DependencyInjectorService(
+          moduleRef,
           entitySchemaData,
           fieldSchemaData,
           translationService,
           errorService
         );
-        const resolvedModels =
-          await EntityModelTokenBuilder.buildMongooseModelInjector(moduleRef);
         const injectFunction = `inject${providerKey.capitalizeFirstLetter()}Service`;
         const serviceProvider = await injectorService[injectFunction](
           entity,
           repository,
-          resolvedModels
+          customProvider
         );
         return serviceProvider;
       },
@@ -91,3 +98,14 @@ export class GenericModule {
     };
   }
 }
+
+const getCustomProvider = function (
+  service: any,
+  entity: string,
+  provideKey: string
+): Provider {
+  return {
+    provide: `GENERIC_${provideKey.toUpperCase()}_SERVICE_${entity}`,
+    useClass: service
+  };
+};
