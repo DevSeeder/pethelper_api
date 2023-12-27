@@ -2,7 +2,6 @@ import { Injectable, Inject } from '@nestjs/common';
 import { GenericGetService } from '../../abstract/generic-get.service';
 import { PetsRepository } from 'src/microservice/adapter/repository/entity/pets.repository';
 import { Pet } from '../../../../domain/schemas/entity/pets.schema';
-import { GetAnimalService } from '../animals/get-animal.service';
 import { PetResponse } from 'src/microservice/application/dto/response/pet.response';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import {
