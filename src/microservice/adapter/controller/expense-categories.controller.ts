@@ -38,8 +38,8 @@ export class ExpenseCategoriesController extends AbstractController<
     protected readonly updateService: GenericUpdateService<
       ExpenseCategory,
       ExpenseCategory,
-      SearchDomainDto,
-      DomainBodyDto
+      DomainBodyDto,
+      SearchDomainDto
     >,
     @Inject(`GENERIC_CREATE_SERVICE_${DependencyEntityTokens.EXPENSE_CATEGORY}`)
     protected readonly createService: GenericCreateService<

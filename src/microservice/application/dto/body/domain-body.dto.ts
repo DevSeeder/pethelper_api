@@ -2,5 +2,5 @@ import { AbstractBodyDto } from './abtract-body.dto';
 
 export interface DomainBodyDto extends AbstractBodyDto {
   name: string;
-  ket: string;
+  key: string;
 }

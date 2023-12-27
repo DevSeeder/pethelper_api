@@ -10,11 +10,17 @@ import { UpdateAnimalService } from 'src/microservice/application/service/entity
 import { AnimalBodyDto } from 'src/microservice/application/dto/body/Animal-body.dto';
 import { CreateAnimalService } from 'src/microservice/application/service/entity/animals/create-animal.service';
 import { SearchAnimalDto } from 'src/microservice/application/dto/search/search-animal.dto';
-import { DependecyTokens } from 'src/microservice/application/app.constants';
+import {
+  DependecyTokens,
+  DependencyEntityTokens
+} from 'src/microservice/application/app.constants';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { ErrorService } from 'src/microservice/application/service/configuration/error-schema/error.service';
 import { GetTranslationService } from 'src/microservice/application/service/translation/get-translation.service';
+import { GenericGetService } from 'src/microservice/application/service/abstract/generic-get.service';
+import { GenericUpdateService } from 'src/microservice/application/service/abstract/generic-update.service';
+import { GenericCreateService } from 'src/microservice/application/service/abstract/generic-create.service';
 
 @Controller('animals')
 export class AnimalsController extends AbstractController<
@@ -25,9 +31,25 @@ export class AnimalsController extends AbstractController<
   AnimalBodyDto
 > {
   constructor(
-    protected readonly getService: GetAnimalService,
-    protected readonly updateService: UpdateAnimalService,
-    protected readonly createService: CreateAnimalService,
+    @Inject(`GENERIC_GET_SERVICE_${DependencyEntityTokens.ANIMAL}`)
+    protected readonly getService: GenericGetService<
+      Animal,
+      AnimalResponse,
+      SearchAnimalDto
+    >,
+    @Inject(`GENERIC_UPDATE_SERVICE_${DependencyEntityTokens.ANIMAL}`)
+    protected readonly updateService: GenericUpdateService<
+      Animal,
+      AnimalResponse,
+      AnimalBodyDto,
+      SearchAnimalDto
+    >,
+    @Inject(`GENERIC_CREATE_SERVICE_${DependencyEntityTokens.ANIMAL}`)
+    protected readonly createService: GenericCreateService<
+      Animal,
+      AnimalResponse,
+      AnimalBodyDto
+    >,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
     protected readonly fieldSchemaData?: FieldSchema[],
     @Inject(DependecyTokens.ENTITY_SCHEMA_DB)

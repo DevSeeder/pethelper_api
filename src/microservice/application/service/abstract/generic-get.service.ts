@@ -106,7 +106,9 @@ export class GenericGetService<
   async getById(id: string, validateError = false): Promise<ResponseModel> {
     let item;
     try {
+      this.logger.log(`Get ${this.entitySchema.entity} By Id ${id}`);
       item = await this.repository.findById(id, { all: 0 });
+
       if (!item && validateError) {
         const entityTranslation =
           await this.translationService.getEntityTranslation(

@@ -35,6 +35,10 @@ import {
   User,
   UsersSchema
 } from 'src/microservice/domain/schemas/entity/users.schema';
+import {
+  Animal,
+  AnimalsSchema
+} from 'src/microservice/domain/schemas/entity/animals.schema';
 
 @Module({
   imports: [
@@ -44,7 +48,11 @@ import {
       ColorsSchema,
       DependencyEntityTokens.COLOR
     ),
-    AnimalsModule,
+    GenericModule.forFeature<Animal>(
+      Animal.name,
+      AnimalsSchema,
+      DependencyEntityTokens.ANIMAL
+    ),
     GenericModule.forFeature<Race>(
       Race.name,
       RacesSchema,

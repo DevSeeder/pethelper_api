@@ -20,6 +20,9 @@ import { Color } from 'src/microservice/domain/schemas/entity/colors.schema';
 import { GenericGetService } from '../../abstract/generic-get.service';
 import { Race } from 'src/microservice/domain/schemas/entity/races.schema';
 import { Search } from 'src/microservice/application/dto/search/search.dto';
+import { SearchAnimalDto } from 'src/microservice/application/dto/search/search-animal.dto';
+import { AnimalResponse } from 'src/microservice/application/dto/response/animal.response';
+import { Animal } from 'src/microservice/domain/schemas/entity/animals.schema';
 
 @Injectable()
 export class UpdatePetService extends GenericUpdateService<
@@ -36,7 +39,12 @@ export class UpdatePetService extends GenericUpdateService<
       Color,
       Search
     >,
-    protected readonly getAnimalsService: GetAnimalService,
+    @Inject(`GENERIC_GET_SERVICE_${DependencyEntityTokens.ANIMAL}`)
+    protected readonly getAnimalsService: GenericGetService<
+      Animal,
+      AnimalResponse,
+      SearchAnimalDto
+    >,
     @Inject(`GENERIC_GET_SERVICE_${DependencyEntityTokens.RACE}`)
     protected readonly getRacesService: GenericGetService<Race, Race, Search>,
     protected readonly getExpensesService: GetExpenseService,

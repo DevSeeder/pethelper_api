@@ -1,14 +1,9 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { AnimalsRepository } from 'src/microservice/adapter/repository/entity/animals.repository';
 import {
   Animal,
   AnimalsSchema
 } from 'src/microservice/domain/schemas/entity/animals.schema';
-import { GetAnimalService } from 'src/microservice/application/service/entity/animals/get-animal.service';
 import { AnimalsController } from 'src/microservice/adapter/controller/animals.controller';
-import { UpdateAnimalService } from '../../service/entity/animals/update-animal.service';
-import { CreateAnimalService } from '../../service/entity/animals/create-animal.service';
 import { FieldSchemasModule } from '../configuration/field-schemas.module';
 import { EntitySchemasModule } from '../configuration/entity-schemas.module';
 import { TranslationsModule } from '../translation/translation.module';
@@ -18,14 +13,19 @@ import {
   AnimalGroup,
   AnimalGroupsSchema
 } from 'src/microservice/domain/schemas/entity/animal-group.schema';
+import { DependencyEntityTokens } from '../../app.constants';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Animal.name, schema: AnimalsSchema }]),
     GenericModule.forFeature<AnimalGroup>(
       AnimalGroup.name,
       AnimalGroupsSchema,
-      'animalGroups'
+      DependencyEntityTokens.ANIMAL_GROUP
+    ),
+    GenericModule.forFeature<Animal>(
+      Animal.name,
+      AnimalsSchema,
+      DependencyEntityTokens.ANIMAL
     ),
     FieldSchemasModule,
     EntitySchemasModule,
@@ -33,17 +33,7 @@ import {
     ErrorSchemasModule
   ],
   controllers: [AnimalsController],
-  providers: [
-    AnimalsRepository,
-    GetAnimalService,
-    UpdateAnimalService,
-    CreateAnimalService
-  ],
-  exports: [
-    AnimalsRepository,
-    GetAnimalService,
-    UpdateAnimalService,
-    CreateAnimalService
-  ]
+  providers: [],
+  exports: []
 })
 export class AnimalsModule {}
