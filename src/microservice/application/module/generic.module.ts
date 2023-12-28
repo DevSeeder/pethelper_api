@@ -17,6 +17,7 @@ import { CustomProvider } from '../dto/provider/custom-provider.dto';
 import { GenericGetController } from 'src/microservice/adapter/controller/generic/generic-get.controller';
 import { GenericUpdateController } from 'src/microservice/adapter/controller/generic/generic-update.controller';
 import { GenericCreateController } from 'src/microservice/adapter/controller/generic/generic-create.controller';
+import { AuthJwtModule } from './auth/auth-jwt.module';
 
 @Module({})
 export class GenericModule {
@@ -40,7 +41,8 @@ export class GenericModule {
         EntitySchemasModule,
         FieldSchemasModule,
         ErrorSchemasModule,
-        TranslationsModule
+        TranslationsModule,
+        AuthJwtModule
       ],
       providers: [
         repositoryProvider,

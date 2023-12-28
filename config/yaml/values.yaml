@@ -2,7 +2,7 @@ auth:
   jwt:
     expires: '90000s'
     secret: ${JWT_SECRET}
-  url: http://auth.devseeder.com
+  url: http://localhost:5000
   clientToken: ${AUTH_TOKEN}
 database:
   mongodb:

@@ -13,6 +13,7 @@ import { Expense } from '../../domain/schemas/entity/expenses.schema';
 import { ExpensesGetController } from '../../adapter/controller/entity/expenses-get.controller';
 import { GetExpenseService } from '../service/entity/expenses/get-expense.service';
 import { ExpensesRepository } from '../../adapter/repository/entity/expenses.repository';
+import { AuthJwtModule } from './auth/auth-jwt.module';
 
 @Module({
   imports: [
@@ -27,7 +28,6 @@ import { ExpensesRepository } from '../../adapter/repository/entity/expenses.rep
       isGlobal: true,
       load: [configuration]
     }),
-    // AuthJwtModule,
     // HttpModule,
     GenericModule.forFeature<Pet>(Pet.name, DependencyEntityTokens.PET),
     GenericModule.forFeature<Expense>(
@@ -49,8 +49,7 @@ import { ExpensesRepository } from '../../adapter/repository/entity/expenses.rep
       Animal.name,
       DependencyEntityTokens.ANIMAL
     ),
-    GenericModule.forFeature<User>(User.name, DependencyEntityTokens.USER),
-    FieldSchemasModule
+    GenericModule.forFeature<User>(User.name, DependencyEntityTokens.USER)
   ],
   controllers: [],
   providers: [],

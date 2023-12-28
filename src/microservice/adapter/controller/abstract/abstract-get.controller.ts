@@ -1,4 +1,4 @@
-import { Get, Param, Query } from '@nestjs/common';
+import { Get, Param, Query, UseGuards } from '@nestjs/common';
 import { Search } from 'src/microservice/application/dto/search/search.dto';
 import { SchemaValidator } from 'src/microservice/application/helper/validator/schema-validator.helper';
 import { GenericGetService } from 'src/microservice/application/service/abstract/generic-get.service';
@@ -16,6 +16,9 @@ import { ErrorService } from 'src/microservice/application/service/configuration
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 import { GetTranslationService } from 'src/microservice/application/service/translation/get-translation.service';
 import { AbstractController } from './abstract.controller';
+import { MyJwtAuthGuard } from 'src/core/auth/jwt.auth';
+import { Scopes } from '@devseeder/nestjs-microservices-core';
+import { EnumScopes } from 'src/microservice/domain/enum/enum-scopes.enum';
 
 export abstract class AbstractGetController<
   Collection,
@@ -47,8 +50,8 @@ export abstract class AbstractGetController<
     );
   }
 
-  // @UseGuards(MyJwtAuthGuard)
-  // @Scopes(EnumScopes.USER)
+  @UseGuards(MyJwtAuthGuard)
+  @Scopes(EnumScopes.USER)
   @Get(`/:id`)
   async getById(@Param('id') id: string): Promise<GetResponse> {
     return this.getService.getById(id, true);
