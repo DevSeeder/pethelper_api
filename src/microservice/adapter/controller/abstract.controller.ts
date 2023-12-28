@@ -33,36 +33,35 @@ import { AbstractSchema } from 'src/microservice/domain/schemas/abstract.schema'
 
 export abstract class AbstractController<
   Collection,
-  MongooseModel extends AbstractSchema,
   GetResponse,
   SearchParams extends Search,
   BodyDto extends AbstractBodyDto
 > extends AbstractEntityLoader {
-  protected requestSchema: RequestSchema;
-  protected schemaValidator: SchemaValidator;
+  requestSchema: RequestSchema;
+  schemaValidator: SchemaValidator;
 
   constructor(
-    protected readonly entity: string,
-    protected readonly getService?: GenericGetService<
+    readonly entity: string,
+    readonly getService?: GenericGetService<
       Collection,
       GetResponse,
       SearchParams
     >,
-    protected readonly updateService?: GenericUpdateService<
+    readonly updateService?: GenericUpdateService<
       Collection,
       GetResponse,
       BodyDto,
       SearchParams
     >,
-    protected readonly createService?: GenericCreateService<
+    readonly createService?: GenericCreateService<
       Collection,
       GetResponse,
       BodyDto
     >,
-    protected readonly fieldSchemaData?: FieldSchema[],
-    protected readonly entitySchemaData?: EntitySchema[],
-    protected readonly errorService?: ErrorService,
-    protected readonly translationService?: GetTranslationService
+    readonly fieldSchemaData?: FieldSchema[],
+    readonly entitySchemaData?: EntitySchema[],
+    readonly errorService?: ErrorService,
+    readonly translationService?: GetTranslationService
   ) {
     super(entity, fieldSchemaData, entitySchemaData);
 
@@ -281,7 +280,7 @@ export abstract class AbstractController<
     return this.getService.groupBy(relation, params);
   }
 
-  private isMethodAllowed(method: string) {
+  isMethodAllowed(method: string) {
     if (!this.entitySchema.forbiddenMethods) return;
     const notAllowed = this.entitySchema.forbiddenMethods.filter(
       (m) => m === method

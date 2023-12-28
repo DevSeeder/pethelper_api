@@ -14,6 +14,7 @@ import { DependecyTokens } from '../app.constants';
 import { ModuleRef } from '@nestjs/core';
 import { EntityModelTokenBuilder } from '../injector/entity/model-entity-token.injector';
 import { CustomProvider } from '../dto/provider/custom-provider.dto';
+import { GenericController } from 'src/microservice/adapter/controller/generic.controller';
 
 @Module({})
 export class GenericModule {
@@ -29,6 +30,7 @@ export class GenericModule {
     );
     return {
       module: GenericModule,
+      controllers: [GenericController({ entity })],
       imports: [
         MongooseModule.forFeature(
           EntityModelTokenBuilder.buildMongooseStaticModelForFeature()

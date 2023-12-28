@@ -4,15 +4,15 @@ import { EntitySchema } from 'src/microservice/domain/schemas/configuration-sche
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 
 export abstract class AbstractEntityLoader {
-  protected readonly logger: Logger = new Logger(AbstractEntityLoader.name);
-  protected entitySchema: EntitySchema;
-  protected entityLabels: string[];
-  protected fieldSchemaDb: FieldSchema[];
+  readonly logger: Logger = new Logger(AbstractEntityLoader.name);
+  entitySchema: EntitySchema;
+  entityLabels: string[];
+  fieldSchemaDb: FieldSchema[];
 
   constructor(
-    protected readonly entity: string,
-    protected readonly fieldSchemaData?: FieldSchema[],
-    protected readonly entitySchemaData?: EntitySchema[]
+    readonly entity: string,
+    readonly fieldSchemaData?: FieldSchema[],
+    readonly entitySchemaData?: EntitySchema[]
   ) {
     this.entitySchema = entitySchemaData.filter(
       (ent) => ent.entity === entity

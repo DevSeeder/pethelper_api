@@ -4,9 +4,11 @@ import { MongooseModule } from '@nestjs/mongoose';
 import configuration from '../config/configuration';
 import { PetsModule } from './application/module/entity/pets.module';
 import { ExpensesModule } from './application/module/entity/expenses.module';
-import { ExpenseCategoriesModule } from './application/module/entity/expense-categories.module';
 import { AnimalsModule } from './application/module/entity/animals.module';
 import { FieldSchemasModule } from './application/module/configuration/field-schemas.module';
+import { GenericModule } from './application/module/generic.module';
+import { ExpenseCategory } from './domain/schemas/entity/expense-categories.schema';
+import { DependencyEntityTokens } from './application/app.constants';
 
 @Module({
   imports: [
@@ -25,7 +27,10 @@ import { FieldSchemasModule } from './application/module/configuration/field-sch
     // HttpModule,
     PetsModule,
     ExpensesModule,
-    ExpenseCategoriesModule,
+    GenericModule.forFeature<ExpenseCategory>(
+      ExpenseCategory.name,
+      DependencyEntityTokens.EXPENSE_CATEGORY
+    ),
     AnimalsModule,
     FieldSchemasModule
   ],

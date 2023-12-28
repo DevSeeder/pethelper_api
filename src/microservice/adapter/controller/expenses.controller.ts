@@ -24,33 +24,32 @@ import { GetExpenseService } from 'src/microservice/application/service/entity/e
 @Controller('expenses')
 export class ExpensesController extends AbstractController<
   Expense,
-  ExpenseDocument,
   ExpenseResponse,
   SearchExpenseDto,
   ExpenseBodyDto
 > {
   constructor(
     @Inject(`GENERIC_GET_SERVICE_${DependencyEntityTokens.EXPENSE}`)
-    protected readonly getService: GetExpenseService,
+    readonly getService: GetExpenseService,
     @Inject(`GENERIC_UPDATE_SERVICE_${DependencyEntityTokens.EXPENSE}`)
-    protected readonly updateService: GenericUpdateService<
+    readonly updateService: GenericUpdateService<
       Expense,
       ExpenseResponse,
       ExpenseBodyDto,
       SearchExpenseDto
     >,
     @Inject(`GENERIC_CREATE_SERVICE_${DependencyEntityTokens.EXPENSE}`)
-    protected readonly createService: GenericCreateService<
+    readonly createService: GenericCreateService<
       Expense,
       ExpenseResponse,
       ExpenseBodyDto
     >,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
-    protected readonly fieldSchemaData?: FieldSchema[],
+    readonly fieldSchemaData?: FieldSchema[],
     @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
-    protected readonly entitySchemaData?: EntitySchema[],
-    protected readonly errorService?: ErrorService,
-    protected readonly translationService?: GetTranslationService
+    readonly entitySchemaData?: EntitySchema[],
+    readonly errorService?: ErrorService,
+    readonly translationService?: GetTranslationService
   ) {
     super(
       'expenses',

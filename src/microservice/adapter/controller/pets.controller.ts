@@ -22,37 +22,32 @@ import { GenericCreateService } from 'src/microservice/application/service/abstr
 @Controller('pets')
 export class PetsController extends AbstractController<
   Pet,
-  PetDocument,
   PetResponse,
   SearchPetDto,
   PetBodyDto
 > {
   constructor(
     @Inject(`GENERIC_GET_SERVICE_${DependencyEntityTokens.PET}`)
-    protected readonly getService: GenericGetService<
-      Pet,
-      PetResponse,
-      SearchPetDto
-    >,
+    readonly getService: GenericGetService<Pet, PetResponse, SearchPetDto>,
     @Inject(`GENERIC_UPDATE_SERVICE_${DependencyEntityTokens.PET}`)
-    protected readonly updateService: GenericUpdateService<
+    readonly updateService: GenericUpdateService<
       Pet,
       PetResponse,
       PetBodyDto,
       SearchPetDto
     >,
     @Inject(`GENERIC_CREATE_SERVICE_${DependencyEntityTokens.PET}`)
-    protected readonly createService: GenericCreateService<
+    readonly createService: GenericCreateService<
       Pet,
       PetResponse,
       SearchPetDto
     >,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
-    protected readonly fieldSchemaData?: FieldSchema[],
+    readonly fieldSchemaData?: FieldSchema[],
     @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
-    protected readonly entitySchemaData?: EntitySchema[],
-    protected readonly errorService?: ErrorService,
-    protected readonly translationService?: GetTranslationService
+    readonly entitySchemaData?: EntitySchema[],
+    readonly errorService?: ErrorService,
+    readonly translationService?: GetTranslationService
   ) {
     super(
       'pets',

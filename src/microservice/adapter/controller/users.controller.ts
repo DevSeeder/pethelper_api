@@ -32,27 +32,26 @@ import { GenericUpdateService } from 'src/microservice/application/service/abstr
 @Controller('users')
 export class UsersController extends AbstractController<
   User,
-  UserDocument,
   User,
   Search,
   AbstractBodyDto
 > {
   constructor(
     @Inject(`GENERIC_GET_SERVICE_${DependencyEntityTokens.USER}`)
-    protected readonly getUsersService: GenericGetService<User, User, Search>,
+    readonly getUsersService: GenericGetService<User, User, Search>,
     @Inject(`GENERIC_UPDATE_SERVICE_${DependencyEntityTokens.USER}`)
-    protected readonly updateUserService: GenericUpdateService<
+    readonly updateUserService: GenericUpdateService<
       User,
       User,
       Search,
       AbstractBodyDto
     >,
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
-    protected readonly fieldSchemaData?: FieldSchema[],
+    readonly fieldSchemaData?: FieldSchema[],
     @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
-    protected readonly entitySchemaData?: EntitySchema[],
-    protected readonly errorService?: ErrorService,
-    protected readonly translationService?: GetTranslationService
+    readonly entitySchemaData?: EntitySchema[],
+    readonly errorService?: ErrorService,
+    readonly translationService?: GetTranslationService
   ) {
     super(
       'users',
