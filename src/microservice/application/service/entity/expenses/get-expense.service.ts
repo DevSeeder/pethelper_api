@@ -59,7 +59,7 @@ export class GetExpenseService extends GenericGetService<
   ) {
     super(
       repository,
-      'expenses',
+      DependencyEntityTokens.EXPENSE,
       fieldSchemaData,
       entitySchemaData,
       translationService,

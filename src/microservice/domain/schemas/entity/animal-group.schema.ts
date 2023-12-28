@@ -2,10 +2,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { AbstractDomain } from './domain.schema';
+import { DependencyEntityTokens } from 'src/microservice/application/app.constants';
 
 export type AnimalGroupDocument = AnimalGroup & Document;
 
-@Schema({ timestamps: true, collection: 'animalGroups' })
+@Schema({ timestamps: true, collection: DependencyEntityTokens.ANIMAL_GROUP })
 export class AnimalGroup extends AbstractDomain {
   @Prop({ required: true })
   idType: string;

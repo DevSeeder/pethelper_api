@@ -17,7 +17,7 @@ import { GenericUpdateService } from 'src/microservice/application/service/abstr
 import { GroupExpensesByPetAndCategoryResponse } from 'src/microservice/application/dto/response/groupby/group-expenses-by-pet-and-category.response';
 import { GetExpenseService } from 'src/microservice/application/service/entity/expenses/get-expense.service';
 
-@Controller('expenses')
+@Controller(DependencyEntityTokens.EXPENSE)
 export class ExpensesController extends AbstractController<
   Expense,
   ExpenseResponse,
@@ -48,7 +48,7 @@ export class ExpensesController extends AbstractController<
     readonly translationService?: GetTranslationService
   ) {
     super(
-      'expenses',
+      DependencyEntityTokens.EXPENSE,
       getService,
       updateService,
       createService,

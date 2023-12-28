@@ -2,10 +2,11 @@
 import { Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { AbstractDomain } from './domain.schema';
+import { DependencyEntityTokens } from 'src/microservice/application/app.constants';
 
 export type ColorDocument = Color & Document;
 
-@Schema({ timestamps: true, collection: 'colors' })
+@Schema({ timestamps: true, collection: DependencyEntityTokens.COLOR })
 export class Color extends AbstractDomain {}
 
 const schema = SchemaFactory.createForClass(Color);

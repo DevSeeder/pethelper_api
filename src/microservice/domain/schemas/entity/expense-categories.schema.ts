@@ -2,9 +2,13 @@
 import { Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { AbstractDomain } from './domain.schema';
+import { DependencyEntityTokens } from 'src/microservice/application/app.constants';
 export type ExpenseCategoryDocument = ExpenseCategory & Document;
 
-@Schema({ timestamps: true, collection: 'expenseCategories' })
+@Schema({
+  timestamps: true,
+  collection: DependencyEntityTokens.EXPENSE_CATEGORY
+})
 export class ExpenseCategory extends AbstractDomain {}
 
 const schema = SchemaFactory.createForClass(ExpenseCategory);

@@ -1,4 +1,3 @@
-import { Provider } from '@nestjs/common';
 import {
   AnimalGroup,
   AnimalGroupsSchema
@@ -29,32 +28,54 @@ import { User, UsersSchema } from '../../../domain/schemas/entity/users.schema';
 import { getModelToken } from '@nestjs/mongoose';
 import { ModuleRef } from '@nestjs/core';
 import { Model } from 'mongoose';
+import { DependencyEntityTokens } from '../../app.constants';
 
 export const ModelEntityTokens = {
-  colors: { modelName: Color.name, schema: ColorsSchema, collection: 'colors' },
+  colors: {
+    modelName: Color.name,
+    schema: ColorsSchema,
+    collection: DependencyEntityTokens.COLOR
+  },
+  animalTypes: {
+    modelName: AnimalType.name,
+    schema: AnimalTypesSchema,
+    collection: DependencyEntityTokens.ANIMAL_TYPE
+  },
   animalGroups: {
     modelName: AnimalGroup.name,
     schema: AnimalGroupsSchema,
-    collection: 'animalGroups'
+    collection: DependencyEntityTokens.ANIMAL_GROUP
   },
-  races: { modelName: Race.name, schema: RacesSchema, collection: 'races' },
+  races: {
+    modelName: Race.name,
+    schema: RacesSchema,
+    collection: DependencyEntityTokens.RACE
+  },
   expenseCategories: {
     modelName: ExpenseCategory.name,
     schema: ExpenseCategoriesSchema,
-    collection: 'expenseCategories'
+    collection: DependencyEntityTokens.EXPENSE_CATEGORY
   },
   animals: {
     modelName: Animal.name,
     schema: AnimalsSchema,
-    collection: 'animals'
+    collection: DependencyEntityTokens.ANIMAL
   },
-  pets: { modelName: Pet.name, schema: PetsSchema, collection: 'pets' },
+  pets: {
+    modelName: Pet.name,
+    schema: PetsSchema,
+    collection: DependencyEntityTokens.PET
+  },
   expenses: {
     modelName: Expense.name,
     schema: ExpensesSchema,
-    collection: 'expenses'
+    collection: DependencyEntityTokens.EXPENSE
   },
-  users: { modelName: User.name, schema: UsersSchema, collection: 'users' }
+  users: {
+    modelName: User.name,
+    schema: UsersSchema,
+    collection: DependencyEntityTokens.USER
+  }
 };
 
 export class EntityModelTokenBuilder {

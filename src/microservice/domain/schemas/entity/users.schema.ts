@@ -2,10 +2,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { AbstractSchema } from '../abstract.schema';
+import { DependencyEntityTokens } from 'src/microservice/application/app.constants';
 
 export type UserDocument = User & Document;
 
-@Schema({ timestamps: true, collection: 'users' })
+@Schema({ timestamps: true, collection: DependencyEntityTokens.USER })
 export class User extends AbstractSchema {
   @Prop({ required: true })
   name: string;
