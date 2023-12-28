@@ -1,11 +1,8 @@
 import { Controller, Get, Inject, Query } from '@nestjs/common';
 import { SearchExpenseDto } from 'src/microservice/application/dto/search/search-Expense.dto';
-import { AbstractController } from './abstract.controller';
+import { AbstractController } from '../abstract/abstract.controller';
 import { ExpenseResponse } from 'src/microservice/application/dto/response/expense.response';
-import {
-  Expense,
-  ExpenseDocument
-} from 'src/microservice/domain/schemas/entity/expenses.schema';
+import { Expense } from 'src/microservice/domain/schemas/entity/expenses.schema';
 import { ExpenseBodyDto } from 'src/microservice/application/dto/body/expense-body.dto';
 import {
   DependecyTokens,
@@ -17,7 +14,6 @@ import { ErrorService } from 'src/microservice/application/service/configuration
 import { GetTranslationService } from 'src/microservice/application/service/translation/get-translation.service';
 import { GenericCreateService } from 'src/microservice/application/service/abstract/generic-create.service';
 import { GenericUpdateService } from 'src/microservice/application/service/abstract/generic-update.service';
-import { GenericGetService } from 'src/microservice/application/service/abstract/generic-get.service';
 import { GroupExpensesByPetAndCategoryResponse } from 'src/microservice/application/dto/response/groupby/group-expenses-by-pet-and-category.response';
 import { GetExpenseService } from 'src/microservice/application/service/entity/expenses/get-expense.service';
 
