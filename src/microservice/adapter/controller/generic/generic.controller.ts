@@ -22,9 +22,5 @@ export function buildControllerScopes(
     scopes.push(`${SCOPE_KEY}/${extra.toUpperCase()}`);
   });
 
-  if (entity === 'expenses' && accessKey == 'GET_BY_ID') {
-    console.log(scopes);
-  }
-
   return scopes;
 }

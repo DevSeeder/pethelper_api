@@ -22,9 +22,8 @@ import {
   CloneManyResponse,
   CloneOneResponse
 } from 'src/microservice/application/dto/response/clone.response';
-import { Scopes } from '@devseeder/nestjs-microservices-core';
-import { buildControllerScopes } from './generic.controller';
 import { MyJwtAuthGuard } from 'src/core/auth/jwt.auth';
+import { MetaScope } from 'src/core/auth/meta-scope/meta-scope.decorator';
 
 const allKey = 'CREATE';
 
@@ -66,7 +65,7 @@ export function GenericCreateController<
     }
 
     @UseGuards(MyJwtAuthGuard)
-    @Scopes(...buildControllerScopes(entity, 'CREATE', true, allKey))
+    @MetaScope({ entity, accessKey: 'CREATE' })
     @Post(`/`)
     async create(@Body() body: BodyDto): Promise<{ _id: ObjectId }> {
       this.isMethodAllowed('create');
@@ -80,7 +79,7 @@ export function GenericCreateController<
     }
 
     @UseGuards(MyJwtAuthGuard)
-    @Scopes(...buildControllerScopes(entity, 'CLONE_ONE', true, allKey))
+    @MetaScope({ entity, accessKey: 'CLONE_ONE' })
     @Post(`/clone/:id`)
     async cloneById(
       @Param('id') id: string,
@@ -102,7 +101,7 @@ export function GenericCreateController<
     }
 
     @UseGuards(MyJwtAuthGuard)
-    @Scopes(...buildControllerScopes(entity, 'CLONE_MANY', true, allKey))
+    @MetaScope({ entity, accessKey: 'CLONE_MANY' })
     @Post(`/clone`)
     async cloneManyByIds(
       @Body()

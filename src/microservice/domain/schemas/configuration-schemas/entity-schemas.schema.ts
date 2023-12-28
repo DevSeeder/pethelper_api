@@ -49,6 +49,9 @@ export class EntitySchema extends AbstractSchema {
 
   @Prop({ required: false, default: [] })
   copyFields: string[] = [];
+
+  @Prop({ required: false, default: [] })
+  authScopes: Array<AuthScopes> = [];
 }
 
 export interface SubRelation {
@@ -59,6 +62,12 @@ export interface SubRelation {
   label: string;
   clone?: boolean;
   array?: boolean;
+}
+
+export interface AuthScopes {
+  accessKey: string;
+  scopes: string[];
+  onlyLoggedUser?: boolean;
 }
 
 const schema = SchemaFactory.createForClass(EntitySchema);

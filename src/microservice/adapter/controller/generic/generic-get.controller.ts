@@ -23,6 +23,7 @@ import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 import { MyJwtAuthGuard } from 'src/core/auth/jwt.auth';
 import { Scopes } from '@devseeder/nestjs-microservices-core';
 import { buildControllerScopes } from './generic.controller';
+import { MetaScope } from 'src/core/auth/meta-scope/meta-scope.decorator';
 
 const allKey = 'GET';
 
@@ -64,14 +65,14 @@ export function GenericGetController<
     }
 
     @UseGuards(MyJwtAuthGuard)
-    @Scopes(...buildControllerScopes(entity, 'GET_BY_ID', true, allKey))
+    @MetaScope({ entity, accessKey: 'GET_BY_ID' })
     @Get(`/:id`)
     async getById(@Param('id') id: string): Promise<GetResponse> {
       return this.getService.getById(id, true);
     }
 
     @UseGuards(MyJwtAuthGuard)
-    @Scopes(...buildControllerScopes(entity, 'SEARCH_BY_ID', true, allKey))
+    @MetaScope({ entity, accessKey: 'SEARCH_BY_ID' })
     @Get(`/search/:searchId`)
     async searchBy(
       @Query() params: SearchParams,
@@ -99,7 +100,7 @@ export function GenericGetController<
     }
 
     @UseGuards(MyJwtAuthGuard)
-    @Scopes(...buildControllerScopes(entity, 'SEARCH_ALL', true, allKey))
+    @MetaScope({ entity, accessKey: 'SEARCH_ALL' })
     @Get(`/`)
     async searchAll(
       @Query() params: SearchParams
@@ -115,7 +116,7 @@ export function GenericGetController<
     }
 
     @UseGuards(MyJwtAuthGuard)
-    @Scopes(...buildControllerScopes(entity, 'COUNT', true, allKey))
+    @MetaScope({ entity, accessKey: 'COUNT' })
     @Get(`/meta/count`)
     async count(@Query() params: SearchParams): Promise<CountResponse> {
       await this.schemaValidator.validateRequestSchema(
@@ -129,14 +130,14 @@ export function GenericGetController<
     }
 
     @UseGuards(MyJwtAuthGuard)
-    @Scopes(...buildControllerScopes(entity, 'GET_FORM', false, allKey))
+    @MetaScope({ entity, accessKey: 'GET_FORM' })
     @Get(`/form/:page`)
     getForm(@Param('page') page: string): Promise<FormSchemaResponse> {
       return this.getService.getForm(page);
     }
 
     @UseGuards(MyJwtAuthGuard)
-    @Scopes(...buildControllerScopes(entity, 'GROUP_BY', true, allKey))
+    @MetaScope({ entity, accessKey: 'GROUP_BY' })
     @Get(`/groupby/:relation`)
     async groupBy(
       @Param('relation') relation: string,

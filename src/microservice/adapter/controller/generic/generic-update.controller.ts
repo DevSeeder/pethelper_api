@@ -18,6 +18,7 @@ import { ActivationQueryParams } from 'src/microservice/application/dto/query/ac
 import { MyJwtAuthGuard } from 'src/core/auth/jwt.auth';
 import { Scopes } from '@devseeder/nestjs-microservices-core';
 import { buildControllerScopes } from './generic.controller';
+import { MetaScope } from 'src/core/auth/meta-scope/meta-scope.decorator';
 
 const allKey = 'UPDATE';
 
@@ -60,7 +61,7 @@ export function GenericUpdateController<
     }
 
     @UseGuards(MyJwtAuthGuard)
-    @Scopes(...buildControllerScopes(entity, 'INACTIVATE', true, allKey))
+    @MetaScope({ entity, accessKey: 'INACTIVATE' })
     @Patch(`inactivate/:id`)
     async inactivate(
       @Param('id') id: string,
@@ -80,7 +81,7 @@ export function GenericUpdateController<
     }
 
     @UseGuards(MyJwtAuthGuard)
-    @Scopes(...buildControllerScopes(entity, 'ACTIVATE', true, allKey))
+    @MetaScope({ entity, accessKey: 'ACTIVATE' })
     @Patch(`activate/:id`)
     async activate(
       @Param('id') id: string,
@@ -100,7 +101,7 @@ export function GenericUpdateController<
     }
 
     @UseGuards(MyJwtAuthGuard)
-    @Scopes(...buildControllerScopes(entity, 'UPDATE_BY_ID', true, allKey))
+    @MetaScope({ entity, accessKey: 'UPDATE_BY_ID' })
     @Patch(`/:id`)
     async updateById(
       @Param('id') id: string,
@@ -117,7 +118,7 @@ export function GenericUpdateController<
     }
 
     @UseGuards(MyJwtAuthGuard)
-    @Scopes(...buildControllerScopes(entity, 'UPDATE_MANY', true, allKey))
+    @MetaScope({ entity, accessKey: 'UPDATE_MANY' })
     @Patch(`/`)
     async updateBy(
       @Query() params: SearchParams,
