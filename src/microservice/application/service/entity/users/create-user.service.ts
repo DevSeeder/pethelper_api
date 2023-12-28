@@ -47,6 +47,7 @@ export class CreateUserService extends GenericCreateService<
 
   async createUserAuth(user: UserBodyDto): Promise<string> {
     const userAuth = new UserAuth();
+    userAuth.name = user.name;
     userAuth.username = user.username;
     userAuth.password = user.password;
     userAuth.projectKey = PROJECT_KEY;

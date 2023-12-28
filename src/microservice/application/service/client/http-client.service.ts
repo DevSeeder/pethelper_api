@@ -23,6 +23,9 @@ export abstract class HttpClientService extends AbstractService {
 
   async post(endpoint: string, data: any): Promise<any> {
     try {
+      this.logger.log(`Calling URL... ${this.url}${endpoint}`);
+      this.logger.log(JSON.stringify(data));
+
       const response = await firstValueFrom(
         await this.httpService.post(
           `${this.url}${endpoint}`,
@@ -35,6 +38,7 @@ export abstract class HttpClientService extends AbstractService {
       this.validateResponseStatus(response.data, response.status);
       return response;
     } catch (err) {
+      this.logger.error(err.response.data);
       throw new CustomErrorException(
         err.response.data.message,
         err.response.data.status,

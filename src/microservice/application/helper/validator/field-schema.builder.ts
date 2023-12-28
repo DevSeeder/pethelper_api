@@ -188,6 +188,7 @@ export class FieldSchemaBuilder {
     switch (schema.type) {
       case 'text':
       case 'string':
+      case 'password':
         return Joi.string();
       case 'email':
         return Joi.string().email();

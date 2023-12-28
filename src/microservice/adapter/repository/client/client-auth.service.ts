@@ -25,6 +25,7 @@ export class ClientAuthService extends HttpClientService {
 
   async createUser(user: UserAuth): Promise<any> {
     const response = await this.post('/users/create', user);
+    this.logger.log(`Response: ${response.data}`);
     return response.data;
   }
 }
