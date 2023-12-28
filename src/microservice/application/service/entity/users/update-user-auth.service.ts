@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UsersRepository } from '../../../../adapter/repository/entity/users.repository';
 import {
   UpdateUserDTO,
-  UserDTO
+  UserBodyDto
 } from '../../../../domain/model/dto/users/user.dto';
 import { UsersService } from './user.service';
 

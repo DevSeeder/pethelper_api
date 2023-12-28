@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import configuration from '../../../config/configuration';
-import { FieldSchemasModule } from './configuration/field-schemas.module';
 import { GenericModule } from './generic.module';
 import { ExpenseCategory } from '../../domain/schemas/entity/expense-categories.schema';
 import { DependencyEntityTokens } from '../app.constants';
@@ -13,7 +12,8 @@ import { Expense } from '../../domain/schemas/entity/expenses.schema';
 import { ExpensesGetController } from '../../adapter/controller/entity/expenses-get.controller';
 import { GetExpenseService } from '../service/entity/expenses/get-expense.service';
 import { ExpensesRepository } from '../../adapter/repository/entity/expenses.repository';
-import { AuthJwtModule } from './auth/auth-jwt.module';
+import { CreateUserService } from '../service/entity/users/create-user.service';
+import { ClientAuthService } from 'src/microservice/adapter/repository/client/client-auth.service';
 
 @Module({
   imports: [
@@ -29,27 +29,25 @@ import { AuthJwtModule } from './auth/auth-jwt.module';
       load: [configuration]
     }),
     // HttpModule,
-    GenericModule.forFeature<Pet>(Pet.name, DependencyEntityTokens.PET),
-    GenericModule.forFeature<Expense>(
-      Expense.name,
-      DependencyEntityTokens.EXPENSE,
-      {
-        controller: {
-          get: ExpensesGetController
-        },
-        get: GetExpenseService,
-        repository: ExpensesRepository
-      }
-    ),
-    GenericModule.forFeature<ExpenseCategory>(
+    GenericModule.forFeature(Pet.name, DependencyEntityTokens.PET),
+    GenericModule.forFeature(Expense.name, DependencyEntityTokens.EXPENSE, {
+      controller: {
+        get: ExpensesGetController
+      },
+      get: { className: GetExpenseService },
+      repository: ExpensesRepository
+    }),
+    GenericModule.forFeature(
       ExpenseCategory.name,
       DependencyEntityTokens.EXPENSE_CATEGORY
     ),
-    GenericModule.forFeature<Animal>(
-      Animal.name,
-      DependencyEntityTokens.ANIMAL
-    ),
-    GenericModule.forFeature<User>(User.name, DependencyEntityTokens.USER)
+    GenericModule.forFeature(Animal.name, DependencyEntityTokens.ANIMAL),
+    GenericModule.forFeature(User.name, DependencyEntityTokens.USER, {
+      create: {
+        className: CreateUserService,
+        injectArgs: [ClientAuthService.name]
+      }
+    })
   ],
   controllers: [],
   providers: [],

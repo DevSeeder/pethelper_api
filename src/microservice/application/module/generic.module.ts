@@ -21,7 +21,7 @@ import { AuthJwtModule } from './auth/auth-jwt.module';
 
 @Module({})
 export class GenericModule {
-  static forFeature<Collection>(
+  static forFeature(
     modelName: string,
     entity: string,
     customProvider?: CustomProvider

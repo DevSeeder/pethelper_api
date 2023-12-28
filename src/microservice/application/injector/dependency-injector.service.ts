@@ -223,7 +223,7 @@ export class DependencyInjectorService {
     ];
 
     if (customProvider && customProvider[providerKey]) {
-      classService = customProvider[providerKey];
+      classService = customProvider[providerKey].className;
       args = [
         repository,
         this.fieldSchemaData,
@@ -231,6 +231,12 @@ export class DependencyInjectorService {
         this.translationService,
         this.errorService
       ];
+      const injectArgs = customProvider[providerKey].injectArgs;
+      if (injectArgs && injectArgs.length) {
+        for (const arg of injectArgs) {
+          args.push(this.moduleRef.get(arg, { strict: false }));
+        }
+      }
     }
 
     return { args, classService };

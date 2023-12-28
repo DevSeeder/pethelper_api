@@ -1,43 +1,55 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { ClientAuthService } from '../../../../adapter/repository/client/client-auth.service';
-import { UsersRepository } from '../../../../adapter/repository/entity/users.repository';
 import { EnumScopes } from '../../../../domain/enum/enum-scopes.enum';
 import { UserAuth } from '../../../../domain/model/auth/user-auth.model';
-import { UserDTO } from '../../../../domain/model/dto/users/user.dto';
+import { UserBodyDto } from '../../../../domain/model/dto/users/user.dto';
 import { User } from '../../../../domain/schemas/entity/users.schema';
-import { UsersService } from './user.service';
+import { GenericCreateService } from '../../abstract/generic-create.service';
+import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';
+import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
+import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
+import { GetTranslationService } from '../../translation/get-translation.service';
+import { ErrorService } from '../../configuration/error-schema/error.service';
+import {
+  DependencyEntityTokens,
+  PROJECT_KEY
+} from 'src/microservice/application/app.constants';
+import { ObjectId } from 'mongoose';
 
 @Injectable()
-export class CreateUserService extends UsersService {
+export class CreateUserService extends GenericCreateService<
+  User,
+  User,
+  UserBodyDto
+> {
   constructor(
-    protected readonly usersRepository: UsersRepository,
-    protected readonly clientAuthService: ClientAuthService,
-    protected readonly configService: ConfigService
+    protected readonly repository: GenericRepository<User>,
+    protected readonly fieldSchemaData: FieldSchema[],
+    protected readonly entitySchemaData: EntitySchema[],
+    protected readonly translationService: GetTranslationService,
+    protected readonly errorService: ErrorService,
+    protected readonly clientAuthService?: ClientAuthService
   ) {
-    super(usersRepository);
+    super(
+      repository,
+      DependencyEntityTokens.USER,
+      fieldSchemaData,
+      entitySchemaData,
+      translationService,
+      errorService
+    );
   }
 
-  async createUser(user: UserDTO): Promise<void> {
-    const userAuthId = await this.createUserAuth(user);
-    await this.createLocalUser(user, userAuthId);
+  async create(body: UserBodyDto): Promise<{ _id: ObjectId }> {
+    const userAuthId = await this.createUserAuth(body);
+    return super.create({ ...body, idUserAuth: userAuthId });
   }
 
-  async createLocalUser(user: UserDTO, userAuthId: string) {
-    const userLocal = new User();
-    // userLocal.id = (await this.usersRepository.getLastId()) + 1;
-    userLocal.name = user.name;
-    userLocal.username = user.username;
-    userLocal.idUserAuth = userAuthId;
-    userLocal.active = true;
-    await this.usersRepository.insertOne(userLocal, 'User');
-  }
-
-  async createUserAuth(user: UserDTO): Promise<string> {
+  async createUserAuth(user: UserBodyDto): Promise<string> {
     const userAuth = new UserAuth();
     userAuth.username = user.username;
     userAuth.password = user.password;
-    userAuth.projectKey = this.configService.get('doc.projectKey');
+    userAuth.projectKey = PROJECT_KEY;
     userAuth.scopes = [EnumScopes.USER, EnumScopes.UPDATE_PASSWORD];
 
     const response = await this.clientAuthService.createUser(userAuth);
