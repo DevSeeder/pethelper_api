@@ -10,7 +10,7 @@ import { Animal } from '../../domain/schemas/entity/animals.schema';
 import { User } from '../../domain/schemas/entity/users.schema';
 import { Pet } from '../../domain/schemas/entity/pets.schema';
 import { Expense } from '../../domain/schemas/entity/expenses.schema';
-import { ExpensesController } from '../../adapter/controller/entity/expenses.controller';
+import { ExpensesGetController } from '../../adapter/controller/entity/expenses-get.controller';
 import { GetExpenseService } from '../service/entity/expenses/get-expense.service';
 import { ExpensesRepository } from '../../adapter/repository/entity/expenses.repository';
 
@@ -34,7 +34,9 @@ import { ExpensesRepository } from '../../adapter/repository/entity/expenses.rep
       Expense.name,
       DependencyEntityTokens.EXPENSE,
       {
-        controller: ExpensesController,
+        controller: {
+          get: ExpensesGetController
+        },
         get: GetExpenseService,
         repository: ExpensesRepository
       }

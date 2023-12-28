@@ -1,5 +1,5 @@
-import { Module, DynamicModule, Provider } from '@nestjs/common';
-import { MongooseModule, getModelToken } from '@nestjs/mongoose';
+import { Module, DynamicModule } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
 import { ErrorSchemasModule } from './configuration/error-schemas.module';
 import { TranslationsModule } from './translation/translation.module';
 import { EntitySchemasModule } from './configuration/entity-schemas.module';
@@ -14,7 +14,9 @@ import { DependecyTokens } from '../app.constants';
 import { ModuleRef } from '@nestjs/core';
 import { EntityModelTokenBuilder } from '../injector/entity/model-entity-token.injector';
 import { CustomProvider } from '../dto/provider/custom-provider.dto';
-import { GenericController } from 'src/microservice/adapter/controller/abstract/generic.controller';
+import { GenericGetController } from 'src/microservice/adapter/controller/generic/generic-get.controller';
+import { GenericUpdateController } from 'src/microservice/adapter/controller/generic/generic-update.controller';
+import { GenericCreateController } from 'src/microservice/adapter/controller/generic/generic-create.controller';
 
 @Module({})
 export class GenericModule {
@@ -30,11 +32,7 @@ export class GenericModule {
     );
     return {
       module: GenericModule,
-      controllers: [
-        customProvider && customProvider.controller
-          ? customProvider.controller
-          : GenericController({ entity })
-      ],
+      controllers: controllersFactory(entity, customProvider),
       imports: [
         MongooseModule.forFeature(
           EntityModelTokenBuilder.buildMongooseStaticModelForFeature()
@@ -100,4 +98,29 @@ export class GenericModule {
       ]
     };
   }
+}
+
+function controllersFactory(entity: string, customProvider?: CustomProvider) {
+  return [
+    checkCustomController('get', customProvider)
+      ? customProvider.controller.get
+      : GenericGetController({ entity }),
+    checkCustomController('update', customProvider)
+      ? customProvider.controller.update
+      : GenericUpdateController({ entity }),
+    checkCustomController('create', customProvider)
+      ? customProvider.controller.get
+      : GenericCreateController({ entity })
+  ];
+}
+
+function checkCustomController(
+  ctrlKey: string,
+  customProvider?: CustomProvider
+): boolean {
+  return (
+    customProvider &&
+    customProvider.controller &&
+    customProvider.controller[ctrlKey]
+  );
 }

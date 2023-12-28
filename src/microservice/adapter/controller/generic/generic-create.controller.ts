@@ -1,41 +1,26 @@
 import { Controller, Inject } from '@nestjs/common';
-import { AbstractController } from './abstract.controller';
-import { GenericGetService } from 'src/microservice/application/service/abstract/generic-get.service';
-import { GenericUpdateService } from 'src/microservice/application/service/abstract/generic-update.service';
-import { GenericCreateService } from 'src/microservice/application/service/abstract/generic-create.service';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { ErrorService } from 'src/microservice/application/service/configuration/error-schema/error.service';
 import { GetTranslationService } from 'src/microservice/application/service/translation/get-translation.service';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
+import { AbstractCreateController } from '../abstract/abstract-create.controller';
+import { GenericCreateService } from 'src/microservice/application/service/abstract/generic-create.service';
 
-export function GenericController<
+export function GenericCreateController<
   Collection,
   GetResponse,
   SearchParams,
   BodyDto
 >({ entity }: { entity: string }) {
   @Controller(entity.toLowerCase())
-  class GenericControllerHost extends AbstractController<
+  class GenericCreateControllerHost extends AbstractCreateController<
     Collection,
     GetResponse,
     SearchParams,
     BodyDto
   > {
     constructor(
-      @Inject(`GENERIC_GET_SERVICE_${entity}`)
-      readonly getService?: GenericGetService<
-        Collection,
-        GetResponse,
-        SearchParams
-      >,
-      @Inject(`GENERIC_UPDATE_SERVICE_${entity}`)
-      readonly updateService?: GenericUpdateService<
-        Collection,
-        GetResponse,
-        BodyDto,
-        SearchParams
-      >,
       @Inject(`GENERIC_CREATE_SERVICE_${entity}`)
       readonly createService?: GenericCreateService<
         Collection,
@@ -51,8 +36,6 @@ export function GenericController<
     ) {
       super(
         entity,
-        getService,
-        updateService,
         createService,
         fieldSchemaData,
         entitySchemaData,
@@ -62,9 +45,9 @@ export function GenericController<
     }
   }
 
-  Object.defineProperty(GenericControllerHost, 'name', {
-    value: `${entity.capitalizeFirstLetter()}Controller`
+  Object.defineProperty(GenericCreateControllerHost, 'name', {
+    value: `${entity.capitalizeFirstLetter()}CreateController`
   });
 
-  return GenericControllerHost;
+  return GenericCreateControllerHost;
 }
