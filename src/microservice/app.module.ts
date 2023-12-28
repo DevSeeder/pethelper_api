@@ -2,13 +2,14 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import configuration from '../config/configuration';
-import { PetsModule } from './application/module/entity/pets.module';
 import { ExpensesModule } from './application/module/entity/expenses.module';
-import { AnimalsModule } from './application/module/entity/animals.module';
 import { FieldSchemasModule } from './application/module/configuration/field-schemas.module';
 import { GenericModule } from './application/module/generic.module';
 import { ExpenseCategory } from './domain/schemas/entity/expense-categories.schema';
 import { DependencyEntityTokens } from './application/app.constants';
+import { Animal } from './domain/schemas/entity/animals.schema';
+import { User } from './domain/schemas/entity/users.schema';
+import { Pet } from './domain/schemas/entity/pets.schema';
 
 @Module({
   imports: [
@@ -25,13 +26,17 @@ import { DependencyEntityTokens } from './application/app.constants';
     }),
     // AuthJwtModule,
     // HttpModule,
-    PetsModule,
+    GenericModule.forFeature<Pet>(Pet.name, DependencyEntityTokens.PET),
     ExpensesModule,
     GenericModule.forFeature<ExpenseCategory>(
       ExpenseCategory.name,
       DependencyEntityTokens.EXPENSE_CATEGORY
     ),
-    AnimalsModule,
+    GenericModule.forFeature<Animal>(
+      Animal.name,
+      DependencyEntityTokens.ANIMAL
+    ),
+    GenericModule.forFeature<User>(User.name, DependencyEntityTokens.USER),
     FieldSchemasModule
   ],
   controllers: [],

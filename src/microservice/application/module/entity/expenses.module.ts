@@ -1,7 +1,6 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { ExpensesController } from 'src/microservice/adapter/controller/expenses.controller';
 import { Expense } from 'src/microservice/domain/schemas/entity/expenses.schema';
-import { PetsModule } from './pets.module';
 import { FieldSchemasModule } from '../configuration/field-schemas.module';
 import { EntitySchemasModule } from '../configuration/entity-schemas.module';
 import { TranslationsModule } from '../translation/translation.module';
@@ -20,7 +19,6 @@ import { ExpensesRepository } from 'src/microservice/adapter/repository/entity/e
       DependencyEntityTokens.EXPENSE,
       { get: GetExpenseService, repository: ExpensesRepository }
     ),
-    forwardRef(() => PetsModule),
     GenericModule.forFeature<User>(User.name, DependencyEntityTokens.USER),
     GenericModule.forFeature<ExpenseCategory>(
       ExpenseCategory.name,
