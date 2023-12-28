@@ -1,4 +1,11 @@
-import { Controller, Inject } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Inject,
+  Param,
+  Post,
+  UseGuards
+} from '@nestjs/common';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { ErrorService } from 'src/microservice/application/service/configuration/error-schema/error.service';
@@ -6,6 +13,20 @@ import { GetTranslationService } from 'src/microservice/application/service/tran
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { AbstractCreateController } from '../abstract/abstract-create.controller';
 import { GenericCreateService } from 'src/microservice/application/service/abstract/generic-create.service';
+import { ObjectId } from 'mongoose';
+import {
+  ClonyManyBodyDto,
+  ClonyOneBodyDto
+} from 'src/microservice/application/dto/body/clone-body.dto';
+import {
+  CloneManyResponse,
+  CloneOneResponse
+} from 'src/microservice/application/dto/response/clone.response';
+import { Scopes } from '@devseeder/nestjs-microservices-core';
+import { buildControllerScopes } from './generic.controller';
+import { MyJwtAuthGuard } from 'src/core/auth/jwt.auth';
+
+const allKey = 'CREATE';
 
 export function GenericCreateController<
   Collection,
@@ -43,10 +64,67 @@ export function GenericCreateController<
         translationService
       );
     }
+
+    @UseGuards(MyJwtAuthGuard)
+    @Scopes(...buildControllerScopes(entity, 'CREATE', true, allKey))
+    @Post(`/`)
+    async create(@Body() body: BodyDto): Promise<{ _id: ObjectId }> {
+      this.isMethodAllowed('create');
+      await this.schemaValidator.validateRequestSchema(
+        this.requestSchema,
+        'create',
+        body,
+        this.fieldSchemaData
+      );
+      return this.createService.create(body as unknown as BodyDto);
+    }
+
+    @UseGuards(MyJwtAuthGuard)
+    @Scopes(...buildControllerScopes(entity, 'CLONE_ONE', true, allKey))
+    @Post(`/clone/:id`)
+    async cloneById(
+      @Param('id') id: string,
+      @Body() body: ClonyOneBodyDto
+    ): Promise<CloneOneResponse> {
+      this.isMethodAllowed('cloneById');
+      await this.schemaValidator.validateRequestSchema(
+        this.requestSchema,
+        'cloneOne',
+        body,
+        this.fieldSchemaData
+      );
+      const response = await this.createService.cloneByIds(
+        [id],
+        body.cloneRelations,
+        body.replaceBody
+      );
+      return response[0];
+    }
+
+    @UseGuards(MyJwtAuthGuard)
+    @Scopes(...buildControllerScopes(entity, 'CLONE_MANY', true, allKey))
+    @Post(`/clone`)
+    async cloneManyByIds(
+      @Body()
+      body: ClonyManyBodyDto
+    ): Promise<CloneManyResponse> {
+      this.isMethodAllowed('cloneManyByIds');
+      await this.schemaValidator.validateRequestSchema(
+        this.requestSchema,
+        'cloneMany',
+        body,
+        this.fieldSchemaData
+      );
+      return this.createService.cloneByIds(
+        body._ids,
+        body.cloneRelations,
+        body.replaceBody
+      );
+    }
   }
 
   Object.defineProperty(GenericCreateControllerHost, 'name', {
-    value: `${entity.capitalizeFirstLetter()}CreateController`
+    value: `Generic${entity.capitalizeFirstLetter()}CreateController`
   });
 
   return GenericCreateControllerHost;

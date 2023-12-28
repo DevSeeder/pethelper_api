@@ -103,17 +103,20 @@ export class GenericModule {
 }
 
 function controllersFactory(entity: string, customProvider?: CustomProvider) {
-  return [
-    checkCustomController('get', customProvider)
-      ? customProvider.controller.get
-      : GenericGetController({ entity }),
-    checkCustomController('update', customProvider)
-      ? customProvider.controller.update
-      : GenericUpdateController({ entity }),
-    checkCustomController('create', customProvider)
-      ? customProvider.controller.get
-      : GenericCreateController({ entity })
+  const genericArr = [
+    GenericGetController({ entity }),
+    GenericUpdateController({ entity }),
+    GenericCreateController({ entity })
   ];
+
+  if (checkCustomController('get', customProvider))
+    genericArr.push(customProvider.controller.get);
+  if (checkCustomController('update', customProvider))
+    genericArr.push(customProvider.controller.update);
+  if (checkCustomController('create', customProvider))
+    genericArr.push(customProvider.controller.get);
+
+  return genericArr;
 }
 
 function checkCustomController(

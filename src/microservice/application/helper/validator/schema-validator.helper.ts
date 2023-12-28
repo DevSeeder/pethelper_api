@@ -28,7 +28,7 @@ export class SchemaValidator {
   async validateRequestSchema(
     schema: RequestSchema,
     requestMethod: string,
-    obj: object,
+    obj: any,
     fieldSchemasDb: FieldSchema[] = [],
     encapsulate = false
   ) {

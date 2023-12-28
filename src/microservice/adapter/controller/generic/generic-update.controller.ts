@@ -1,4 +1,12 @@
-import { Controller, Inject } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Inject,
+  Param,
+  Patch,
+  Query,
+  UseGuards
+} from '@nestjs/common';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { ErrorService } from 'src/microservice/application/service/configuration/error-schema/error.service';
@@ -6,6 +14,12 @@ import { GetTranslationService } from 'src/microservice/application/service/tran
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { AbstractUpdateController } from '../abstract/abstract-update.controller';
 import { GenericUpdateService } from 'src/microservice/application/service/abstract/generic-update.service';
+import { ActivationQueryParams } from 'src/microservice/application/dto/query/activation-query-params.dto';
+import { MyJwtAuthGuard } from 'src/core/auth/jwt.auth';
+import { Scopes } from '@devseeder/nestjs-microservices-core';
+import { buildControllerScopes } from './generic.controller';
+
+const allKey = 'UPDATE';
 
 export function GenericUpdateController<
   Collection,
@@ -44,10 +58,91 @@ export function GenericUpdateController<
         translationService
       );
     }
+
+    @UseGuards(MyJwtAuthGuard)
+    @Scopes(...buildControllerScopes(entity, 'INACTIVATE', true, allKey))
+    @Patch(`inactivate/:id`)
+    async inactivate(
+      @Param('id') id: string,
+      @Query() queryParams: ActivationQueryParams
+    ): Promise<void> {
+      this.isMethodAllowed('inactivate');
+      await this.schemaValidator.validateRequestSchema(
+        this.requestSchema,
+        'activation',
+        queryParams
+      );
+      await this.updateService.activation(
+        id,
+        false,
+        queryParams.cascadeRelations
+      );
+    }
+
+    @UseGuards(MyJwtAuthGuard)
+    @Scopes(...buildControllerScopes(entity, 'ACTIVATE', true, allKey))
+    @Patch(`activate/:id`)
+    async activate(
+      @Param('id') id: string,
+      @Query() queryParams: ActivationQueryParams
+    ): Promise<void> {
+      this.isMethodAllowed('activate');
+      await this.schemaValidator.validateRequestSchema(
+        this.requestSchema,
+        'activation',
+        queryParams
+      );
+      await this.updateService.activation(
+        id,
+        true,
+        queryParams.cascadeRelations
+      );
+    }
+
+    @UseGuards(MyJwtAuthGuard)
+    @Scopes(...buildControllerScopes(entity, 'UPDATE_BY_ID', true, allKey))
+    @Patch(`/:id`)
+    async updateById(
+      @Param('id') id: string,
+      @Body() body: BodyDto
+    ): Promise<void> {
+      this.isMethodAllowed('updateById');
+      await this.schemaValidator.validateRequestSchema(
+        this.requestSchema,
+        'update',
+        body,
+        this.fieldSchemaData
+      );
+      await this.updateService.updateById(id, body as unknown as BodyDto);
+    }
+
+    @UseGuards(MyJwtAuthGuard)
+    @Scopes(...buildControllerScopes(entity, 'UPDATE_MANY', true, allKey))
+    @Patch(`/`)
+    async updateBy(
+      @Query() params: SearchParams,
+      @Body() body: BodyDto
+    ): Promise<void> {
+      this.isMethodAllowed('updateBy');
+      await this.schemaValidator.validateRequestSchema(
+        this.requestSchema,
+        'search',
+        params,
+        [],
+        true
+      );
+      await this.schemaValidator.validateRequestSchema(
+        this.requestSchema,
+        'update',
+        body,
+        this.fieldSchemaData
+      );
+      await this.updateService.updateBy(params, body);
+    }
   }
 
   Object.defineProperty(GenericUpdateControllerHost, 'name', {
-    value: `${entity.capitalizeFirstLetter()}UpdateController`
+    value: `Generic${entity.capitalizeFirstLetter()}UpdateController`
   });
 
   return GenericUpdateControllerHost;
