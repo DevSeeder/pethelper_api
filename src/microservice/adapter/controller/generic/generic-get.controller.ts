@@ -27,19 +27,6 @@ export function GenericGetController<
         GetResponse,
         SearchParams
       >,
-      // @Inject(`GENERIC_UPDATE_SERVICE_${entity}`)
-      // readonly updateService?: GenericUpdateService<
-      //   Collection,
-      //   GetResponse,
-      //   BodyDto,
-      //   SearchParams
-      // >,
-      // @Inject(`GENERIC_CREATE_SERVICE_${entity}`)
-      // readonly createService?: GenericCreateService<
-      //   Collection,
-      //   GetResponse,
-      //   BodyDto
-      // >,
       @Inject(DependecyTokens.FIELD_SCHEMA_DB)
       readonly fieldSchemaData?: FieldSchema[],
       @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
