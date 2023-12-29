@@ -17,6 +17,8 @@ import {
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { MetaScopeInfo } from './meta-scope/meta-scope.decorator';
+import { ErrorService } from 'src/microservice/application/service/configuration/error-schema/error.service';
+import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 
 @Injectable()
 export class MyJwtAuthGuard extends CustomJwtAuthGuard {
@@ -25,7 +27,8 @@ export class MyJwtAuthGuard extends CustomJwtAuthGuard {
     protected readonly jwtService: JwtService,
     protected readonly configService: ConfigService,
     @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
-    protected readonly entitySchemaData: EntitySchema[]
+    protected readonly entitySchemaData: EntitySchema[],
+    protected readonly errorService: ErrorService
   ) {
     super(reflector, jwtService, configService, EnumScopes.ADM);
   }
@@ -58,7 +61,7 @@ export class MyJwtAuthGuard extends CustomJwtAuthGuard {
       });
 
       if (!scopesPermission)
-        throw new ForbiddenException('Missing Scope Authorization');
+        await this.errorService.throwError(ErrorKeys.MISSING_SCOPE);
 
       return true;
     } catch (err) {

@@ -262,9 +262,9 @@ export class AbstractDBService<
     );
 
     if (localUserId !== item[this.entitySchema.userKey])
-      throw new ForbiddenActionException(
-        `The user cannot operate with '${this.entity}' from other users`
-      );
+      await this.errorService.throwError(ErrorKeys.OPERATE_OTHER_USERS, {
+        key: this.entity
+      });
   }
 
   protected async validateOnlyLoggedUserForItems(
