@@ -206,14 +206,16 @@ export class AbstractDBService<
       });
     }
 
-    await this.validateOnlyLoggedUser(item);
+    await this.validateOnlyLoggedUserForItems([item]);
 
     return item;
   }
 
-  protected async validateOnlyLoggedUser(item: MongooseModel) {
+  protected async validateOnlyLoggedUser(
+    item: Partial<MongooseModel>,
+    localUserId: string
+  ) {
     const loggedUser = this.getLoggedUser();
-    console.log('getLoggedUser');
 
     if (
       !item['userId'] ||
@@ -251,22 +253,48 @@ export class AbstractDBService<
 
     if (!onlyLogged.length) return;
 
-    this.logger.log(`Checking user for idUserAuth ${loggedUser['userId']}`);
-    console.log(this['getUsersService']);
+    this.logger.log(
+      `Auth User ${localUserId} == Entity User ${item['userId']}`
+    );
+
+    if (localUserId !== item['userId'])
+      throw new ForbiddenActionException(
+        `The user cannot operate with '${this.entity}' from other users`
+      );
+  }
+
+  protected async validateOnlyLoggedUserForItems(
+    items: Partial<MongooseModel>[]
+  ): Promise<void> {
+    const localUserId = await this.getLocalUserId();
+
+    if (!localUserId) return;
+
+    for await (const item of items) {
+      await this.validateOnlyLoggedUser(item, localUserId);
+    }
+  }
+
+  protected async getLocalUserId(): Promise<string | null> {
+    const loggedUser = this.getLoggedUser();
+    if (!loggedUser || !this['getUsersService']) return null;
+
+    const userAuthId = loggedUser['userId'];
+
+    this.logger.log(`Checking user for idUserAuth ${userAuthId}`);
     const userDB = await this['getUsersService'].search(
-      { idUserAuth: loggedUser['userId'], select: 'name,username' },
+      { idUserAuth: userAuthId, select: 'name,username' },
       false,
       false
     );
 
-    this.logger.log(
-      `Auth User ${userDB.items[0]._id} == Entity User ${item['userId']}`
-    );
+    if (!userDB.items.length)
+      this.errorService.throwError(ErrorKeys.INVALID_DATA, {
+        key: 'Auth User',
+        value: userAuthId
+      });
 
-    if (userDB.items[0]._id.toString() !== item['userId'])
-      throw new ForbiddenActionException(
-        `The user cannot operate with '${this.entity}' from other users`
-      );
+    return userDB.items[0]._id.toString();
   }
 
   protected getDynamicValues(

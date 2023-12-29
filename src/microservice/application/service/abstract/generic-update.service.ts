@@ -12,6 +12,7 @@ import { InactivationReason } from 'src/microservice/domain/enum/inactivation-re
 import { ClientSession } from 'mongoose';
 import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';
 import { REQUEST, Reflector } from '@nestjs/core';
+import { ForbiddenActionException } from 'src/core/exceptions/forbbiden-action.exception';
 
 @Injectable({ scope: Scope.REQUEST })
 export class GenericUpdateService<
@@ -173,6 +174,16 @@ export class GenericUpdateService<
     const items = await this.repository.count(searchWhere);
 
     if (items <= 0) this.errorService.throwError(ErrorKeys.NO_RECORD_UPDATE);
+
+    const itemsUser = await this.repository.count({
+      ...searchWhere,
+      userId: this.getLocalUserId()
+    });
+
+    if (itemsUser !== items)
+      throw new ForbiddenActionException(
+        `The user cannot operate with '${this.entity}' from other users`
+      );
 
     this.logger.log(`Body: ${JSON.stringify(body)}`);
 

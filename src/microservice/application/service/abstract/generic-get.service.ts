@@ -94,6 +94,8 @@ export class GenericGetService<
 
     this.logger.log(`Items found: ${responseItems.length}.`);
 
+    await this.validateOnlyLoggedUserForItems(responseItems);
+
     const arrMap = await responseItems.map(
       async (item) => await this.convertRelation(item)
     );
@@ -140,7 +142,7 @@ export class GenericGetService<
       });
     }
 
-    await this.validateOnlyLoggedUser(item);
+    await this.validateOnlyLoggedUserForItems([item]);
 
     return this.convertRelation(item);
   }
