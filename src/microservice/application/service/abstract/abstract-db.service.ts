@@ -215,10 +215,12 @@ export class AbstractDBService<
     item: Partial<MongooseModel>,
     localUserId: string
   ) {
+    if (!this.entitySchema.userKey) return;
+
     const loggedUser = this.getLoggedUser();
 
     if (
-      !item['userId'] ||
+      !item[this.entitySchema.userKey] ||
       !loggedUser ||
       !loggedUser.scopes ||
       !loggedUser.scopes.length ||
@@ -254,10 +256,12 @@ export class AbstractDBService<
     if (!onlyLogged.length) return;
 
     this.logger.log(
-      `Auth User ${localUserId} == Entity User ${item['userId']}`
+      `Auth User ${localUserId} == Entity User ${
+        item[this.entitySchema.userKey]
+      }`
     );
 
-    if (localUserId !== item['userId'])
+    if (localUserId !== item[this.entitySchema.userKey])
       throw new ForbiddenActionException(
         `The user cannot operate with '${this.entity}' from other users`
       );
@@ -266,6 +270,8 @@ export class AbstractDBService<
   protected async validateOnlyLoggedUserForItems(
     items: Partial<MongooseModel>[]
   ): Promise<void> {
+    if (!this.entitySchema.userKey) return;
+
     const localUserId = await this.getLocalUserId();
 
     if (!localUserId) return;
@@ -279,7 +285,7 @@ export class AbstractDBService<
     const loggedUser = this.getLoggedUser();
     if (!loggedUser || !this['getUsersService']) return null;
 
-    const userAuthId = loggedUser['userId'];
+    const userAuthId = loggedUser[this.entitySchema.userKey];
 
     this.logger.log(`Checking user for idUserAuth ${userAuthId}`);
     const userDB = await this['getUsersService'].search(

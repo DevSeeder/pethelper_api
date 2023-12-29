@@ -77,7 +77,9 @@ export class SearchEncapsulatorHelper {
       if (regexParent.test(key)) {
         objItem[key.split('.')[2]] = obj[key];
         delete objItem[key];
+        return;
       }
+      delete objItem[key];
     });
     return objItem;
   }

@@ -52,6 +52,9 @@ export class EntitySchema extends AbstractSchema {
 
   @Prop({ required: false, default: [] })
   authScopes: Array<AuthScopes> = [];
+
+  @Prop({ required: false })
+  userKey?: string;
 }
 
 export interface SubRelation {

@@ -175,17 +175,9 @@ export class GenericUpdateService<
 
     if (items <= 0) this.errorService.throwError(ErrorKeys.NO_RECORD_UPDATE);
 
-    const itemsUser = await this.repository.count({
-      ...searchWhere,
-      userId: this.getLocalUserId()
-    });
-
-    if (itemsUser !== items)
-      throw new ForbiddenActionException(
-        `The user cannot operate with '${this.entity}' from other users`
-      );
-
     this.logger.log(`Body: ${JSON.stringify(body)}`);
+
+    await this.validateLoggedUserByCount(items, searchWhere);
 
     await this.convertRelation(body);
 

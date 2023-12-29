@@ -295,8 +295,10 @@ export class GenericGetService<
         searchWhere
       )}`
     );
+    const totalRecords = await this.repository.count(searchWhere);
+    await this.validateLoggedUserByCount(totalRecords, searchWhere);
     return {
-      totalRecords: await this.repository.count(searchWhere)
+      totalRecords
     };
   }
 
@@ -329,6 +331,8 @@ export class GenericGetService<
         key: 'Relation',
         value: groupedEntity
       });
+
+    await this.count(searchParams);
 
     const searchWhere = await this.buildSearchParams(searchParams);
 

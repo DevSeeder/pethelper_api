@@ -13,6 +13,7 @@ import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';
 import { REQUEST, Reflector } from '@nestjs/core';
 import { Inject } from '@nestjs/common';
+import { ForbiddenActionException } from 'src/core/exceptions/forbbiden-action.exception';
 
 export class AbstractSearchService<
   Collection,
@@ -347,5 +348,22 @@ export class AbstractSearchService<
           value: key.split('.')[1]
         });
     });
+  }
+
+  protected async validateLoggedUserByCount(
+    count: number,
+    searchWhere: Partial<SearchParams>
+  ) {
+    if (!this.entitySchema.userKey) return;
+
+    const itemsUser = await this.repository.count({
+      ...searchWhere,
+      [this.entitySchema.userKey]: await this.getLocalUserId()
+    });
+
+    if (itemsUser !== count)
+      throw new ForbiddenActionException(
+        `The user cannot operate with '${this.entity}' from other users`
+      );
   }
 }

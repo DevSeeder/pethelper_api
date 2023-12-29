@@ -22,8 +22,6 @@ import {
 } from 'src/microservice/application/dto/response/paginated.response';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 import { MyJwtAuthGuard } from 'src/core/auth/jwt.auth';
-import { Scopes } from '@devseeder/nestjs-microservices-core';
-import { buildControllerScopes } from './generic.controller';
 import { MetaScope } from 'src/core/auth/meta-scope/meta-scope.decorator';
 import { MetaDataInterceptor } from 'src/core/interceptor/execution-context.interceptor';
 
@@ -92,7 +90,7 @@ export function GenericGetController<
         this.requestSchema,
         'search',
         params,
-        [],
+        this.fieldSchemaData,
         true
       );
 
@@ -112,7 +110,7 @@ export function GenericGetController<
         this.requestSchema,
         'search',
         params,
-        [],
+        this.fieldSchemaData,
         true
       );
       return this.getService.search(params);
@@ -126,7 +124,7 @@ export function GenericGetController<
         this.requestSchema,
         'count',
         params,
-        [],
+        this.fieldSchemaData,
         true
       );
       return this.getService.count(params);
@@ -151,7 +149,7 @@ export function GenericGetController<
         this.requestSchema,
         'groupBy',
         params,
-        [],
+        this.fieldSchemaData,
         true
       );
       return this.getService.groupBy(relation, params);
