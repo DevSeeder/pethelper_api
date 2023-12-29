@@ -262,7 +262,7 @@ export class AbstractDBService<
     );
 
     if (localUserId !== item[this.entitySchema.userKey])
-      await this.errorService.throwError(ErrorKeys.OPERATE_OTHER_USERS, {
+      await this.errorService.throwError(ErrorKeys.OPERATE_OTHERS_USERS, {
         key: this.entity
       });
   }

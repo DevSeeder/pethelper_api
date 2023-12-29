@@ -19,6 +19,7 @@ import { EntitySchema } from 'src/microservice/domain/schemas/configuration-sche
 import { MetaScopeInfo } from './meta-scope/meta-scope.decorator';
 import { ErrorService } from 'src/microservice/application/service/configuration/error-schema/error.service';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
+import { CustomErrorException } from '@devseeder/microservices-exceptions';
 
 @Injectable()
 export class MyJwtAuthGuard extends CustomJwtAuthGuard {
@@ -61,16 +62,12 @@ export class MyJwtAuthGuard extends CustomJwtAuthGuard {
       });
 
       if (!scopesPermission)
-        await this.errorService.throwError(ErrorKeys.MISSING_SCOPE);
+        await this.errorService.throwError(ErrorKeys.MISSING_SCOPE_AUTH);
 
       return true;
     } catch (err) {
-      throw new HttpException(
-        err.message,
-        err.status === HttpStatus.ACCEPTED
-          ? HttpStatus.UNAUTHORIZED
-          : err.status
-      );
+      if (err instanceof CustomErrorException) throw err;
+      throw new CustomErrorException(err.message, HttpStatus.UNAUTHORIZED);
     }
   }
 

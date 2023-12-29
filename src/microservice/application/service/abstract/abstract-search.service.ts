@@ -362,7 +362,7 @@ export class AbstractSearchService<
     });
 
     if (itemsUser !== count)
-      await this.errorService.throwError(ErrorKeys.OPERATE_OTHER_USERS, {
+      await this.errorService.throwError(ErrorKeys.OPERATE_OTHERS_USERS, {
         key: this.entity
       });
   }
