@@ -5,7 +5,6 @@ import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.
 import { VALIDATE_ID_ENUMS } from '../../app.constants';
 import { DynamicValueService } from '../dynamic/get-dynamic-value.service';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
-import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { AbstractEntityLoader } from '../../loader/abstract-entity.loader';
 import { GetTranslationService } from '../translation/get-translation.service';
 import { ErrorService } from '../configuration/error-schema/error.service';
@@ -19,6 +18,7 @@ import {
   SCOPE_KEY
 } from 'src/microservice/domain/enum/enum-scopes.enum';
 import { JWTPayload } from '@devseeder/nestjs-microservices-core';
+import { EntitySchema } from '@devseeder/nestjs-microservices-schemas';
 
 export class AbstractDBService<
   Collection,

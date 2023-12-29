@@ -14,7 +14,7 @@ import {
   RequestSchema
 } from 'src/microservice/domain/interface/input-schema.interface';
 import { GLOBAL_ENTITY } from '../../app.constants';
-import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
+import { EntitySchema } from '@devseeder/nestjs-microservices-schemas';
 
 export class SchemaValidator {
   private logger = new Logger(SchemaValidator.name);

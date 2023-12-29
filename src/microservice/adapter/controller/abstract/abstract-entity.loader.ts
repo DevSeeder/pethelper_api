@@ -1,6 +1,6 @@
+import { EntitySchema } from '@devseeder/nestjs-microservices-schemas';
 import { Logger } from '@nestjs/common';
 import { GLOBAL_ENTITY } from 'src/microservice/application/app.constants';
-import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 
 export abstract class AbstractEntityLoader {

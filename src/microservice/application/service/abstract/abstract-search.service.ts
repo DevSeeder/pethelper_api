@@ -5,7 +5,6 @@ import { Search } from '../../dto/search/search.dto';
 import { FieldSchemaBuilder } from '../../helper/validator/field-schema.builder';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { AbstractDBService } from './abstract-db.service';
-import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { SearchEncapsulatorHelper } from '../../helper/search/search-encapsulator.helper';
 import { GetTranslationService } from '../translation/get-translation.service';
 import { ErrorService } from '../configuration/error-schema/error.service';
@@ -13,6 +12,7 @@ import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';
 import { REQUEST } from '@nestjs/core';
 import { Inject } from '@nestjs/common';
+import { EntitySchema } from '@devseeder/nestjs-microservices-schemas';
 
 export class AbstractSearchService<
   Collection,

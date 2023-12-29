@@ -7,7 +7,6 @@ import { User } from '../../../../domain/schemas/entity/users.schema';
 import { GenericCreateService } from '../../abstract/generic-create.service';
 import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
-import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { GetTranslationService } from '../../translation/get-translation.service';
 import { ErrorService } from '../../configuration/error-schema/error.service';
 import {
@@ -16,6 +15,7 @@ import {
 } from 'src/microservice/application/app.constants';
 import { ObjectId } from 'mongoose';
 import { REQUEST } from '@nestjs/core';
+import { EntitySchema } from '@devseeder/nestjs-microservices-schemas';
 
 @Injectable({ scope: Scope.REQUEST })
 export class CreateUserService extends GenericCreateService<

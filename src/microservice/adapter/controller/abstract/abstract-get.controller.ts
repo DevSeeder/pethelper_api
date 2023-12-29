@@ -4,10 +4,10 @@ import { GenericGetService } from 'src/microservice/application/service/abstract
 import { RequestSchema } from 'src/microservice/domain/interface/input-schema.interface';
 import { AbstractBodyDto } from 'src/microservice/application/dto/body/abtract-body.dto';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
-import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { ErrorService } from 'src/microservice/application/service/configuration/error-schema/error.service';
 import { GetTranslationService } from 'src/microservice/application/service/translation/get-translation.service';
 import { AbstractController } from './abstract.controller';
+import { EntitySchema } from '@devseeder/nestjs-microservices-schemas';
 
 export abstract class AbstractGetController<
   Collection,

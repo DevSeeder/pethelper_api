@@ -12,7 +12,6 @@ import {
   DependecyTokens,
   DependencyEntityTokens
 } from 'src/microservice/application/app.constants';
-import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { GetTranslationService } from '../../translation/get-translation.service';
 import { ErrorService } from '../../configuration/error-schema/error.service';
 import {
@@ -27,6 +26,7 @@ import { Pet } from 'src/microservice/domain/schemas/entity/pets.schema';
 import { PetResponse } from 'src/microservice/application/dto/response/pet.response';
 import { SearchPetDto } from 'src/microservice/application/dto/search/search-pet.dto';
 import { REQUEST } from '@nestjs/core';
+import { EntitySchema } from '@devseeder/nestjs-microservices-schemas';
 
 @Injectable({ scope: Scope.REQUEST })
 export class GetExpenseService extends GenericGetService<

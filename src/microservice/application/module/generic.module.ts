@@ -2,22 +2,25 @@ import { Module, DynamicModule } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ErrorSchemasModule } from './configuration/error-schemas.module';
 import { TranslationsModule } from './translation/translation.module';
-import { EntitySchemasModule } from './configuration/entity-schemas.module';
 import { FieldSchemasModule } from './configuration/field-schemas.module';
 import { DependencyInjectorService } from '../injector/dependency-injector.service';
 import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
-import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { GetTranslationService } from '../service/translation/get-translation.service';
 import { ErrorService } from '../service/configuration/error-schema/error.service';
-import { DependecyTokens } from '../app.constants';
-import { ModuleRef, REQUEST, Reflector } from '@nestjs/core';
+import { DependecyTokens, PROJECT_KEY } from '../app.constants';
+import { ModuleRef, REQUEST } from '@nestjs/core';
 import { EntityModelTokenBuilder } from '../injector/entity/model-entity-token.injector';
 import { CustomProvider } from '../dto/provider/custom-provider.dto';
 import { GenericGetController } from 'src/microservice/adapter/controller/generic/generic-get.controller';
 import { GenericUpdateController } from 'src/microservice/adapter/controller/generic/generic-update.controller';
 import { GenericCreateController } from 'src/microservice/adapter/controller/generic/generic-create.controller';
 import { AuthJwtModule } from './auth/auth-jwt.module';
+import {
+  EntitySchema,
+  EntitySchemasModule
+} from '@devseeder/nestjs-microservices-schemas';
+import configuration from 'src/config/configuration';
 
 @Module({})
 export class GenericModule {
@@ -38,7 +41,7 @@ export class GenericModule {
         MongooseModule.forFeature(
           EntityModelTokenBuilder.buildMongooseStaticModelForFeature()
         ),
-        EntitySchemasModule,
+        EntitySchemasModule.forRootAync(configuration, PROJECT_KEY),
         FieldSchemasModule,
         ErrorSchemasModule,
         TranslationsModule,
@@ -48,13 +51,18 @@ export class GenericModule {
         repositoryProvider,
         GenericModule.loadServiceProvider(entity, 'get', customProvider),
         GenericModule.loadServiceProvider(entity, 'update', customProvider),
-        GenericModule.loadServiceProvider(entity, 'create', customProvider)
+        GenericModule.loadServiceProvider(entity, 'create', customProvider),
+        {
+          provide: 'PROJECT_KEY',
+          useValue: PROJECT_KEY
+        }
       ],
       exports: [
         repositoryProvider,
         `GENERIC_GET_SERVICE_${entity}`,
         `GENERIC_UPDATE_SERVICE_${entity}`,
-        `GENERIC_CREATE_SERVICE_${entity}`
+        `GENERIC_CREATE_SERVICE_${entity}`,
+        'PROJECT_KEY'
       ]
     };
   }

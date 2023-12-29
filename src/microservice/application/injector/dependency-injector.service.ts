@@ -2,7 +2,6 @@ import { Inject, Injectable, Provider, Scope } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
 import { Collection, Model } from 'mongoose';
 import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';
-import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { GetTranslationService } from '../service/translation/get-translation.service';
 import { ErrorService } from '../service/configuration/error-schema/error.service';
@@ -15,6 +14,7 @@ import { GenericCreateService } from '../service/abstract/generic-create.service
 import { ModuleRef, REQUEST } from '@nestjs/core';
 import { CustomProvider } from '../dto/provider/custom-provider.dto';
 import { ModelEntityTokens } from './entity/model-entity-token.injector';
+import { EntitySchema } from '@devseeder/nestjs-microservices-schemas';
 
 @Injectable({ scope: Scope.REQUEST })
 export class DependencyInjectorService {

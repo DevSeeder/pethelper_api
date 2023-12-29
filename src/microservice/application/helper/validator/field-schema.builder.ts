@@ -25,7 +25,7 @@ import {
 import { ErrorService } from '../../service/configuration/error-schema/error.service';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 import { GetTranslationService } from '../../service/translation/get-translation.service';
-import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
+import { EntitySchema } from '@devseeder/nestjs-microservices-schemas';
 
 export class FieldSchemaBuilder {
   private schemaValidator: SchemaValidator;

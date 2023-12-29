@@ -1,8 +1,6 @@
 import { CustomJwtAuthGuard } from '@devseeder/nestjs-microservices-core';
 import {
   ExecutionContext,
-  ForbiddenException,
-  HttpException,
   HttpStatus,
   Inject,
   Injectable
@@ -15,11 +13,11 @@ import {
   SCOPE_KEY
 } from '../../microservice/domain/enum/enum-scopes.enum';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
-import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { MetaScopeInfo } from './meta-scope/meta-scope.decorator';
 import { ErrorService } from 'src/microservice/application/service/configuration/error-schema/error.service';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 import { CustomErrorException } from '@devseeder/microservices-exceptions';
+import { EntitySchema } from '@devseeder/nestjs-microservices-schemas';
 
 @Injectable()
 export class MyJwtAuthGuard extends CustomJwtAuthGuard {

@@ -9,11 +9,11 @@ import {
   CloneOneResponse
 } from '../../dto/response/clone.response';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
-import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { GetTranslationService } from '../translation/get-translation.service';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 import { ErrorService } from '../configuration/error-schema/error.service';
 import { REQUEST } from '@nestjs/core';
+import { EntitySchema } from '@devseeder/nestjs-microservices-schemas';
 
 @Injectable({ scope: Scope.REQUEST })
 export class GenericCreateService<

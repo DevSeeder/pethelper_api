@@ -4,7 +4,6 @@ import { AbstractBodyDto } from '../../dto/body/abtract-body.dto';
 import { AbstractSchema } from 'src/microservice/domain/schemas/abstract.schema';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { AbstractSearchService } from './abstract-search.service';
-import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { GetTranslationService } from '../translation/get-translation.service';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 import { ErrorService } from '../configuration/error-schema/error.service';
@@ -12,6 +11,7 @@ import { InactivationReason } from 'src/microservice/domain/enum/inactivation-re
 import { ClientSession } from 'mongoose';
 import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';
 import { REQUEST, Reflector } from '@nestjs/core';
+import { EntitySchema } from '@devseeder/nestjs-microservices-schemas';
 
 @Injectable({ scope: Scope.REQUEST })
 export class GenericUpdateService<

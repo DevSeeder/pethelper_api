@@ -13,3 +13,6 @@ doc:
   version: 0.0.1
   name: 'Pet Helper API'
   projectKey: 'PET_HELPER'
+schemas:
+  database:
+    connection: 'mongodb+srv://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_URL_CONNECTION}${MONGODB_DATABASE_NAME}${MONGODB_SUFIX_PARAMS}'
