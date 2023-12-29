@@ -10,9 +10,13 @@ export class AuthenticatorExtractorHelper {
   }
 
   /* istanbul ignore next */
-  static extractBearerTokenAuth(authStr: string): JWTPayload {
-    const base64Payload = authStr.split('.')[1];
-    const payloadBuffer = Buffer.from(base64Payload, 'base64');
-    return JSON.parse(payloadBuffer.toString());
+  static extractBearerTokenAuth(authStr: string): JWTPayload | null {
+    try {
+      const base64Payload = authStr.split('.')[1];
+      const payloadBuffer = Buffer.from(base64Payload, 'base64');
+      return JSON.parse(payloadBuffer.toString());
+    } catch (err) {
+      return null;
+    }
   }
 }

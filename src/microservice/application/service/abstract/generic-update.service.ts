@@ -1,5 +1,5 @@
 import { DateHelper } from '@devseeder/nestjs-microservices-commons';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, Scope } from '@nestjs/common';
 import { AbstractBodyDto } from '../../dto/body/abtract-body.dto';
 import { AbstractSchema } from 'src/microservice/domain/schemas/abstract.schema';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
@@ -11,8 +11,9 @@ import { ErrorService } from '../configuration/error-schema/error.service';
 import { InactivationReason } from 'src/microservice/domain/enum/inactivation-reason.enum';
 import { ClientSession } from 'mongoose';
 import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';
+import { REQUEST, Reflector } from '@nestjs/core';
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class GenericUpdateService<
   Collection,
   ResponseModel,
@@ -30,9 +31,20 @@ export class GenericUpdateService<
     protected readonly fieldSchemaData: FieldSchema[],
     protected readonly entitySchemaData: EntitySchema[],
     protected readonly translationService?: GetTranslationService,
-    protected readonly errorService?: ErrorService
+    protected readonly errorService?: ErrorService,
+    @Inject(REQUEST) protected readonly request?: Request,
+    protected readonly reflector?: Reflector
   ) {
-    super(repository, entity, fieldSchemaData, entitySchemaData);
+    super(
+      repository,
+      entity,
+      fieldSchemaData,
+      entitySchemaData,
+      translationService,
+      errorService,
+      request,
+      reflector
+    );
   }
 
   async updateById(

@@ -11,6 +11,16 @@ import { GetTranslationService } from '../translation/get-translation.service';
 import { ErrorService } from '../configuration/error-schema/error.service';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';
+import { Inject } from '@nestjs/common';
+import { REQUEST, Reflector } from '@nestjs/core';
+import { AuthenticatorExtractorHelper } from 'src/microservice/adapter/helper/authenticator-extractor.helper';
+import {
+  EnumScopes,
+  SCOPE_KEY
+} from 'src/microservice/domain/enum/enum-scopes.enum';
+import { MetaScopeInfo } from 'src/core/auth/meta-scope/meta-scope.decorator';
+import { ForbiddenActionException } from 'src/core/exceptions/forbbiden-action.exception';
+import { JWTPayload } from '@devseeder/nestjs-microservices-core';
 
 export class AbstractDBService<
   Collection,
@@ -23,7 +33,9 @@ export class AbstractDBService<
     protected readonly fieldSchemaData: FieldSchema[] = [],
     protected readonly entitySchemaData: EntitySchema[] = [],
     protected readonly translationService?: GetTranslationService,
-    protected readonly errorService?: ErrorService
+    protected readonly errorService?: ErrorService,
+    @Inject(REQUEST) protected readonly request?: Request,
+    protected readonly reflector?: Reflector
   ) {
     super(entity, fieldSchemaData, entitySchemaData);
   }
@@ -173,23 +185,88 @@ export class AbstractDBService<
 
   protected async validateId(id: string): Promise<MongooseModel> {
     let item;
-    const entityTranslation =
-      await this.translationService.getEntityTranslation(
-        this.entitySchema.entity
-      );
-
     try {
       item = await this.repository.findById(id);
     } catch (err) {
+      const entityTranslation =
+        await this.translationService.getEntityTranslation(
+          this.entitySchema.entity
+        );
       this.errorService.throwError(ErrorKeys.NOT_FOUND, {
         key: entityTranslation.itemLabel
       });
     }
-    if (!item)
+    if (!item) {
+      const entityTranslation =
+        await this.translationService.getEntityTranslation(
+          this.entitySchema.entity
+        );
       this.errorService.throwError(ErrorKeys.NOT_FOUND, {
         key: entityTranslation.itemLabel
       });
+    }
+
+    await this.validateOnlyLoggedUser(item);
+
     return item;
+  }
+
+  protected async validateOnlyLoggedUser(item: MongooseModel) {
+    const loggedUser = this.getLoggedUser();
+    console.log('getLoggedUser');
+
+    if (
+      !item['userId'] ||
+      !loggedUser ||
+      !loggedUser.scopes ||
+      !loggedUser.scopes.length ||
+      !this['getUsersService']
+    )
+      return;
+
+    if (loggedUser.scopes.includes(EnumScopes.ADM)) return;
+
+    this.logger.log(`Validating Only Logged User...`);
+
+    const requestScope = this.request['metaScopes'];
+
+    this.logger.log(`RequestScope: ${JSON.stringify(requestScope)}`);
+
+    const entityScopes = this.entitySchema.authScopes.filter(
+      (aut) => aut.accessKey === requestScope.accessKey
+    );
+
+    if (!entityScopes.length) {
+      this.logger.warn(
+        `No escope for entity ${this.entity} and accessKey ${requestScope.accessKey}`
+      );
+      return;
+    }
+
+    const onlyLogged = entityScopes[0].scopes.filter(
+      (scope) =>
+        loggedUser.scopes.includes(`${SCOPE_KEY}/${scope.key}`) &&
+        scope.onlyLoggedUser
+    );
+
+    if (!onlyLogged.length) return;
+
+    this.logger.log(`Checking user for idUserAuth ${loggedUser['userId']}`);
+    console.log(this['getUsersService']);
+    const userDB = await this['getUsersService'].search(
+      { idUserAuth: loggedUser['userId'], select: 'name,username' },
+      false,
+      false
+    );
+
+    this.logger.log(
+      `Auth User ${userDB.items[0]._id} == Entity User ${item['userId']}`
+    );
+
+    if (userDB.items[0]._id.toString() !== item['userId'])
+      throw new ForbiddenActionException(
+        `The user cannot operate with '${this.entity}' from other users`
+      );
   }
 
   protected getDynamicValues(
@@ -217,5 +294,12 @@ export class AbstractDBService<
       key
     );
     return fieldTranslation.fieldLabel;
+  }
+
+  protected getLoggedUser(): JWTPayload {
+    const payload = AuthenticatorExtractorHelper.extractBearerTokenAuth(
+      this.request.headers['authorization'].replace('Bearer ', '')
+    );
+    return payload;
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, Scope } from '@nestjs/common';
 import { AbstractDBService } from './abstract-db.service';
 import { MongoDBException } from '@devseeder/microservices-exceptions';
 import { ClientSession, ObjectId } from 'mongoose';
@@ -13,8 +13,9 @@ import { EntitySchema } from 'src/microservice/domain/schemas/configuration-sche
 import { GetTranslationService } from '../translation/get-translation.service';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 import { ErrorService } from '../configuration/error-schema/error.service';
+import { REQUEST, Reflector } from '@nestjs/core';
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class GenericCreateService<
   Collection,
   ResponseModel,
@@ -26,9 +27,20 @@ export class GenericCreateService<
     protected readonly fieldSchemaData: FieldSchema[],
     protected readonly entitySchemaData: EntitySchema[],
     protected readonly translationService?: GetTranslationService,
-    protected readonly errorService?: ErrorService
+    protected readonly errorService?: ErrorService,
+    @Inject(REQUEST) protected readonly request?: Request,
+    protected readonly reflector?: Reflector
   ) {
-    super(repository, entity, fieldSchemaData, entitySchemaData);
+    super(
+      repository,
+      entity,
+      fieldSchemaData,
+      entitySchemaData,
+      translationService,
+      errorService,
+      request,
+      reflector
+    );
   }
 
   async create(

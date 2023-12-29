@@ -66,8 +66,10 @@ export interface SubRelation {
 
 export interface AuthScopes {
   accessKey: string;
-  scopes: string[];
-  onlyLoggedUser?: boolean;
+  scopes: Array<{
+    key: string;
+    onlyLoggedUser?: boolean;
+  }>;
 }
 
 const schema = SchemaFactory.createForClass(EntitySchema);

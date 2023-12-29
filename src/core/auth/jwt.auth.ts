@@ -5,8 +5,7 @@ import {
   HttpException,
   HttpStatus,
   Inject,
-  Injectable,
-  InternalServerErrorException
+  Injectable
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
@@ -15,7 +14,6 @@ import {
   EnumScopes,
   SCOPE_KEY
 } from '../../microservice/domain/enum/enum-scopes.enum';
-import { ForbiddenActionException } from '../exceptions/forbbiden-action.exception';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
 import { MetaScopeInfo } from './meta-scope/meta-scope.decorator';
@@ -83,7 +81,7 @@ export class MyJwtAuthGuard extends CustomJwtAuthGuard {
     );
     if (!requestScopes.length) return [];
     const schemaScopes = requestScopes[0].scopes.map(
-      (scope) => `${SCOPE_KEY}/${scope}`
+      (scope) => `${SCOPE_KEY}/${scope.key}`
     );
     return [
       ...schemaScopes,

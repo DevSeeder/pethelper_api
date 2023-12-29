@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, Scope } from '@nestjs/common';
 import { ClientAuthService } from '../../../../adapter/repository/client/client-auth.service';
 import { EnumScopes } from '../../../../domain/enum/enum-scopes.enum';
 import { UserAuth } from '../../../../domain/model/auth/user-auth.model';
@@ -15,8 +15,9 @@ import {
   PROJECT_KEY
 } from 'src/microservice/application/app.constants';
 import { ObjectId } from 'mongoose';
+import { REQUEST, Reflector } from '@nestjs/core';
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class CreateUserService extends GenericCreateService<
   User,
   User,
@@ -28,6 +29,8 @@ export class CreateUserService extends GenericCreateService<
     protected readonly entitySchemaData: EntitySchema[],
     protected readonly translationService: GetTranslationService,
     protected readonly errorService: ErrorService,
+    @Inject(REQUEST) protected readonly request?: Request,
+    protected readonly reflector?: Reflector,
     protected readonly clientAuthService?: ClientAuthService
   ) {
     super(
@@ -36,7 +39,9 @@ export class CreateUserService extends GenericCreateService<
       fieldSchemaData,
       entitySchemaData,
       translationService,
-      errorService
+      errorService,
+      request,
+      reflector
     );
   }
 

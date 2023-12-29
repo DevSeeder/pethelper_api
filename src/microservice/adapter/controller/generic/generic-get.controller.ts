@@ -4,7 +4,8 @@ import {
   Inject,
   Param,
   Query,
-  UseGuards
+  UseGuards,
+  UseInterceptors
 } from '@nestjs/common';
 import { GenericGetService } from 'src/microservice/application/service/abstract/generic-get.service';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
@@ -24,6 +25,7 @@ import { MyJwtAuthGuard } from 'src/core/auth/jwt.auth';
 import { Scopes } from '@devseeder/nestjs-microservices-core';
 import { buildControllerScopes } from './generic.controller';
 import { MetaScope } from 'src/core/auth/meta-scope/meta-scope.decorator';
+import { MetaDataInterceptor } from 'src/core/interceptor/execution-context.interceptor';
 
 const allKey = 'GET';
 
@@ -33,6 +35,7 @@ export function GenericGetController<
   SearchParams,
   BodyDto
 >({ entity }: { entity: string }) {
+  @UseInterceptors(MetaDataInterceptor)
   @Controller(entity.toLowerCase())
   class GenericGetControllerHost extends AbstractGetController<
     Collection,

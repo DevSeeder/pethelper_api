@@ -5,7 +5,8 @@ import {
   Param,
   Patch,
   Query,
-  UseGuards
+  UseGuards,
+  UseInterceptors
 } from '@nestjs/common';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
@@ -16,9 +17,8 @@ import { AbstractUpdateController } from '../abstract/abstract-update.controller
 import { GenericUpdateService } from 'src/microservice/application/service/abstract/generic-update.service';
 import { ActivationQueryParams } from 'src/microservice/application/dto/query/activation-query-params.dto';
 import { MyJwtAuthGuard } from 'src/core/auth/jwt.auth';
-import { Scopes } from '@devseeder/nestjs-microservices-core';
-import { buildControllerScopes } from './generic.controller';
 import { MetaScope } from 'src/core/auth/meta-scope/meta-scope.decorator';
+import { MetaDataInterceptor } from 'src/core/interceptor/execution-context.interceptor';
 
 const allKey = 'UPDATE';
 
@@ -28,6 +28,7 @@ export function GenericUpdateController<
   SearchParams,
   BodyDto
 >({ entity }: { entity: string }) {
+  @UseInterceptors(MetaDataInterceptor)
   @Controller(entity.toLowerCase())
   class GenericUpdateControllerHost extends AbstractUpdateController<
     Collection,

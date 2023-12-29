@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, Scope } from '@nestjs/common';
 import { Search } from 'src/microservice/application/dto/search/search.dto';
 import {
   FieldSchemaPage,
@@ -20,8 +20,9 @@ import { EntitySchema } from 'src/microservice/domain/schemas/configuration-sche
 import { GetTranslationService } from '../translation/get-translation.service';
 import { ErrorService } from '../configuration/error-schema/error.service';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
+import { REQUEST, Reflector } from '@nestjs/core';
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class GenericGetService<
   Collection,
   ResponseModel,
@@ -38,9 +39,20 @@ export class GenericGetService<
     protected readonly fieldSchemaData: FieldSchema[] = [],
     protected readonly entitySchemaData: EntitySchema[] = [],
     protected readonly translationService?: GetTranslationService,
-    protected readonly errorService?: ErrorService
+    protected readonly errorService?: ErrorService,
+    @Inject(REQUEST) protected readonly request?: Request,
+    protected readonly reflector?: Reflector
   ) {
-    super(repository, entity, fieldSchemaData, entitySchemaData);
+    super(
+      repository,
+      entity,
+      fieldSchemaData,
+      entitySchemaData,
+      translationService,
+      errorService,
+      request,
+      reflector
+    );
   }
 
   async search(
@@ -79,6 +91,8 @@ export class GenericGetService<
       pageSize,
       page
     );
+
+    this.logger.log(`Items found: ${responseItems.length}.`);
 
     const arrMap = await responseItems.map(
       async (item) => await this.convertRelation(item)
@@ -125,6 +139,9 @@ export class GenericGetService<
         value: id
       });
     }
+
+    await this.validateOnlyLoggedUser(item);
+
     return this.convertRelation(item);
   }
 

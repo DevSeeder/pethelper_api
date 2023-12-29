@@ -4,7 +4,8 @@ import {
   Inject,
   Param,
   Post,
-  UseGuards
+  UseGuards,
+  UseInterceptors
 } from '@nestjs/common';
 import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { EntitySchema } from 'src/microservice/domain/schemas/configuration-schemas/entity-schemas.schema';
@@ -24,6 +25,7 @@ import {
 } from 'src/microservice/application/dto/response/clone.response';
 import { MyJwtAuthGuard } from 'src/core/auth/jwt.auth';
 import { MetaScope } from 'src/core/auth/meta-scope/meta-scope.decorator';
+import { MetaDataInterceptor } from 'src/core/interceptor/execution-context.interceptor';
 
 const allKey = 'CREATE';
 
@@ -33,6 +35,7 @@ export function GenericCreateController<
   SearchParams,
   BodyDto
 >({ entity }: { entity: string }) {
+  @UseInterceptors(MetaDataInterceptor)
   @Controller(entity.toLowerCase())
   class GenericCreateControllerHost extends AbstractCreateController<
     Collection,

@@ -1,4 +1,4 @@
-import { Inject, Injectable, Provider } from '@nestjs/common';
+import { Inject, Injectable, Provider, Scope } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
 import { Collection, Model } from 'mongoose';
 import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';
@@ -12,24 +12,25 @@ import { DependecyTokens, GLOBAL_ENTITY } from '../app.constants';
 import { GenericUpdateService } from '../service/abstract/generic-update.service';
 import { AbstractBodyDto } from '../dto/body/abtract-body.dto';
 import { GenericCreateService } from '../service/abstract/generic-create.service';
-import { ModuleRef } from '@nestjs/core';
+import { ModuleRef, REQUEST, Reflector } from '@nestjs/core';
 import { CustomProvider } from '../dto/provider/custom-provider.dto';
 import { ModelEntityTokens } from './entity/model-entity-token.injector';
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class DependencyInjectorService {
   private entitySchema: EntitySchema;
   private parentFields: FieldSchema[];
   private serviceCache = {};
   constructor(
-    private originalEntity: string,
     private moduleRef: ModuleRef,
     @Inject(DependecyTokens.ERROR_SCHEMA_DB)
     private entitySchemaData: EntitySchema[],
     @Inject(DependecyTokens.FIELD_SCHEMA_DB)
     private fieldSchemaData: FieldSchema[],
-    private translationService?: GetTranslationService,
-    private errorService?: ErrorService
+    private translationService: GetTranslationService,
+    private errorService: ErrorService,
+    @Inject(REQUEST) protected readonly request: Request,
+    private readonly reflector: Reflector
   ) {}
 
   setSchema(entity: string) {
@@ -219,18 +220,14 @@ export class DependencyInjectorService {
       this.fieldSchemaData,
       this.entitySchemaData,
       this.translationService,
-      this.errorService
+      this.errorService,
+      this.request,
+      this.reflector
     ];
 
     if (customProvider && customProvider[providerKey]) {
       classService = customProvider[providerKey].className;
-      args = [
-        repository,
-        this.fieldSchemaData,
-        this.entitySchemaData,
-        this.translationService,
-        this.errorService
-      ];
+      args = args.splice(1, 1);
       const injectArgs = customProvider[providerKey].injectArgs;
       if (injectArgs && injectArgs.length) {
         for (const arg of injectArgs) {

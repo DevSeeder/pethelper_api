@@ -11,7 +11,7 @@ import { EntitySchema } from 'src/microservice/domain/schemas/configuration-sche
 import { GetTranslationService } from '../service/translation/get-translation.service';
 import { ErrorService } from '../service/configuration/error-schema/error.service';
 import { DependecyTokens } from '../app.constants';
-import { ModuleRef } from '@nestjs/core';
+import { ModuleRef, REQUEST, Reflector } from '@nestjs/core';
 import { EntityModelTokenBuilder } from '../injector/entity/model-entity-token.injector';
 import { CustomProvider } from '../dto/provider/custom-provider.dto';
 import { GenericGetController } from 'src/microservice/adapter/controller/generic/generic-get.controller';
@@ -72,15 +72,18 @@ export class GenericModule {
         fieldSchemaData: FieldSchema[],
         entitySchemaData: EntitySchema[],
         translationService: GetTranslationService,
-        errorService: ErrorService
+        errorService: ErrorService,
+        request: Request,
+        reflector: Reflector
       ) => {
         const injectorService = new DependencyInjectorService(
-          entity,
           moduleRef,
           entitySchemaData,
           fieldSchemaData,
           translationService,
-          errorService
+          errorService,
+          request,
+          reflector
         );
         const injectFunction = `inject${providerKey.capitalizeFirstLetter()}Service`;
         const serviceProvider = await injectorService[injectFunction](
@@ -96,7 +99,9 @@ export class GenericModule {
         DependecyTokens.FIELD_SCHEMA_DB,
         DependecyTokens.ENTITY_SCHEMA_DB,
         GetTranslationService,
-        ErrorService
+        ErrorService,
+        REQUEST,
+        Reflector
       ]
     };
   }

@@ -1,4 +1,4 @@
-import { Inject, Injectable, forwardRef } from '@nestjs/common';
+import { Inject, Injectable, Scope, forwardRef } from '@nestjs/common';
 import { GenericGetService } from '../../abstract/generic-get.service';
 import { Expense } from '../../../../domain/schemas/entity/expenses.schema';
 import { ExpenseResponse } from 'src/microservice/application/dto/response/expense.response';
@@ -26,8 +26,9 @@ import { ExpensesRepository } from 'src/microservice/adapter/repository/entity/e
 import { Pet } from 'src/microservice/domain/schemas/entity/pets.schema';
 import { PetResponse } from 'src/microservice/application/dto/response/pet.response';
 import { SearchPetDto } from 'src/microservice/application/dto/search/search-pet.dto';
+import { REQUEST, Reflector } from '@nestjs/core';
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class GetExpenseService extends GenericGetService<
   Expense,
   ExpenseResponse,
@@ -55,7 +56,9 @@ export class GetExpenseService extends GenericGetService<
       ExpenseCategory,
       ExpenseCategoryDocument,
       SearchDomainDto
-    >
+    >,
+    @Inject(REQUEST) protected readonly request?: Request,
+    protected readonly reflector?: Reflector
   ) {
     super(
       repository,
@@ -63,7 +66,9 @@ export class GetExpenseService extends GenericGetService<
       fieldSchemaData,
       entitySchemaData,
       translationService,
-      errorService
+      errorService,
+      request,
+      reflector
     );
   }
 
