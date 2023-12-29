@@ -11,9 +11,8 @@ import { GetTranslationService } from '../translation/get-translation.service';
 import { ErrorService } from '../configuration/error-schema/error.service';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';
-import { REQUEST, Reflector } from '@nestjs/core';
+import { REQUEST } from '@nestjs/core';
 import { Inject } from '@nestjs/common';
-import { ForbiddenActionException } from 'src/core/exceptions/forbbiden-action.exception';
 
 export class AbstractSearchService<
   Collection,
@@ -28,8 +27,7 @@ export class AbstractSearchService<
     protected readonly entitySchemaData: EntitySchema[] = [],
     protected readonly translationService?: GetTranslationService,
     protected readonly errorService?: ErrorService,
-    @Inject(REQUEST) protected readonly request?: Request,
-    protected readonly reflector?: Reflector
+    @Inject(REQUEST) protected readonly request?: Request
   ) {
     super(
       repository,
@@ -38,8 +36,7 @@ export class AbstractSearchService<
       entitySchemaData,
       translationService,
       errorService,
-      request,
-      reflector
+      request
     );
   }
 

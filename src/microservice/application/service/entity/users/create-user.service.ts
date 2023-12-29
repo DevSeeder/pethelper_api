@@ -15,7 +15,7 @@ import {
   PROJECT_KEY
 } from 'src/microservice/application/app.constants';
 import { ObjectId } from 'mongoose';
-import { REQUEST, Reflector } from '@nestjs/core';
+import { REQUEST } from '@nestjs/core';
 
 @Injectable({ scope: Scope.REQUEST })
 export class CreateUserService extends GenericCreateService<
@@ -30,7 +30,6 @@ export class CreateUserService extends GenericCreateService<
     protected readonly translationService: GetTranslationService,
     protected readonly errorService: ErrorService,
     @Inject(REQUEST) protected readonly request?: Request,
-    protected readonly reflector?: Reflector,
     protected readonly clientAuthService?: ClientAuthService
   ) {
     super(
@@ -40,8 +39,7 @@ export class CreateUserService extends GenericCreateService<
       entitySchemaData,
       translationService,
       errorService,
-      request,
-      reflector
+      request
     );
   }
 

@@ -15,7 +15,7 @@ import { ExpensesRepository } from '../../adapter/repository/entity/expenses.rep
 import { CreateUserService } from '../service/entity/users/create-user.service';
 import { ClientAuthService } from 'src/microservice/adapter/repository/client/client-auth.service';
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import { MetaDataInterceptor } from 'src/core/interceptor/execution-context.interceptor';
+import { MetaDataInterceptor } from 'src/core/interceptor/meta-data.interceptor';
 
 @Module({
   imports: [

@@ -12,14 +12,12 @@ import { ErrorService } from '../configuration/error-schema/error.service';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';
 import { Inject } from '@nestjs/common';
-import { REQUEST, Reflector } from '@nestjs/core';
+import { REQUEST } from '@nestjs/core';
 import { AuthenticatorExtractorHelper } from 'src/microservice/adapter/helper/authenticator-extractor.helper';
 import {
   EnumScopes,
   SCOPE_KEY
 } from 'src/microservice/domain/enum/enum-scopes.enum';
-import { MetaScopeInfo } from 'src/core/auth/meta-scope/meta-scope.decorator';
-import { ForbiddenActionException } from 'src/core/exceptions/forbbiden-action.exception';
 import { JWTPayload } from '@devseeder/nestjs-microservices-core';
 
 export class AbstractDBService<
@@ -34,8 +32,7 @@ export class AbstractDBService<
     protected readonly entitySchemaData: EntitySchema[] = [],
     protected readonly translationService?: GetTranslationService,
     protected readonly errorService?: ErrorService,
-    @Inject(REQUEST) protected readonly request?: Request,
-    protected readonly reflector?: Reflector
+    @Inject(REQUEST) protected readonly request?: Request
   ) {
     super(entity, fieldSchemaData, entitySchemaData);
   }

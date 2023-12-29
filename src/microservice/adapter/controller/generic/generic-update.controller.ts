@@ -18,7 +18,7 @@ import { GenericUpdateService } from 'src/microservice/application/service/abstr
 import { ActivationQueryParams } from 'src/microservice/application/dto/query/activation-query-params.dto';
 import { MyJwtAuthGuard } from 'src/core/auth/jwt.auth';
 import { MetaScope } from 'src/core/auth/meta-scope/meta-scope.decorator';
-import { MetaDataInterceptor } from 'src/core/interceptor/execution-context.interceptor';
+import { MetaDataInterceptor } from 'src/core/interceptor/meta-data.interceptor';
 
 const allKey = 'UPDATE';
 

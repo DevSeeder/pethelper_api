@@ -23,7 +23,7 @@ import {
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 import { MyJwtAuthGuard } from 'src/core/auth/jwt.auth';
 import { MetaScope } from 'src/core/auth/meta-scope/meta-scope.decorator';
-import { MetaDataInterceptor } from 'src/core/interceptor/execution-context.interceptor';
+import { MetaDataInterceptor } from 'src/core/interceptor/meta-data.interceptor';
 
 const allKey = 'GET';
 

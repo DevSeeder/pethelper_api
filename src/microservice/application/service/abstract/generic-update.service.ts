@@ -12,7 +12,6 @@ import { InactivationReason } from 'src/microservice/domain/enum/inactivation-re
 import { ClientSession } from 'mongoose';
 import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';
 import { REQUEST, Reflector } from '@nestjs/core';
-import { ForbiddenActionException } from 'src/core/exceptions/forbbiden-action.exception';
 
 @Injectable({ scope: Scope.REQUEST })
 export class GenericUpdateService<
@@ -43,8 +42,7 @@ export class GenericUpdateService<
       entitySchemaData,
       translationService,
       errorService,
-      request,
-      reflector
+      request
     );
   }
 

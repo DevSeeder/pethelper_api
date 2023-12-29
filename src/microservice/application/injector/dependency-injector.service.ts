@@ -12,7 +12,7 @@ import { DependecyTokens, GLOBAL_ENTITY } from '../app.constants';
 import { GenericUpdateService } from '../service/abstract/generic-update.service';
 import { AbstractBodyDto } from '../dto/body/abtract-body.dto';
 import { GenericCreateService } from '../service/abstract/generic-create.service';
-import { ModuleRef, REQUEST, Reflector } from '@nestjs/core';
+import { ModuleRef, REQUEST } from '@nestjs/core';
 import { CustomProvider } from '../dto/provider/custom-provider.dto';
 import { ModelEntityTokens } from './entity/model-entity-token.injector';
 
@@ -29,8 +29,7 @@ export class DependencyInjectorService {
     private fieldSchemaData: FieldSchema[],
     private translationService: GetTranslationService,
     private errorService: ErrorService,
-    @Inject(REQUEST) protected readonly request: Request,
-    private readonly reflector: Reflector
+    @Inject(REQUEST) protected readonly request: Request
   ) {}
 
   setSchema(entity: string) {
@@ -221,8 +220,7 @@ export class DependencyInjectorService {
       this.entitySchemaData,
       this.translationService,
       this.errorService,
-      this.request,
-      this.reflector
+      this.request
     ];
 
     if (customProvider && customProvider[providerKey]) {

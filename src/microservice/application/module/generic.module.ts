@@ -73,8 +73,7 @@ export class GenericModule {
         entitySchemaData: EntitySchema[],
         translationService: GetTranslationService,
         errorService: ErrorService,
-        request: Request,
-        reflector: Reflector
+        request: Request
       ) => {
         const injectorService = new DependencyInjectorService(
           moduleRef,
@@ -82,8 +81,7 @@ export class GenericModule {
           fieldSchemaData,
           translationService,
           errorService,
-          request,
-          reflector
+          request
         );
         const injectFunction = `inject${providerKey.capitalizeFirstLetter()}Service`;
         const serviceProvider = await injectorService[injectFunction](
@@ -100,8 +98,7 @@ export class GenericModule {
         DependecyTokens.ENTITY_SCHEMA_DB,
         GetTranslationService,
         ErrorService,
-        REQUEST,
-        Reflector
+        REQUEST
       ]
     };
   }
