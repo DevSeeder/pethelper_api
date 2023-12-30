@@ -42,9 +42,9 @@ export class GenericModule {
         MongooseModule.forFeature(
           EntityModelTokenBuilder.buildMongooseStaticModelForFeature()
         ),
-        SchemasModule.forRootAync(configuration, PROJECT_KEY),
-        TranslationsModule.forRoot(PROJECT_KEY),
-        ErrorSchemasModule.forRoot(PROJECT_KEY),
+        SchemasModule.forRootAsync(configuration, PROJECT_KEY),
+        TranslationsModule.forRoot(configuration, PROJECT_KEY),
+        ErrorSchemasModule.forRoot(configuration, PROJECT_KEY),
         AuthJwtModule
       ],
       providers: [

@@ -229,7 +229,14 @@ export class DependencyInjectorService {
 
     if (customProvider && customProvider[providerKey]) {
       classService = customProvider[providerKey].className;
-      args = args.splice(1, 1);
+      args = [
+        repository,
+        this.fieldSchemaData,
+        this.entitySchemaData,
+        this.translationService,
+        this.errorService,
+        this.request
+      ];
       const injectArgs = customProvider[providerKey].injectArgs;
       if (injectArgs && injectArgs.length) {
         for (const arg of injectArgs) {

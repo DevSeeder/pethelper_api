@@ -30,7 +30,6 @@ import { MetaDataInterceptor } from 'src/core/interceptor/meta-data.interceptor'
       isGlobal: true,
       load: [configuration]
     }),
-    // HttpModule,
     GenericModule.forFeature(Pet.name, DependencyEntityTokens.PET),
     GenericModule.forFeature(Expense.name, DependencyEntityTokens.EXPENSE, {
       controller: {

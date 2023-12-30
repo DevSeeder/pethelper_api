@@ -47,6 +47,7 @@ export class GetExpenseService extends GenericGetService<
     protected readonly entitySchemaData: EntitySchema[],
     protected readonly translationService?: GetTranslationService,
     protected readonly errorService?: ErrorService,
+    @Inject(REQUEST) protected readonly request?: Request,
     @Inject(`GENERIC_GET_SERVICE_${DependencyEntityTokens.PET}`)
     protected readonly getPetsService?: GenericGetService<
       Pet,
@@ -60,8 +61,7 @@ export class GetExpenseService extends GenericGetService<
       ExpenseCategory,
       ExpenseCategoryDocument,
       SearchDomainDto
-    >,
-    @Inject(REQUEST) protected readonly request?: Request
+    >
   ) {
     super(
       repository,
