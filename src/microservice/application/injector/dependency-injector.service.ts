@@ -4,11 +4,12 @@ import { Collection, Model } from 'mongoose';
 import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';
 import {
   ErrorService,
-  GetTranslationService
+  GetTranslationService,
+  SchemaDependecyTokens
 } from '@devseeder/nestjs-microservices-schemas';
 import { GenericGetService } from '../service/abstract/generic-get.service';
 import { Search } from '@devseeder/nestjs-microservices-commons/dist/dto/search.dto';
-import { DependecyTokens, GLOBAL_ENTITY } from '../app.constants';
+import { GLOBAL_ENTITY } from '../app.constants';
 import { GenericUpdateService } from '../service/abstract/generic-update.service';
 import { AbstractBodyDto } from '../dto/body/abtract-body.dto';
 import { GenericCreateService } from '../service/abstract/generic-create.service';
@@ -27,9 +28,9 @@ export class DependencyInjectorService {
   private serviceCache = {};
   constructor(
     private moduleRef: ModuleRef,
-    @Inject(DependecyTokens.ERROR_SCHEMA_DB)
+    @Inject(SchemaDependecyTokens.ERROR_SCHEMA_DB)
     private entitySchemaData: EntitySchema[],
-    @Inject(DependecyTokens.FIELD_SCHEMA_DB)
+    @Inject(SchemaDependecyTokens.FIELD_SCHEMA_DB)
     private fieldSchemaData: FieldSchema[],
     private translationService: GetTranslationService,
     private errorService: ErrorService,

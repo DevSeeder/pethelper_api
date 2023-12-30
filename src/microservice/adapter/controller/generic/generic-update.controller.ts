@@ -10,9 +10,9 @@ import {
 } from '@nestjs/common';
 import {
   ErrorService,
-  GetTranslationService
+  GetTranslationService,
+  SchemaDependecyTokens
 } from '@devseeder/nestjs-microservices-schemas';
-import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { AbstractUpdateController } from '../abstract/abstract-update.controller';
 import { GenericUpdateService } from 'src/microservice/application/service/abstract/generic-update.service';
 import { ActivationQueryParams } from 'src/microservice/application/dto/query/activation-query-params.dto';
@@ -48,9 +48,9 @@ export function GenericUpdateController<
         BodyDto,
         SearchParams
       >,
-      @Inject(DependecyTokens.FIELD_SCHEMA_DB)
+      @Inject(SchemaDependecyTokens.FIELD_SCHEMA_DB)
       readonly fieldSchemaData?: FieldSchema[],
-      @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
+      @Inject(SchemaDependecyTokens.ENTITY_SCHEMA_DB)
       readonly entitySchemaData?: EntitySchema[],
       readonly errorService?: ErrorService,
       readonly translationService?: GetTranslationService

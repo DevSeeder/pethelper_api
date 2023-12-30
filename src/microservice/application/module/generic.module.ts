@@ -6,9 +6,10 @@ import {
   ErrorSchemasModule,
   ErrorService,
   GetTranslationService,
+  SchemaDependecyTokens,
   TranslationsModule
 } from '@devseeder/nestjs-microservices-schemas';
-import { DependecyTokens, PROJECT_KEY } from '../app.constants';
+import { PROJECT_KEY } from '../app.constants';
 import { ModuleRef, REQUEST } from '@nestjs/core';
 import { EntityModelTokenBuilder } from '../injector/entity/model-entity-token.injector';
 import { CustomProvider } from '../dto/provider/custom-provider.dto';
@@ -97,8 +98,8 @@ export class GenericModule {
       inject: [
         ModuleRef,
         `GENERIC_REPOSITORY_${entity}`,
-        DependecyTokens.FIELD_SCHEMA_DB,
-        DependecyTokens.ENTITY_SCHEMA_DB,
+        SchemaDependecyTokens.FIELD_SCHEMA_DB,
+        SchemaDependecyTokens.ENTITY_SCHEMA_DB,
         GetTranslationService,
         ErrorService,
         REQUEST

@@ -7,13 +7,11 @@ import {
   GroupExpensesByPetAndCategoryResponse,
   GroupedCostByCategory
 } from 'src/microservice/application/dto/response/groupby/group-expenses-by-pet-and-category.response';
-import {
-  DependecyTokens,
-  DependencyEntityTokens
-} from 'src/microservice/application/app.constants';
+import { DependencyEntityTokens } from 'src/microservice/application/app.constants';
 import {
   ErrorService,
-  GetTranslationService
+  GetTranslationService,
+  SchemaDependecyTokens
 } from '@devseeder/nestjs-microservices-schemas';
 import {
   ExpenseCategory,
@@ -41,9 +39,9 @@ export class GetExpenseService extends GenericGetService<
   constructor(
     @Inject(`GENERIC_REPOSITORY_${DependencyEntityTokens.EXPENSE}`)
     protected readonly repository: ExpensesRepository,
-    @Inject(DependecyTokens.FIELD_SCHEMA_DB)
+    @Inject(SchemaDependecyTokens.FIELD_SCHEMA_DB)
     protected readonly fieldSchemaData: FieldSchema[],
-    @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
+    @Inject(SchemaDependecyTokens.ENTITY_SCHEMA_DB)
     protected readonly entitySchemaData: EntitySchema[],
     protected readonly translationService?: GetTranslationService,
     protected readonly errorService?: ErrorService,

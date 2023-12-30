@@ -9,9 +9,9 @@ import {
 } from '@nestjs/common';
 import {
   ErrorService,
-  GetTranslationService
+  GetTranslationService,
+  SchemaDependecyTokens
 } from '@devseeder/nestjs-microservices-schemas';
-import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { AbstractCreateController } from '../abstract/abstract-create.controller';
 import { GenericCreateService } from 'src/microservice/application/service/abstract/generic-create.service';
 import { ObjectId } from 'mongoose';
@@ -54,9 +54,9 @@ export function GenericCreateController<
         GetResponse,
         BodyDto
       >,
-      @Inject(DependecyTokens.FIELD_SCHEMA_DB)
+      @Inject(SchemaDependecyTokens.FIELD_SCHEMA_DB)
       readonly fieldSchemaData?: FieldSchema[],
-      @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
+      @Inject(SchemaDependecyTokens.ENTITY_SCHEMA_DB)
       readonly entitySchemaData?: EntitySchema[],
       readonly errorService?: ErrorService,
       readonly translationService?: GetTranslationService

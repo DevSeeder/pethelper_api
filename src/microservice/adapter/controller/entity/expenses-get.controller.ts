@@ -3,13 +3,11 @@ import { SearchExpenseDto } from 'src/microservice/application/dto/search/search
 import { ExpenseResponse } from 'src/microservice/application/dto/response/expense.response';
 import { Expense } from 'src/microservice/domain/schemas/entity/expenses.schema';
 import { ExpenseBodyDto } from 'src/microservice/application/dto/body/expense-body.dto';
-import {
-  DependecyTokens,
-  DependencyEntityTokens
-} from 'src/microservice/application/app.constants';
+import { DependencyEntityTokens } from 'src/microservice/application/app.constants';
 import {
   ErrorService,
-  GetTranslationService
+  GetTranslationService,
+  SchemaDependecyTokens
 } from '@devseeder/nestjs-microservices-schemas';
 import { GroupExpensesByPetAndCategoryResponse } from 'src/microservice/application/dto/response/groupby/group-expenses-by-pet-and-category.response';
 import { GetExpenseService } from 'src/microservice/application/service/entity/expenses/get-expense.service';
@@ -29,9 +27,9 @@ export class ExpensesGetController extends AbstractGetController<
   constructor(
     @Inject(`GENERIC_GET_SERVICE_${DependencyEntityTokens.EXPENSE}`)
     readonly getService: GetExpenseService,
-    @Inject(DependecyTokens.FIELD_SCHEMA_DB)
+    @Inject(SchemaDependecyTokens.FIELD_SCHEMA_DB)
     readonly fieldSchemaData?: FieldSchema[],
-    @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
+    @Inject(SchemaDependecyTokens.ENTITY_SCHEMA_DB)
     readonly entitySchemaData?: EntitySchema[],
     readonly errorService?: ErrorService,
     readonly translationService?: GetTranslationService

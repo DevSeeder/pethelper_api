@@ -12,13 +12,13 @@ import {
   EnumScopes,
   SCOPE_KEY
 } from '../../microservice/domain/enum/enum-scopes.enum';
-import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { MetaScopeInfo } from './meta-scope/meta-scope.decorator';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 import { CustomErrorException } from '@devseeder/microservices-exceptions';
 import {
   EntitySchema,
-  ErrorService
+  ErrorService,
+  SchemaDependecyTokens
 } from '@devseeder/nestjs-microservices-schemas';
 
 @Injectable()
@@ -27,7 +27,7 @@ export class MyJwtAuthGuard extends CustomJwtAuthGuard {
     protected readonly reflector: Reflector,
     protected readonly jwtService: JwtService,
     protected readonly configService: ConfigService,
-    @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
+    @Inject(SchemaDependecyTokens.ENTITY_SCHEMA_DB)
     protected readonly entitySchemaData: EntitySchema[],
     protected readonly errorService: ErrorService
   ) {

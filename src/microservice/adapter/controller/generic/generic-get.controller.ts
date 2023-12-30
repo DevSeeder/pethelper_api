@@ -10,9 +10,9 @@ import {
 import { GenericGetService } from 'src/microservice/application/service/abstract/generic-get.service';
 import {
   ErrorService,
-  GetTranslationService
+  GetTranslationService,
+  SchemaDependecyTokens
 } from '@devseeder/nestjs-microservices-schemas';
-import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { AbstractGetController } from '../abstract/abstract-get.controller';
 import { GroupByResponse } from 'src/microservice/application/dto/response/groupby/group-by.response';
 import { FormSchemaResponse } from 'src/microservice/domain/interface/field-schema.interface';
@@ -52,9 +52,9 @@ export function GenericGetController<
         GetResponse,
         SearchParams
       >,
-      @Inject(DependecyTokens.FIELD_SCHEMA_DB)
+      @Inject(SchemaDependecyTokens.FIELD_SCHEMA_DB)
       readonly fieldSchemaData?: FieldSchema[],
-      @Inject(DependecyTokens.ENTITY_SCHEMA_DB)
+      @Inject(SchemaDependecyTokens.ENTITY_SCHEMA_DB)
       readonly entitySchemaData?: EntitySchema[],
       readonly errorService?: ErrorService,
       readonly translationService?: GetTranslationService
