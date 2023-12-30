@@ -1,7 +1,6 @@
 import { DynamicValuesEnum } from 'src/microservice/domain/enum/dynamic-values.enum';
 import { DateHelper } from '../../helper/types/date.helper';
-import { GetTranslationService } from '../translation/get-translation.service';
-
+import { GetTranslationService } from '@devseeder/nestjs-microservices-schemas';
 export class DynamicValueService {
   constructor(protected readonly translationService: GetTranslationService) {}
 

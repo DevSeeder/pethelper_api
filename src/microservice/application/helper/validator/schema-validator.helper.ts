@@ -5,7 +5,7 @@ import { DynamicValueService } from '../../service/dynamic/get-dynamic-value.ser
 import { ComparatorHelper } from './comparator.helper';
 import { SearchEncapsulatorHelper } from '../search/search-encapsulator.helper';
 import { ErrorService } from '../../service/configuration/error-schema/error.service';
-import { GetTranslationService } from '../../service/translation/get-translation.service';
+import { GetTranslationService } from '@devseeder/nestjs-microservices-schemas';
 import { ErrorSchemaException } from 'src/core/exceptions/error-schema.exception';
 import {
   InputSchema,

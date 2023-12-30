@@ -3,7 +3,7 @@ import { Search } from '../../dto/search/search.dto';
 import { FieldSchemaBuilder } from '../../helper/validator/field-schema.builder';
 import { AbstractDBService } from './abstract-db.service';
 import { SearchEncapsulatorHelper } from '../../helper/search/search-encapsulator.helper';
-import { GetTranslationService } from '../translation/get-translation.service';
+import { GetTranslationService } from '@devseeder/nestjs-microservices-schemas';
 import { ErrorService } from '../configuration/error-schema/error.service';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';

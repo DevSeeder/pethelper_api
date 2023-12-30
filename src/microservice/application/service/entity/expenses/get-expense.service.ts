@@ -11,7 +11,7 @@ import {
   DependecyTokens,
   DependencyEntityTokens
 } from 'src/microservice/application/app.constants';
-import { GetTranslationService } from '../../translation/get-translation.service';
+import { GetTranslationService } from '@devseeder/nestjs-microservices-schemas';
 import { ErrorService } from '../../configuration/error-schema/error.service';
 import {
   ExpenseCategory,

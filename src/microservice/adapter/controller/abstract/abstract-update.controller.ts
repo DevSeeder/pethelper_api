@@ -4,7 +4,7 @@ import { GenericUpdateService } from 'src/microservice/application/service/abstr
 import { RequestSchema } from 'src/microservice/domain/interface/input-schema.interface';
 import { AbstractBodyDto } from 'src/microservice/application/dto/body/abtract-body.dto';
 import { ErrorService } from 'src/microservice/application/service/configuration/error-schema/error.service';
-import { GetTranslationService } from 'src/microservice/application/service/translation/get-translation.service';
+import { GetTranslationService } from '@devseeder/nestjs-microservices-schemas';
 import { AbstractController } from './abstract.controller';
 import {
   EntitySchema,

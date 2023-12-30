@@ -2,7 +2,7 @@ import { Inject, Injectable, Provider, Scope } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
 import { Collection, Model } from 'mongoose';
 import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';
-import { GetTranslationService } from '../service/translation/get-translation.service';
+import { GetTranslationService } from '@devseeder/nestjs-microservices-schemas';
 import { ErrorService } from '../service/configuration/error-schema/error.service';
 import { GenericGetService } from '../service/abstract/generic-get.service';
 import { Search } from '@devseeder/nestjs-microservices-commons/dist/dto/search.dto';

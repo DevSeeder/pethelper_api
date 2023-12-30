@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { AbstractService } from '@devseeder/nestjs-microservices-commons';
 import { ErrorSchema } from 'src/microservice/domain/schemas/configuration-schemas/error-schemas.schema';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
-import { GetTranslationService } from '../../translation/get-translation.service';
+import { GetTranslationService } from '@devseeder/nestjs-microservices-schemas';
 import {
   CustomErrorException,
   NotFoundException

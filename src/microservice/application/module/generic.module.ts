@@ -1,10 +1,12 @@
 import { Module, DynamicModule } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ErrorSchemasModule } from './configuration/error-schemas.module';
-import { TranslationsModule } from './translation/translation.module';
 import { DependencyInjectorService } from '../injector/dependency-injector.service';
 import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';
-import { GetTranslationService } from '../service/translation/get-translation.service';
+import {
+  GetTranslationService,
+  TranslationsModule
+} from '@devseeder/nestjs-microservices-schemas';
 import { ErrorService } from '../service/configuration/error-schema/error.service';
 import { DependecyTokens, PROJECT_KEY } from '../app.constants';
 import { ModuleRef, REQUEST } from '@nestjs/core';
@@ -41,8 +43,8 @@ export class GenericModule {
           EntityModelTokenBuilder.buildMongooseStaticModelForFeature()
         ),
         SchemasModule.forRootAync(configuration, PROJECT_KEY),
+        TranslationsModule.forRoot(PROJECT_KEY),
         ErrorSchemasModule,
-        TranslationsModule,
         AuthJwtModule
       ],
       providers: [

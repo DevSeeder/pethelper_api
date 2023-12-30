@@ -20,7 +20,7 @@ import {
 } from '../../app.constants';
 import { ErrorService } from '../../service/configuration/error-schema/error.service';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
-import { GetTranslationService } from '../../service/translation/get-translation.service';
+import { GetTranslationService } from '@devseeder/nestjs-microservices-schemas';
 import {
   EntitySchema,
   FieldSchema,

@@ -3,7 +3,7 @@ import { AbstractDocument } from 'src/microservice/domain/schemas/abstract.schem
 import { VALIDATE_ID_ENUMS } from '../../app.constants';
 import { DynamicValueService } from '../dynamic/get-dynamic-value.service';
 import { AbstractEntityLoader } from '../../loader/abstract-entity.loader';
-import { GetTranslationService } from '../translation/get-translation.service';
+import { GetTranslationService } from '@devseeder/nestjs-microservices-schemas';
 import { ErrorService } from '../configuration/error-schema/error.service';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';

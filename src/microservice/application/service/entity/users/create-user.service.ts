@@ -6,7 +6,7 @@ import { UserBodyDto } from '../../../../domain/model/dto/users/user.dto';
 import { User } from '../../../../domain/schemas/entity/users.schema';
 import { GenericCreateService } from '../../abstract/generic-create.service';
 import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';
-import { GetTranslationService } from '../../translation/get-translation.service';
+import { GetTranslationService } from '@devseeder/nestjs-microservices-schemas';
 import { ErrorService } from '../../configuration/error-schema/error.service';
 import {
   DependencyEntityTokens,

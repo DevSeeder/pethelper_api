@@ -5,17 +5,17 @@ import {
   ErrorSchema,
   ErrorSchemasSchema
 } from 'src/microservice/domain/schemas/configuration-schemas/error-schemas.schema';
-import { DependecyTokens } from '../../app.constants';
+import { DependecyTokens, PROJECT_KEY } from '../../app.constants';
 import { GetErrorSchemaService } from '../../service/configuration/error-schema/get-error-schemas.service';
 import { ErrorService } from '../../service/configuration/error-schema/error.service';
-import { TranslationsModule } from '../translation/translation.module';
+import { TranslationsModule } from '@devseeder/nestjs-microservices-schemas';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: ErrorSchema.name, schema: ErrorSchemasSchema }
     ]),
-    TranslationsModule
+    TranslationsModule.forRoot(PROJECT_KEY)
   ],
   controllers: [],
   providers: [

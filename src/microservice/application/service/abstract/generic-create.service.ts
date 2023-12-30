@@ -8,7 +8,7 @@ import {
   CloneManyResponse,
   CloneOneResponse
 } from '../../dto/response/clone.response';
-import { GetTranslationService } from '../translation/get-translation.service';
+import { GetTranslationService } from '@devseeder/nestjs-microservices-schemas';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 import { ErrorService } from '../configuration/error-schema/error.service';
 import { REQUEST } from '@nestjs/core';
