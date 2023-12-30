@@ -8,7 +8,6 @@ import {
   SchemaDependecyTokens
 } from '@devseeder/nestjs-microservices-schemas';
 import { GenericGetService } from '../service/abstract/generic-get.service';
-import { Search } from '@devseeder/nestjs-microservices-commons/dist/dto/search.dto';
 import { GLOBAL_ENTITY } from '../app.constants';
 import { GenericUpdateService } from '../service/abstract/generic-update.service';
 import { AbstractBodyDto } from '../dto/body/abtract-body.dto';
@@ -20,6 +19,7 @@ import {
   EntitySchema,
   FieldSchema
 } from '@devseeder/nestjs-microservices-schemas';
+import { Search } from '../dto/search/search.dto';
 
 @Injectable({ scope: Scope.REQUEST })
 export class DependencyInjectorService {
