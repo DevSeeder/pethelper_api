@@ -18,9 +18,11 @@ import {
   SKIP_ENUMS,
   SKIP_ENUMS_ALIAS
 } from '../../app.constants';
-import { ErrorService } from '../../service/configuration/error-schema/error.service';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
-import { GetTranslationService } from '@devseeder/nestjs-microservices-schemas';
+import {
+  ErrorService,
+  GetTranslationService
+} from '@devseeder/nestjs-microservices-schemas';
 import {
   EntitySchema,
   FieldSchema,

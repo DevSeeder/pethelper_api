@@ -4,9 +4,11 @@ import { RequestSchema } from 'src/microservice/domain/interface/input-schema.in
 import { AbstractBodyDto } from 'src/microservice/application/dto/body/abtract-body.dto';
 import { FieldSchemaBuilder } from 'src/microservice/application/helper/validator/field-schema.builder';
 import { AbstractEntityLoader } from './abstract-entity.loader';
-import { ErrorService } from 'src/microservice/application/service/configuration/error-schema/error.service';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
-import { GetTranslationService } from '@devseeder/nestjs-microservices-schemas';
+import {
+  ErrorService,
+  GetTranslationService
+} from '@devseeder/nestjs-microservices-schemas';
 import {
   EntitySchema,
   FieldSchema

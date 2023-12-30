@@ -8,8 +8,10 @@ import {
   UseGuards,
   UseInterceptors
 } from '@nestjs/common';
-import { ErrorService } from 'src/microservice/application/service/configuration/error-schema/error.service';
-import { GetTranslationService } from '@devseeder/nestjs-microservices-schemas';
+import {
+  ErrorService,
+  GetTranslationService
+} from '@devseeder/nestjs-microservices-schemas';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { AbstractUpdateController } from '../abstract/abstract-update.controller';
 import { GenericUpdateService } from 'src/microservice/application/service/abstract/generic-update.service';

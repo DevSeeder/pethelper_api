@@ -4,9 +4,11 @@ import { StringHelper } from '../types/string.helper';
 import { DynamicValueService } from '../../service/dynamic/get-dynamic-value.service';
 import { ComparatorHelper } from './comparator.helper';
 import { SearchEncapsulatorHelper } from '../search/search-encapsulator.helper';
-import { ErrorService } from '../../service/configuration/error-schema/error.service';
-import { GetTranslationService } from '@devseeder/nestjs-microservices-schemas';
-import { ErrorSchemaException } from 'src/core/exceptions/error-schema.exception';
+import {
+  ErrorService,
+  GetTranslationService,
+  ErrorSchemaException
+} from '@devseeder/nestjs-microservices-schemas';
 import {
   InputSchema,
   RequestSchema

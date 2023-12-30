@@ -1,7 +1,9 @@
 import { DynamicValueService } from '../../service/dynamic/get-dynamic-value.service';
-import { ErrorService } from '../../service/configuration/error-schema/error.service';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
-import { GetTranslationService } from '@devseeder/nestjs-microservices-schemas';
+import {
+  ErrorService,
+  GetTranslationService
+} from '@devseeder/nestjs-microservices-schemas';
 import { CompareOperators } from '@devseeder/nestjs-microservices-schemas';
 
 export class ComparatorHelper {

@@ -3,9 +3,11 @@ import { Inject, Injectable, Scope } from '@nestjs/common';
 import { AbstractBodyDto } from '../../dto/body/abtract-body.dto';
 import { AbstractSchema } from 'src/microservice/domain/schemas/abstract.schema';
 import { AbstractSearchService } from './abstract-search.service';
-import { GetTranslationService } from '@devseeder/nestjs-microservices-schemas';
+import {
+  ErrorService,
+  GetTranslationService
+} from '@devseeder/nestjs-microservices-schemas';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
-import { ErrorService } from '../configuration/error-schema/error.service';
 import { InactivationReason } from 'src/microservice/domain/enum/inactivation-reason.enum';
 import { ClientSession } from 'mongoose';
 import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';

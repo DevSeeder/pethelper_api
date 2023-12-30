@@ -8,8 +8,10 @@ import {
   UseInterceptors
 } from '@nestjs/common';
 import { GenericGetService } from 'src/microservice/application/service/abstract/generic-get.service';
-import { ErrorService } from 'src/microservice/application/service/configuration/error-schema/error.service';
-import { GetTranslationService } from '@devseeder/nestjs-microservices-schemas';
+import {
+  ErrorService,
+  GetTranslationService
+} from '@devseeder/nestjs-microservices-schemas';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { AbstractGetController } from '../abstract/abstract-get.controller';
 import { GroupByResponse } from 'src/microservice/application/dto/response/groupby/group-by.response';

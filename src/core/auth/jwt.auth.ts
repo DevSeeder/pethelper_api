@@ -14,10 +14,12 @@ import {
 } from '../../microservice/domain/enum/enum-scopes.enum';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
 import { MetaScopeInfo } from './meta-scope/meta-scope.decorator';
-import { ErrorService } from 'src/microservice/application/service/configuration/error-schema/error.service';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 import { CustomErrorException } from '@devseeder/microservices-exceptions';
-import { EntitySchema } from '@devseeder/nestjs-microservices-schemas';
+import {
+  EntitySchema,
+  ErrorService
+} from '@devseeder/nestjs-microservices-schemas';
 
 @Injectable()
 export class MyJwtAuthGuard extends CustomJwtAuthGuard {

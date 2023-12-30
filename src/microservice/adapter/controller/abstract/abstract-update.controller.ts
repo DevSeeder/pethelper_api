@@ -3,8 +3,10 @@ import { SchemaValidator } from 'src/microservice/application/helper/validator/s
 import { GenericUpdateService } from 'src/microservice/application/service/abstract/generic-update.service';
 import { RequestSchema } from 'src/microservice/domain/interface/input-schema.interface';
 import { AbstractBodyDto } from 'src/microservice/application/dto/body/abtract-body.dto';
-import { ErrorService } from 'src/microservice/application/service/configuration/error-schema/error.service';
-import { GetTranslationService } from '@devseeder/nestjs-microservices-schemas';
+import {
+  ErrorService,
+  GetTranslationService
+} from '@devseeder/nestjs-microservices-schemas';
 import { AbstractController } from './abstract.controller';
 import {
   EntitySchema,

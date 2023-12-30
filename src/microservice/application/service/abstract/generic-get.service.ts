@@ -15,8 +15,10 @@ import {
 import { CustomErrorException } from '@devseeder/microservices-exceptions';
 import { GroupByResponse } from '../../dto/response/groupby/group-by.response';
 import { AbstractSearchService } from './abstract-search.service';
-import { GetTranslationService } from '@devseeder/nestjs-microservices-schemas';
-import { ErrorService } from '../configuration/error-schema/error.service';
+import {
+  ErrorService,
+  GetTranslationService
+} from '@devseeder/nestjs-microservices-schemas';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 import { REQUEST } from '@nestjs/core';
 import {

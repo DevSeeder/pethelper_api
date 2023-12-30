@@ -2,8 +2,10 @@ import { Inject, Injectable, Provider, Scope } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
 import { Collection, Model } from 'mongoose';
 import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';
-import { GetTranslationService } from '@devseeder/nestjs-microservices-schemas';
-import { ErrorService } from '../service/configuration/error-schema/error.service';
+import {
+  ErrorService,
+  GetTranslationService
+} from '@devseeder/nestjs-microservices-schemas';
 import { GenericGetService } from '../service/abstract/generic-get.service';
 import { Search } from '@devseeder/nestjs-microservices-commons/dist/dto/search.dto';
 import { DependecyTokens, GLOBAL_ENTITY } from '../app.constants';
