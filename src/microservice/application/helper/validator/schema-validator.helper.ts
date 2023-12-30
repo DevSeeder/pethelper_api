@@ -1,10 +1,8 @@
 import { Logger } from '@nestjs/common';
 import { ObjectSchema, ValidationError, number } from 'joi';
 import { StringHelper } from '../types/string.helper';
-import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.interface';
 import { DynamicValueService } from '../../service/dynamic/get-dynamic-value.service';
 import { ComparatorHelper } from './comparator.helper';
-import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { SearchEncapsulatorHelper } from '../search/search-encapsulator.helper';
 import { ErrorService } from '../../service/configuration/error-schema/error.service';
 import { GetTranslationService } from '../../service/translation/get-translation.service';
@@ -14,7 +12,10 @@ import {
   RequestSchema
 } from 'src/microservice/domain/interface/input-schema.interface';
 import { GLOBAL_ENTITY } from '../../app.constants';
-import { EntitySchema } from '@devseeder/nestjs-microservices-schemas';
+import {
+  EntitySchema,
+  FieldSchema
+} from '@devseeder/nestjs-microservices-schemas';
 
 export class SchemaValidator {
   private logger = new Logger(SchemaValidator.name);
@@ -139,7 +140,7 @@ export class SchemaValidator {
   }
 
   async executeValidationField(
-    schema: FieldItemSchema,
+    schema: FieldSchema,
     item: object
   ): Promise<void> {
     if (!schema.validations || !schema.validations.length) return;

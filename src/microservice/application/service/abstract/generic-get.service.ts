@@ -14,13 +14,15 @@ import {
 } from '../../dto/response/paginated.response';
 import { CustomErrorException } from '@devseeder/microservices-exceptions';
 import { GroupByResponse } from '../../dto/response/groupby/group-by.response';
-import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { AbstractSearchService } from './abstract-search.service';
 import { GetTranslationService } from '../translation/get-translation.service';
 import { ErrorService } from '../configuration/error-schema/error.service';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 import { REQUEST } from '@nestjs/core';
-import { EntitySchema } from '@devseeder/nestjs-microservices-schemas';
+import {
+  EntitySchema,
+  FieldSchema
+} from '@devseeder/nestjs-microservices-schemas';
 
 @Injectable({ scope: Scope.REQUEST })
 export class GenericGetService<

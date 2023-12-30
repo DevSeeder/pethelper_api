@@ -1,10 +1,7 @@
 import { Relation } from 'src/microservice/domain/interface/relation.interface';
-import { SearchEgineOperators } from 'src/microservice/domain/interface/search-engine.interface';
 import { AbstractDocument } from 'src/microservice/domain/schemas/abstract.schema';
-import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.interface';
 import { VALIDATE_ID_ENUMS } from '../../app.constants';
 import { DynamicValueService } from '../dynamic/get-dynamic-value.service';
-import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { AbstractEntityLoader } from '../../loader/abstract-entity.loader';
 import { GetTranslationService } from '../translation/get-translation.service';
 import { ErrorService } from '../configuration/error-schema/error.service';
@@ -18,7 +15,11 @@ import {
   SCOPE_KEY
 } from 'src/microservice/domain/enum/enum-scopes.enum';
 import { JWTPayload } from '@devseeder/nestjs-microservices-core';
-import { EntitySchema } from '@devseeder/nestjs-microservices-schemas';
+import {
+  EntitySchema,
+  FieldSchema,
+  SearchEgineOperators
+} from '@devseeder/nestjs-microservices-schemas';
 
 export class AbstractDBService<
   Collection,
@@ -55,7 +56,7 @@ export class AbstractDBService<
   }
 
   private async convertRelationItem(
-    schema: FieldItemSchema,
+    schema: FieldSchema,
     item: Partial<MongooseModel> | Partial<AbstractDocument>,
     itemResponse: ResponseModel,
     validateInput = true

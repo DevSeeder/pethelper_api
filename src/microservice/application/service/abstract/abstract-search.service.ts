@@ -1,9 +1,6 @@
-import { SearchEgineOperators } from 'src/microservice/domain/interface/search-engine.interface';
 import { SchemaValidator } from '../../helper/validator/schema-validator.helper';
-import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.interface';
 import { Search } from '../../dto/search/search.dto';
 import { FieldSchemaBuilder } from '../../helper/validator/field-schema.builder';
-import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { AbstractDBService } from './abstract-db.service';
 import { SearchEncapsulatorHelper } from '../../helper/search/search-encapsulator.helper';
 import { GetTranslationService } from '../translation/get-translation.service';
@@ -12,7 +9,11 @@ import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';
 import { REQUEST } from '@nestjs/core';
 import { Inject } from '@nestjs/common';
-import { EntitySchema } from '@devseeder/nestjs-microservices-schemas';
+import {
+  EntitySchema,
+  FieldSchema,
+  SearchEgineOperators
+} from '@devseeder/nestjs-microservices-schemas';
 
 export class AbstractSearchService<
   Collection,
@@ -96,7 +97,7 @@ export class AbstractSearchService<
 
   private buildSearchEgineItem(
     value: any,
-    schema: FieldItemSchema,
+    schema: FieldSchema,
     operator: SearchEgineOperators,
     itemResponse: SearchParams
   ) {

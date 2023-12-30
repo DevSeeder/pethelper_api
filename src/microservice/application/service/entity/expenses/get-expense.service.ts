@@ -7,7 +7,6 @@ import {
   GroupExpensesByPetAndCategoryResponse,
   GroupedCostByCategory
 } from 'src/microservice/application/dto/response/groupby/group-expenses-by-pet-and-category.response';
-import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import {
   DependecyTokens,
   DependencyEntityTokens
@@ -26,7 +25,10 @@ import { Pet } from 'src/microservice/domain/schemas/entity/pets.schema';
 import { PetResponse } from 'src/microservice/application/dto/response/pet.response';
 import { SearchPetDto } from 'src/microservice/application/dto/search/search-pet.dto';
 import { REQUEST } from '@nestjs/core';
-import { EntitySchema } from '@devseeder/nestjs-microservices-schemas';
+import {
+  EntitySchema,
+  FieldSchema
+} from '@devseeder/nestjs-microservices-schemas';
 
 @Injectable({ scope: Scope.REQUEST })
 export class GetExpenseService extends GenericGetService<

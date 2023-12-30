@@ -7,13 +7,15 @@ import {
   DependecyTokens,
   DependencyEntityTokens
 } from 'src/microservice/application/app.constants';
-import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { ErrorService } from 'src/microservice/application/service/configuration/error-schema/error.service';
 import { GetTranslationService } from 'src/microservice/application/service/translation/get-translation.service';
 import { GroupExpensesByPetAndCategoryResponse } from 'src/microservice/application/dto/response/groupby/group-expenses-by-pet-and-category.response';
 import { GetExpenseService } from 'src/microservice/application/service/entity/expenses/get-expense.service';
 import { AbstractGetController } from '../abstract/abstract-get.controller';
-import { EntitySchema } from '@devseeder/nestjs-microservices-schemas';
+import {
+  EntitySchema,
+  FieldSchema
+} from '@devseeder/nestjs-microservices-schemas';
 
 @Controller(DependencyEntityTokens.EXPENSE)
 export class ExpensesGetController extends AbstractGetController<

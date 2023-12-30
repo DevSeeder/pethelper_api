@@ -8,7 +8,6 @@ import {
   UseGuards,
   UseInterceptors
 } from '@nestjs/common';
-import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { ErrorService } from 'src/microservice/application/service/configuration/error-schema/error.service';
 import { GetTranslationService } from 'src/microservice/application/service/translation/get-translation.service';
 import { DependecyTokens } from 'src/microservice/application/app.constants';
@@ -18,7 +17,10 @@ import { ActivationQueryParams } from 'src/microservice/application/dto/query/ac
 import { MyJwtAuthGuard } from 'src/core/auth/jwt.auth';
 import { MetaScope } from 'src/core/auth/meta-scope/meta-scope.decorator';
 import { MetaDataInterceptor } from 'src/core/interceptor/meta-data.interceptor';
-import { EntitySchema } from '@devseeder/nestjs-microservices-schemas';
+import {
+  EntitySchema,
+  FieldSchema
+} from '@devseeder/nestjs-microservices-schemas';
 
 const allKey = 'UPDATE';
 

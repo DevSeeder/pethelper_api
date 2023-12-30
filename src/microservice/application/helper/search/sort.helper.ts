@@ -1,9 +1,9 @@
-import { FieldItemSchema } from 'src/microservice/domain/interface/field-schema.interface';
+import { FieldSchema } from '@devseeder/nestjs-microservices-schemas';
 
 export class SortHelper {
   static orderBy<Response>(
     items: Array<Response>,
-    fieldSchema: FieldItemSchema[],
+    fieldSchema: FieldSchema[],
     sort: object,
     hasExternal: boolean
   ): Array<Response> {

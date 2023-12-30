@@ -2,10 +2,8 @@ import { Module, DynamicModule } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ErrorSchemasModule } from './configuration/error-schemas.module';
 import { TranslationsModule } from './translation/translation.module';
-import { FieldSchemasModule } from './configuration/field-schemas.module';
 import { DependencyInjectorService } from '../injector/dependency-injector.service';
 import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';
-import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { GetTranslationService } from '../service/translation/get-translation.service';
 import { ErrorService } from '../service/configuration/error-schema/error.service';
 import { DependecyTokens, PROJECT_KEY } from '../app.constants';
@@ -18,7 +16,8 @@ import { GenericCreateController } from 'src/microservice/adapter/controller/gen
 import { AuthJwtModule } from './auth/auth-jwt.module';
 import {
   EntitySchema,
-  EntitySchemasModule
+  FieldSchema,
+  SchemasModule
 } from '@devseeder/nestjs-microservices-schemas';
 import configuration from 'src/config/configuration';
 
@@ -41,8 +40,7 @@ export class GenericModule {
         MongooseModule.forFeature(
           EntityModelTokenBuilder.buildMongooseStaticModelForFeature()
         ),
-        EntitySchemasModule.forRootAync(configuration, PROJECT_KEY),
-        FieldSchemasModule,
+        SchemasModule.forRootAync(configuration, PROJECT_KEY),
         ErrorSchemasModule,
         TranslationsModule,
         AuthJwtModule
@@ -51,18 +49,13 @@ export class GenericModule {
         repositoryProvider,
         GenericModule.loadServiceProvider(entity, 'get', customProvider),
         GenericModule.loadServiceProvider(entity, 'update', customProvider),
-        GenericModule.loadServiceProvider(entity, 'create', customProvider),
-        {
-          provide: 'PROJECT_KEY',
-          useValue: PROJECT_KEY
-        }
+        GenericModule.loadServiceProvider(entity, 'create', customProvider)
       ],
       exports: [
         repositoryProvider,
         `GENERIC_GET_SERVICE_${entity}`,
         `GENERIC_UPDATE_SERVICE_${entity}`,
-        `GENERIC_CREATE_SERVICE_${entity}`,
-        'PROJECT_KEY'
+        `GENERIC_CREATE_SERVICE_${entity}`
       ]
     };
   }

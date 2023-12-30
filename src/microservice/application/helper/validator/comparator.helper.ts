@@ -1,8 +1,8 @@
-import { CompareOperators } from 'src/microservice/domain/interface/search-engine.interface';
 import { DynamicValueService } from '../../service/dynamic/get-dynamic-value.service';
 import { ErrorService } from '../../service/configuration/error-schema/error.service';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 import { GetTranslationService } from '../../service/translation/get-translation.service';
+import { CompareOperators } from '@devseeder/nestjs-microservices-schemas';
 
 export class ComparatorHelper {
   constructor(

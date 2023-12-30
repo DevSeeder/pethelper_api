@@ -1,9 +1,6 @@
 import { AnySchema, ObjectSchema, Root, SchemaMap } from 'joi';
 import * as Joi from 'joi';
-import {
-  FieldItemSchema,
-  FieldSchemaPage
-} from 'src/microservice/domain/interface/field-schema.interface';
+import { FieldSchemaPage } from 'src/microservice/domain/interface/field-schema.interface';
 import {
   InputSchema,
   RequestSchema
@@ -16,7 +13,6 @@ import {
   manyCloneSchema,
   singleCloneSchema
 } from 'src/microservice/domain/field-schemas/abstract-input.schema';
-import { SearchEgineOperators } from 'src/microservice/domain/interface/search-engine.interface';
 import {
   GLOBAL_ENTITY,
   SKIP_ENUMS,
@@ -25,7 +21,11 @@ import {
 import { ErrorService } from '../../service/configuration/error-schema/error.service';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 import { GetTranslationService } from '../../service/translation/get-translation.service';
-import { EntitySchema } from '@devseeder/nestjs-microservices-schemas';
+import {
+  EntitySchema,
+  FieldSchema,
+  SearchEgineOperators
+} from '@devseeder/nestjs-microservices-schemas';
 
 export class FieldSchemaBuilder {
   private schemaValidator: SchemaValidator;
@@ -49,8 +49,8 @@ export class FieldSchemaBuilder {
   }
 
   buildRequestSchemas(
-    entityFields: FieldItemSchema[],
-    fieldSchemaData: FieldItemSchema[]
+    entityFields: FieldSchema[],
+    fieldSchemaData: FieldSchema[]
   ): RequestSchema {
     const parentSchemas = {};
     const childrenSchemas = {};
@@ -99,7 +99,7 @@ export class FieldSchemaBuilder {
     };
   }
 
-  buildSchemas(fieldSchema: FieldItemSchema[]): InputSchema {
+  buildSchemas(fieldSchema: FieldSchema[]): InputSchema {
     return {
       search: this.buildSearchSchema(fieldSchema, commonSearchSchema),
       update: this.buildUpdateSchema(fieldSchema),
@@ -113,7 +113,7 @@ export class FieldSchemaBuilder {
   }
 
   buildSearchSchema(
-    fieldSchema: FieldItemSchema[],
+    fieldSchema: FieldSchema[],
     commons: SchemaMap = {}
   ): ObjectSchema {
     const objectSchema: SchemaMap = {};
@@ -134,12 +134,12 @@ export class FieldSchemaBuilder {
     return Joi.object({ ...commons, ...objectSchema });
   }
 
-  buildUpdateSchema(fieldSchema: FieldItemSchema[]): ObjectSchema {
+  buildUpdateSchema(fieldSchema: FieldSchema[]): ObjectSchema {
     return Joi.object(this.buildObjectUpdate(fieldSchema));
   }
 
   buildCloneSchema(
-    fieldSchema: FieldItemSchema[],
+    fieldSchema: FieldSchema[],
     cloneSchema: SchemaMap
   ): ObjectSchema {
     return Joi.object({
@@ -148,7 +148,7 @@ export class FieldSchemaBuilder {
     });
   }
 
-  buildObjectUpdate(fieldSchema: FieldItemSchema[]): SchemaMap {
+  buildObjectUpdate(fieldSchema: FieldSchema[]): SchemaMap {
     const objectSchema: SchemaMap = {};
 
     fieldSchema
@@ -164,7 +164,7 @@ export class FieldSchemaBuilder {
     return objectSchema;
   }
 
-  buildCreateSchema(fieldSchema: FieldItemSchema[]): ObjectSchema {
+  buildCreateSchema(fieldSchema: FieldSchema[]): ObjectSchema {
     const objectSchema: SchemaMap = {};
 
     fieldSchema.forEach((schema) => {
@@ -181,7 +181,7 @@ export class FieldSchemaBuilder {
 
   getType(
     Joi: Root,
-    schema: FieldItemSchema,
+    schema: FieldSchema,
     search = false,
     array = false
   ): AnySchema {
@@ -224,7 +224,7 @@ export class FieldSchemaBuilder {
     }
   }
 
-  buildSearchEngine(schema: FieldItemSchema, objectSchema: SchemaMap): boolean {
+  buildSearchEngine(schema: FieldSchema, objectSchema: SchemaMap): boolean {
     if (!schema?.searchEgines) return false;
 
     let ignoreOriginalKey = false;
@@ -247,7 +247,7 @@ export class FieldSchemaBuilder {
     return ignoreOriginalKey;
   }
 
-  getFormFilterCondition(page: string, field: FieldItemSchema): boolean {
+  getFormFilterCondition(page: string, field: FieldSchema): boolean {
     switch (page) {
       case FieldSchemaPage.SEARCH:
         return field.allowed.search;
@@ -265,7 +265,7 @@ export class FieldSchemaBuilder {
 
   static checkUndefinedValue(
     value: any,
-    schema: FieldItemSchema,
+    schema: FieldSchema,
     itemResponse: any,
     operator: SearchEgineOperators
   ): boolean {

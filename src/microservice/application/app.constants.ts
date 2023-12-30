@@ -1,4 +1,4 @@
-import { SearchEgineOperators } from '../domain/interface/search-engine.interface';
+import { SearchEgineOperators } from '@devseeder/nestjs-microservices-schemas';
 
 // CONFIG KEYS
 export const PROJECT_KEY = 'PET_HELPER';

@@ -3,12 +3,14 @@ import { SchemaValidator } from 'src/microservice/application/helper/validator/s
 import { RequestSchema } from 'src/microservice/domain/interface/input-schema.interface';
 import { AbstractBodyDto } from 'src/microservice/application/dto/body/abtract-body.dto';
 import { FieldSchemaBuilder } from 'src/microservice/application/helper/validator/field-schema.builder';
-import { FieldSchema } from 'src/microservice/domain/schemas/configuration-schemas/field-schemas.schema';
 import { AbstractEntityLoader } from './abstract-entity.loader';
 import { ErrorService } from 'src/microservice/application/service/configuration/error-schema/error.service';
 import { ErrorKeys } from 'src/microservice/domain/enum/error-keys.enum';
 import { GetTranslationService } from 'src/microservice/application/service/translation/get-translation.service';
-import { EntitySchema } from '@devseeder/nestjs-microservices-schemas';
+import {
+  EntitySchema,
+  FieldSchema
+} from '@devseeder/nestjs-microservices-schemas';
 
 export abstract class AbstractController<
   Collection,

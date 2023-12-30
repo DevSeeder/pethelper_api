@@ -1,8 +1,7 @@
-import { SearchEgineOperators } from './search-engine.interface';
-import { Validation } from './validation.interface';
+import { FieldSchema } from '@devseeder/nestjs-microservices-schemas';
 
 export interface FormSchemaResponse {
-  fields: Array<FieldItemSchema & FormFieldResponse>;
+  fields: Array<FieldSchema & FormFieldResponse>;
   filterOptions?: {
     orderBy?: FieldOrder[];
   };
@@ -15,34 +14,6 @@ export interface FormSchemaResponse {
     label: string;
     forbiddenMethods: string[];
   };
-}
-
-export interface FieldItemSchema {
-  key: string;
-  allowed: {
-    update: boolean;
-    search: boolean;
-  };
-  type: string;
-  required: boolean;
-  array?: boolean;
-  enumValues?: Array<string | number>;
-  itensType?: 'string' | 'number';
-  searchEgines?: SearchEgineOperators[];
-  max?: number;
-  min?: number;
-  hidden?: boolean;
-  externalRelation?: {
-    service: string;
-  };
-  alias?: {
-    search?: string;
-  };
-  label: string;
-  order?: number;
-  orderBy?: boolean;
-  entity?: string;
-  validations?: Validation[];
 }
 
 export interface FormFieldResponse {
