@@ -11,14 +11,14 @@ import {
 } from '@devseeder/nestjs-microservices-schemas';
 import { GroupExpensesByPetAndCategoryResponse } from 'src/microservice/application/dto/response/groupby/group-expenses-by-pet-and-category.response';
 import { GetExpenseService } from 'src/microservice/application/service/entity/expenses/get-expense.service';
-import { AbstractGetController } from '../abstract/abstract-get.controller';
 import {
   EntitySchema,
   FieldSchema
 } from '@devseeder/nestjs-microservices-schemas';
+import { AbstractController } from '../abstract/abstract.controller';
 
 @Controller(DependencyEntityTokens.EXPENSE)
-export class ExpensesGetController extends AbstractGetController<
+export class ExpensesGetController extends AbstractController<
   Expense,
   ExpenseResponse,
   SearchExpenseDto,
@@ -36,7 +36,6 @@ export class ExpensesGetController extends AbstractGetController<
   ) {
     super(
       DependencyEntityTokens.EXPENSE,
-      getService,
       fieldSchemaData,
       entitySchemaData,
       errorService,

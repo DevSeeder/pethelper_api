@@ -13,7 +13,6 @@ import {
   GetTranslationService,
   SchemaDependecyTokens
 } from '@devseeder/nestjs-microservices-schemas';
-import { AbstractGetController } from '../abstract/abstract-get.controller';
 import { GroupByResponse } from 'src/microservice/application/dto/response/groupby/group-by.response';
 import { FormSchemaResponse } from 'src/microservice/domain/interface/field-schema.interface';
 import {
