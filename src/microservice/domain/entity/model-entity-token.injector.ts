@@ -17,6 +17,11 @@ import { Pet, PetsSchema } from '../schemas/entity/pets.schema';
 import { Expense, ExpensesSchema } from '../schemas/entity/expenses.schema';
 import { User, UsersSchema } from '../schemas/entity/users.schema';
 import { DependencyEntityTokens } from 'src/microservice/application/app.constants';
+import { ExpensesGetController } from 'src/microservice/adapter/controller/entity/expenses-get.controller';
+import { GetExpenseService } from 'src/microservice/application/service/entity/expenses/get-expense.service';
+import { ExpensesRepository } from 'src/microservice/adapter/repository/entity/expenses.repository';
+import { CreateUserService } from 'src/microservice/application/service/entity/users/create-user.service';
+import { ClientAuthService } from 'src/microservice/adapter/repository/client/client-auth.service';
 
 export const ModelEntityTokens = {
   colors: {
@@ -57,11 +62,24 @@ export const ModelEntityTokens = {
   expenses: {
     modelName: Expense.name,
     schema: ExpensesSchema,
-    collection: DependencyEntityTokens.EXPENSE
+    collection: DependencyEntityTokens.EXPENSE,
+    customProvider: {
+      controller: {
+        get: ExpensesGetController
+      },
+      get: { className: GetExpenseService },
+      repository: ExpensesRepository
+    }
   },
   users: {
     modelName: User.name,
     schema: UsersSchema,
-    collection: DependencyEntityTokens.USER
+    collection: DependencyEntityTokens.USER,
+    customProvider: {
+      create: {
+        className: CreateUserService,
+        injectArgs: [ClientAuthService.name]
+      }
+    }
   }
 };
