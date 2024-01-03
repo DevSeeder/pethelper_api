@@ -1,4 +1,4 @@
-import { DomainBodyDto } from './domain-body.dto';
+import { DomainBodyDto } from '@devseeder/nestjs-microservices-commons';
 
 export interface AnimalBodyDto extends DomainBodyDto {
   name: string;

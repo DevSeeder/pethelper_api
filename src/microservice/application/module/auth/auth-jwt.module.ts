@@ -5,6 +5,15 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { ClientAuthService } from 'src/microservice/adapter/repository/client/client-auth.service';
+import { DIToken, PROJECT_KEY } from '../../app.constants';
+import { SCOPE_KEY } from 'src/microservice/domain/enum/enum-scopes.enum';
+import {
+  EntitySchemasModule,
+  ErrorSchemasModule,
+  ErrorService
+} from '@devseeder/nestjs-microservices-schemas';
+import configuration from 'src/config/configuration';
+import { MyJwtAuthGuard } from 'src/core/my-jwt-auth.guard';
 
 @Module({
   imports: [
@@ -18,7 +27,9 @@ import { ClientAuthService } from 'src/microservice/adapter/repository/client/cl
           expiresIn: config.get<string>('auth.jwt.expires')
         }
       })
-    })
+    }),
+    EntitySchemasModule.forRoot(PROJECT_KEY),
+    ErrorSchemasModule.forRoot(configuration, PROJECT_KEY)
   ],
   controllers: [],
   providers: [
@@ -27,8 +38,19 @@ import { ClientAuthService } from 'src/microservice/adapter/repository/client/cl
     {
       provide: ClientAuthService.name,
       useClass: ClientAuthService
-    }
+    },
+    {
+      provide: DIToken.SCOPE_KEY,
+      useValue: SCOPE_KEY
+    },
+    MyJwtAuthGuard
   ],
-  exports: [JwtService, JwtStrategy, ClientAuthService.name]
+  exports: [
+    JwtService,
+    JwtStrategy,
+    MyJwtAuthGuard,
+    ClientAuthService.name,
+    DIToken.SCOPE_KEY
+  ]
 })
 export class AuthJwtModule {}

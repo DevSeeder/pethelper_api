@@ -1,7 +1,6 @@
 import { Module, DynamicModule } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { DependencyInjectorService } from '../injector/dependency-injector.service';
-import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';
 import {
   ErrorSchemasModule,
   ErrorService,
@@ -9,20 +8,29 @@ import {
   SchemaDependecyTokens,
   TranslationsModule
 } from '@devseeder/nestjs-microservices-schemas';
-import { PROJECT_KEY } from '../app.constants';
-import { ModuleRef, REQUEST } from '@nestjs/core';
+import { DIToken, PROJECT_KEY } from '../app.constants';
+import { ModuleRef, REQUEST, Reflector } from '@nestjs/core';
 import { EntityModelTokenBuilder } from '../injector/entity/model-entity-token.injector';
-import { CustomProvider } from '../dto/provider/custom-provider.dto';
-import { GenericGetController } from 'src/microservice/adapter/controller/generic/generic-get.controller';
-import { GenericUpdateController } from 'src/microservice/adapter/controller/generic/generic-update.controller';
-import { GenericCreateController } from 'src/microservice/adapter/controller/generic/generic-create.controller';
-import { AuthJwtModule } from './auth/auth-jwt.module';
 import {
   EntitySchema,
   FieldSchema,
   SchemasModule
 } from '@devseeder/nestjs-microservices-schemas';
 import configuration from 'src/config/configuration';
+import {
+  CustomProvider,
+  GenericCreateController,
+  GenericGetController,
+  GenericRepository,
+  GenericUpdateController
+} from '@devseeder/nestjs-microservices-commons';
+import { SCOPE_KEY } from 'src/microservice/domain/enum/enum-scopes.enum';
+import { MyJwtAuthGuard } from 'src/core/my-jwt-auth.guard';
+import { JwtService } from '@nestjs/jwt';
+import { MetaDataInterceptor } from 'src/core/meta-data.interceptor';
+
+const authGuard = MyJwtAuthGuard;
+const interceptor = MetaDataInterceptor;
 
 @Module({})
 export class GenericModule {
@@ -45,11 +53,16 @@ export class GenericModule {
         ),
         SchemasModule.forRootAsync(configuration, PROJECT_KEY),
         TranslationsModule.forRoot(configuration, PROJECT_KEY),
-        ErrorSchemasModule.forRoot(configuration, PROJECT_KEY),
-        AuthJwtModule
+        ErrorSchemasModule.forRoot(configuration, PROJECT_KEY)
       ],
       providers: [
         repositoryProvider,
+        JwtService,
+        {
+          provide: DIToken.SCOPE_KEY,
+          useValue: SCOPE_KEY
+        },
+        MyJwtAuthGuard,
         GenericModule.loadServiceProvider(entity, 'get', customProvider),
         GenericModule.loadServiceProvider(entity, 'update', customProvider),
         GenericModule.loadServiceProvider(entity, 'create', customProvider)
@@ -77,7 +90,8 @@ export class GenericModule {
         entitySchemaData: EntitySchema[],
         translationService: GetTranslationService,
         errorService: ErrorService,
-        request: Request
+        request: Request,
+        scopeKey: string
       ) => {
         const injectorService = new DependencyInjectorService(
           moduleRef,
@@ -85,7 +99,8 @@ export class GenericModule {
           fieldSchemaData,
           translationService,
           errorService,
-          request
+          request,
+          scopeKey
         );
         const injectFunction = `inject${providerKey.capitalizeFirstLetter()}Service`;
         const serviceProvider = await injectorService[injectFunction](
@@ -102,7 +117,8 @@ export class GenericModule {
         SchemaDependecyTokens.ENTITY_SCHEMA_DB,
         GetTranslationService,
         ErrorService,
-        REQUEST
+        REQUEST,
+        DIToken.SCOPE_KEY
       ]
     };
   }
@@ -110,9 +126,9 @@ export class GenericModule {
 
 function controllersFactory(entity: string, customProvider?: CustomProvider) {
   const genericArr = [
-    GenericGetController({ entity }),
-    GenericUpdateController({ entity }),
-    GenericCreateController({ entity })
+    GenericGetController({ entity, authGuard, interceptor }),
+    GenericUpdateController({ entity, authGuard, interceptor }),
+    GenericCreateController({ entity, authGuard, interceptor })
   ];
 
   if (checkCustomController('get', customProvider))

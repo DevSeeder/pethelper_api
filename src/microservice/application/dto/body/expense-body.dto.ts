@@ -1,5 +1,4 @@
-import { SexEnum } from 'src/microservice/domain/enum/sex.enum';
-import { AbstractBodyDto } from './abtract-body.dto';
+import { AbstractBodyDto } from '@devseeder/nestjs-microservices-commons';
 
 export interface ExpenseBodyDto extends AbstractBodyDto {
   name: string;

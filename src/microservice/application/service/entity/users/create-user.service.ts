@@ -4,13 +4,12 @@ import { EnumScopes } from '../../../../domain/enum/enum-scopes.enum';
 import { UserAuth } from '../../../../domain/model/auth/user-auth.model';
 import { UserBodyDto } from '../../../../domain/model/dto/users/user.dto';
 import { User } from '../../../../domain/schemas/entity/users.schema';
-import { GenericCreateService } from '../../abstract/generic-create.service';
-import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';
 import {
   ErrorService,
   GetTranslationService
 } from '@devseeder/nestjs-microservices-schemas';
 import {
+  DIToken,
   DependencyEntityTokens,
   PROJECT_KEY
 } from 'src/microservice/application/app.constants';
@@ -20,6 +19,10 @@ import {
   EntitySchema,
   FieldSchema
 } from '@devseeder/nestjs-microservices-schemas';
+import {
+  GenericCreateService,
+  GenericRepository
+} from '@devseeder/nestjs-microservices-commons';
 
 @Injectable({ scope: Scope.REQUEST })
 export class CreateUserService extends GenericCreateService<
@@ -34,6 +37,8 @@ export class CreateUserService extends GenericCreateService<
     protected readonly translationService: GetTranslationService,
     protected readonly errorService: ErrorService,
     @Inject(REQUEST) protected readonly request?: Request,
+    @Inject(DIToken.SCOPE_KEY)
+    protected readonly scopeKey?: string,
     protected readonly clientAuthService?: ClientAuthService
   ) {
     super(

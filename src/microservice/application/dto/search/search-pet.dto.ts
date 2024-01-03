@@ -1,5 +1,5 @@
+import { Search } from '@devseeder/nestjs-microservices-commons';
 import { SexEnum } from 'src/microservice/domain/enum/sex.enum';
-import { Search } from './search.dto';
 
 export class SearchPetDto extends Search {
   name?: string;

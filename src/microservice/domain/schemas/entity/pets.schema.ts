@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { AbstractSchema } from '@devseeder/nestjs-microservices-commons/dist/schema/abstract.schema';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { AbstractSchema } from '../abstract.schema';
 import { DependencyEntityTokens } from 'src/microservice/application/app.constants';
 
 export type PetDocument = Pet & Document;

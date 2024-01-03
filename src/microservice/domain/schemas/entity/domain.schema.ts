@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { AbstractSchema } from '@devseeder/nestjs-microservices-commons/dist/schema/abstract.schema';
 import { Prop } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { AbstractSchema } from '../abstract.schema';
 
 export type DomainDocument = AbstractDomain & Document;
 

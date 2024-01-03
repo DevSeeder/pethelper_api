@@ -5,9 +5,9 @@ import {
   Expense,
   ExpenseDocument
 } from 'src/microservice/domain/schemas/entity/expenses.schema';
-import { GenericRepository } from '../generic.repository';
 import { AggExpensesByPetAndCategoryDto } from 'src/microservice/application/dto/aggregate/agg-expenses-by-pet-and-category.dto';
 import { SearchExpenseDto } from 'src/microservice/application/dto/search/search-expense.dto';
+import { GenericRepository } from '@devseeder/nestjs-microservices-commons';
 
 @Injectable()
 export class ExpensesRepository extends GenericRepository<Expense> {

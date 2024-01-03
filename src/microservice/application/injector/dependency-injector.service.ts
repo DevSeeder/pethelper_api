@@ -1,25 +1,27 @@
 import { Inject, Injectable, Provider, Scope } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
 import { Collection, Model } from 'mongoose';
-import { GenericRepository } from 'src/microservice/adapter/repository/generic.repository';
 import {
   ErrorService,
   GetTranslationService,
   SchemaDependecyTokens
 } from '@devseeder/nestjs-microservices-schemas';
-import { GenericGetService } from '../service/abstract/generic-get.service';
-import { GLOBAL_ENTITY } from '../app.constants';
-import { GenericUpdateService } from '../service/abstract/generic-update.service';
-import { AbstractBodyDto } from '../dto/body/abtract-body.dto';
-import { GenericCreateService } from '../service/abstract/generic-create.service';
+import { DIToken, GLOBAL_ENTITY } from '../app.constants';
 import { ModuleRef, REQUEST } from '@nestjs/core';
-import { CustomProvider } from '../dto/provider/custom-provider.dto';
 import { ModelEntityTokens } from './entity/model-entity-token.injector';
 import {
   EntitySchema,
   FieldSchema
 } from '@devseeder/nestjs-microservices-schemas';
-import { Search } from '../dto/search/search.dto';
+import {
+  AbstractBodyDto,
+  CustomProvider,
+  GenericCreateService,
+  GenericGetService,
+  GenericRepository,
+  GenericUpdateService,
+  Search
+} from '@devseeder/nestjs-microservices-commons';
 
 @Injectable({ scope: Scope.REQUEST })
 export class DependencyInjectorService {
@@ -34,7 +36,9 @@ export class DependencyInjectorService {
     private fieldSchemaData: FieldSchema[],
     private translationService: GetTranslationService,
     private errorService: ErrorService,
-    @Inject(REQUEST) protected readonly request: Request
+    @Inject(REQUEST) protected readonly request: Request,
+    @Inject(DIToken.SCOPE_KEY)
+    protected readonly scopeKey: string
   ) {}
 
   setSchema(entity: string) {
@@ -218,26 +222,20 @@ export class DependencyInjectorService {
     customProvider?: CustomProvider
   ): { args: any[]; classService } {
     let classService = genericClass;
-    let args = [
-      repository,
-      entity,
+    const defaultArgs = [
       this.fieldSchemaData,
       this.entitySchemaData,
       this.translationService,
       this.errorService,
-      this.request
+      this.request,
+      this.scopeKey
     ];
+
+    let args = [repository, entity, ...defaultArgs];
 
     if (customProvider && customProvider[providerKey]) {
       classService = customProvider[providerKey].className;
-      args = [
-        repository,
-        this.fieldSchemaData,
-        this.entitySchemaData,
-        this.translationService,
-        this.errorService,
-        this.request
-      ];
+      args = [repository, ...defaultArgs];
       const injectArgs = customProvider[providerKey].injectArgs;
       if (injectArgs && injectArgs.length) {
         for (const arg of injectArgs) {

@@ -1,5 +1,5 @@
+import { GroupByResult } from '@devseeder/nestjs-microservices-commons';
 import { RelationField } from 'src/microservice/domain/interface/relation-field.interface';
-import { GroupByResult } from './group-by.response';
 
 export interface GroupExpensesByPetAndCategoryResponse {
   pet: RelationField;

@@ -1,26 +1,7 @@
-import { SearchEgineOperators } from '@devseeder/nestjs-microservices-schemas';
-
 // CONFIG KEYS
 export const PROJECT_KEY = 'PET_HELPER';
 export const GLOBAL_ENTITY = 'global';
 export const DEFAULT_LANG = 'pt-BR';
-
-// OPERATORS ENUMS
-export const SKIP_ENUMS_ALIAS = [SearchEgineOperators.IN];
-export const SKIP_ENUMS = [
-  SearchEgineOperators.BETWEEN,
-  SearchEgineOperators.IN
-];
-export const VALIDATE_ID_ENUMS = [
-  SearchEgineOperators.IN,
-  SearchEgineOperators.NOT_IN,
-  SearchEgineOperators.NOT_EQUAL
-];
-
-// ADV OPERATORS
-export const MAX_ENCAPSULATED_OPERATORS = 10;
-
-// DI
 
 export enum DependencyEntityTokens {
   COLOR = 'colors',
@@ -32,4 +13,8 @@ export enum DependencyEntityTokens {
   PET = 'pets',
   EXPENSE = 'expenses',
   USER = 'users'
+}
+
+export enum DIToken {
+  SCOPE_KEY = 'SCOPE_KEY'
 }

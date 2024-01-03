@@ -15,7 +15,7 @@ import {
   EntitySchema,
   FieldSchema
 } from '@devseeder/nestjs-microservices-schemas';
-import { AbstractController } from '../abstract/abstract.controller';
+import { AbstractController } from '@devseeder/nestjs-microservices-commons';
 
 @Controller(DependencyEntityTokens.EXPENSE)
 export class ExpensesGetController extends AbstractController<

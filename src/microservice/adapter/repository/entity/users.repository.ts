@@ -5,7 +5,7 @@ import {
   User,
   UserDocument
 } from '../../../domain/schemas/entity/users.schema';
-import { GenericRepository } from '../generic.repository';
+import { GenericRepository } from '@devseeder/nestjs-microservices-commons';
 
 @Injectable()
 export class UsersRepository extends GenericRepository<User> {

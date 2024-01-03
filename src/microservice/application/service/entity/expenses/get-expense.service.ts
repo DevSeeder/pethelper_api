@@ -1,5 +1,4 @@
 import { Inject, Injectable, Scope, forwardRef } from '@nestjs/common';
-import { GenericGetService } from '../../abstract/generic-get.service';
 import { Expense } from '../../../../domain/schemas/entity/expenses.schema';
 import { ExpenseResponse } from 'src/microservice/application/dto/response/expense.response';
 import { SearchExpenseDto } from 'src/microservice/application/dto/search/search-expense.dto';
@@ -7,7 +6,10 @@ import {
   GroupExpensesByPetAndCategoryResponse,
   GroupedCostByCategory
 } from 'src/microservice/application/dto/response/groupby/group-expenses-by-pet-and-category.response';
-import { DependencyEntityTokens } from 'src/microservice/application/app.constants';
+import {
+  DIToken,
+  DependencyEntityTokens
+} from 'src/microservice/application/app.constants';
 import {
   ErrorService,
   GetTranslationService,
@@ -17,10 +19,12 @@ import {
   ExpenseCategory,
   ExpenseCategoryDocument
 } from 'src/microservice/domain/schemas/entity/expense-categories.schema';
-import { Search } from '@devseeder/nestjs-microservices-commons';
-import { SearchDomainDto } from 'src/microservice/application/dto/search/search-domain.dto';
+import {
+  GenericGetService,
+  Search,
+  SearchDomainDto
+} from '@devseeder/nestjs-microservices-commons';
 import { User } from 'src/microservice/domain/schemas/entity/users.schema';
-import { ExpensesRepository } from 'src/microservice/adapter/repository/entity/expenses.repository';
 import { Pet } from 'src/microservice/domain/schemas/entity/pets.schema';
 import { PetResponse } from 'src/microservice/application/dto/response/pet.response';
 import { SearchPetDto } from 'src/microservice/application/dto/search/search-pet.dto';
@@ -29,6 +33,7 @@ import {
   EntitySchema,
   FieldSchema
 } from '@devseeder/nestjs-microservices-schemas';
+import { ExpensesRepository } from 'src/microservice/adapter/repository/entity/expenses.repository';
 
 @Injectable({ scope: Scope.REQUEST })
 export class GetExpenseService extends GenericGetService<
@@ -46,6 +51,8 @@ export class GetExpenseService extends GenericGetService<
     protected readonly translationService?: GetTranslationService,
     protected readonly errorService?: ErrorService,
     @Inject(REQUEST) protected readonly request?: Request,
+    @Inject(DIToken.SCOPE_KEY)
+    protected readonly scopeKey?: string,
     @Inject(`GENERIC_GET_SERVICE_${DependencyEntityTokens.PET}`)
     protected readonly getPetsService?: GenericGetService<
       Pet,
