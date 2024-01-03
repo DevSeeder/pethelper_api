@@ -1,5 +1,5 @@
+import { RelationField } from '@devseeder/nestjs-microservices-commons/dist/interface/relation-field.interface';
 import { SexEnum } from 'src/microservice/domain/enum/sex.enum';
-import { RelationField } from 'src/microservice/domain/interface/relation-field.interface';
 
 export interface PetResponse {
   _id: string;

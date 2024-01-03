@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { AbstractDomain } from './domain.schema';
+import { AbstractDomain } from '../../../../../../nestjs-microservices-commons/src/schema/domain.schema';
 import { DependencyEntityTokens } from 'src/microservice/application/app.constants';
 
 export type ColorDocument = Color & Document;

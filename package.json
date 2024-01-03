@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@devseeder/microservices-exceptions": "^1.0.7",
-    "@devseeder/nestjs-microservices-commons": "^1.0.24",
+    "@devseeder/nestjs-microservices-commons": "^1.0.27",
     "@devseeder/nestjs-microservices-core": "^1.0.10",
     "@devseeder/nestjs-microservices-schemas": "^1.0.29",
     "@nestjs/axios": "^0.1.0",
