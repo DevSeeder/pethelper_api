@@ -13,5 +13,6 @@ export enum DependencyEntityTokens {
 }
 
 export enum DIToken {
-  SCOPE_KEY = 'SCOPE_KEY'
+  SCOPE_KEY = 'SCOPE_KEY',
+  PROJECT_KEY = 'PROJECT_KEY'
 }

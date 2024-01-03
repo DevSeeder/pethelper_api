@@ -20,9 +20,9 @@ import { DependencyEntityTokens } from 'src/microservice/application/app.constan
 import { ExpensesGetController } from 'src/microservice/adapter/controller/entity/expenses-get.controller';
 import { GetExpenseService } from 'src/microservice/application/service/entity/expenses/get-expense.service';
 import { ExpensesRepository } from 'src/microservice/adapter/repository/entity/expenses.repository';
-import { CreateUserService } from 'src/microservice/application/service/entity/users/create-user.service';
-import { ClientAuthService } from 'src/microservice/adapter/repository/client/client-auth.service';
 import { ModelEntityTokens } from '@devseeder/nestjs-microservices-commons';
+import { ClientAuthService } from '@devseeder/nestjs-microservices-core';
+import { CreateUserService } from 'src/microservice/application/service/users/create-user.service';
 
 export const ProjectEntityConfig: ModelEntityTokens = {
   colors: {
