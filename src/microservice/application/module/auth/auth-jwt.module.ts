@@ -9,8 +9,7 @@ import { DIToken, PROJECT_KEY } from '../../app.constants';
 import { SCOPE_KEY } from 'src/microservice/domain/enum/enum-scopes.enum';
 import {
   EntitySchemasModule,
-  ErrorSchemasModule,
-  ErrorService
+  ErrorSchemasModule
 } from '@devseeder/nestjs-microservices-schemas';
 import configuration from 'src/config/configuration';
 import { CustomJwtAuthGuard } from 'src/core/custom-jwt-auth.guard';
@@ -28,8 +27,8 @@ import { CustomJwtAuthGuard } from 'src/core/custom-jwt-auth.guard';
         }
       })
     }),
-    EntitySchemasModule.forRoot(PROJECT_KEY),
-    ErrorSchemasModule.forRoot(configuration, PROJECT_KEY)
+    EntitySchemasModule.forRoot(),
+    ErrorSchemasModule.forRoot(configuration)
   ],
   controllers: [],
   providers: [

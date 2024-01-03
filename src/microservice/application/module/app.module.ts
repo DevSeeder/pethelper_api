@@ -8,7 +8,7 @@ import { CustomInterceptor } from 'src/core/custom.interceptor';
 import { CustomJwtAuthGuard } from 'src/core/custom-jwt-auth.guard';
 import { ModelEntityTokens } from 'src/microservice/domain/entity/model-entity-token.injector';
 import { SCOPE_KEY } from 'src/microservice/domain/enum/enum-scopes.enum';
-import { GenericModuleGenerator } from './generic-module.generator';
+import { GenericModuleGenerator } from '@devseeder/nestjs-microservices-commons';
 
 const moduleOptions = {
   authGuard: CustomJwtAuthGuard,
