@@ -1,7 +1,4 @@
-// CONFIG KEYS
 export const PROJECT_KEY = 'PET_HELPER';
-export const GLOBAL_ENTITY = 'global';
-export const DEFAULT_LANG = 'pt-BR';
 
 export enum DependencyEntityTokens {
   COLOR = 'colors',

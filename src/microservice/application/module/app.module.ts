@@ -2,21 +2,20 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import configuration from '../../../config/configuration';
-import { PROJECT_KEY } from '../app.constants';
-import { APP_INTERCEPTOR, Reflector } from '@nestjs/core';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { CustomInterceptor } from 'src/core/custom.interceptor';
 import { CustomJwtAuthGuard } from 'src/core/custom-jwt-auth.guard';
-import { ModelEntityTokens } from 'src/microservice/domain/entity/model-entity-token.injector';
-import { SCOPE_KEY } from 'src/microservice/domain/enum/enum-scopes.enum';
-import { GenericModuleGenerator } from '@devseeder/nestjs-microservices-commons';
+import { ProjectEntityConfig } from 'src/microservice/domain/entity/model-entity-token.injector';
+import {
+  GeneratorModuleOptions,
+  GenericModuleGenerator
+} from '@devseeder/nestjs-microservices-commons';
 
 const moduleOptions = {
   authGuard: CustomJwtAuthGuard,
   interceptor: CustomInterceptor,
   configuration: configuration,
-  modelTokens: ModelEntityTokens,
-  projectKey: PROJECT_KEY,
-  scopeKey: SCOPE_KEY
+  modelTokens: ProjectEntityConfig
 };
 
 @Module({
@@ -32,7 +31,9 @@ const moduleOptions = {
       isGlobal: true,
       load: [configuration]
     }),
-    ...GenericModuleGenerator.generateModules(moduleOptions)
+    ...GenericModuleGenerator.generateModules(
+      moduleOptions as GeneratorModuleOptions
+    )
   ],
   controllers: [],
   providers: [

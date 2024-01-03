@@ -22,8 +22,9 @@ import { GetExpenseService } from 'src/microservice/application/service/entity/e
 import { ExpensesRepository } from 'src/microservice/adapter/repository/entity/expenses.repository';
 import { CreateUserService } from 'src/microservice/application/service/entity/users/create-user.service';
 import { ClientAuthService } from 'src/microservice/adapter/repository/client/client-auth.service';
+import { ModelEntityTokens } from '@devseeder/nestjs-microservices-commons';
 
-export const ModelEntityTokens = {
+export const ProjectEntityConfig: ModelEntityTokens = {
   colors: {
     modelName: Color.name,
     schema: ColorsSchema,
