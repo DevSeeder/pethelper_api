@@ -28,6 +28,7 @@ import {
   EntitySchema,
   FieldSchema
 } from '@devseeder/nestjs-microservices-schemas';
+import { AbstractController } from '../abstract/abstract.controller';
 
 const allKey = 'GET';
 
@@ -39,7 +40,7 @@ export function GenericGetController<
 >({ entity }: { entity: string }) {
   @UseInterceptors(MetaDataInterceptor)
   @Controller(entity.toLowerCase())
-  class GenericGetControllerHost extends AbstractGetController<
+  class GenericGetControllerHost extends AbstractController<
     Collection,
     GetResponse,
     SearchParams,
@@ -61,7 +62,6 @@ export function GenericGetController<
     ) {
       super(
         entity,
-        getService,
         fieldSchemaData,
         entitySchemaData,
         errorService,

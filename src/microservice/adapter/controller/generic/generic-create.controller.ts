@@ -12,7 +12,6 @@ import {
   GetTranslationService,
   SchemaDependecyTokens
 } from '@devseeder/nestjs-microservices-schemas';
-import { AbstractCreateController } from '../abstract/abstract-create.controller';
 import { GenericCreateService } from 'src/microservice/application/service/abstract/generic-create.service';
 import { ObjectId } from 'mongoose';
 import {
@@ -30,6 +29,7 @@ import {
   EntitySchema,
   FieldSchema
 } from '@devseeder/nestjs-microservices-schemas';
+import { AbstractController } from '../abstract/abstract.controller';
 
 const allKey = 'CREATE';
 
@@ -41,7 +41,7 @@ export function GenericCreateController<
 >({ entity }: { entity: string }) {
   @UseInterceptors(MetaDataInterceptor)
   @Controller(entity.toLowerCase())
-  class GenericCreateControllerHost extends AbstractCreateController<
+  class GenericCreateControllerHost extends AbstractController<
     Collection,
     GetResponse,
     SearchParams,
@@ -63,7 +63,6 @@ export function GenericCreateController<
     ) {
       super(
         entity,
-        createService,
         fieldSchemaData,
         entitySchemaData,
         errorService,

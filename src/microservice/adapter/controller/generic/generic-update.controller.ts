@@ -13,7 +13,6 @@ import {
   GetTranslationService,
   SchemaDependecyTokens
 } from '@devseeder/nestjs-microservices-schemas';
-import { AbstractUpdateController } from '../abstract/abstract-update.controller';
 import { GenericUpdateService } from 'src/microservice/application/service/abstract/generic-update.service';
 import { ActivationQueryParams } from 'src/microservice/application/dto/query/activation-query-params.dto';
 import { MyJwtAuthGuard } from 'src/core/auth/jwt.auth';
@@ -23,6 +22,7 @@ import {
   EntitySchema,
   FieldSchema
 } from '@devseeder/nestjs-microservices-schemas';
+import { AbstractController } from '../abstract/abstract.controller';
 
 const allKey = 'UPDATE';
 
@@ -34,7 +34,7 @@ export function GenericUpdateController<
 >({ entity }: { entity: string }) {
   @UseInterceptors(MetaDataInterceptor)
   @Controller(entity.toLowerCase())
-  class GenericUpdateControllerHost extends AbstractUpdateController<
+  class GenericUpdateControllerHost extends AbstractController<
     Collection,
     GetResponse,
     SearchParams,
@@ -57,7 +57,6 @@ export function GenericUpdateController<
     ) {
       super(
         entity,
-        updateService,
         fieldSchemaData,
         entitySchemaData,
         errorService,
