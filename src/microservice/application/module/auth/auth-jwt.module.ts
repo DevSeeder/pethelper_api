@@ -13,7 +13,7 @@ import {
   ErrorService
 } from '@devseeder/nestjs-microservices-schemas';
 import configuration from 'src/config/configuration';
-import { MyJwtAuthGuard } from 'src/core/my-jwt-auth.guard';
+import { CustomJwtAuthGuard } from 'src/core/custom-jwt-auth.guard';
 
 @Module({
   imports: [
@@ -43,12 +43,12 @@ import { MyJwtAuthGuard } from 'src/core/my-jwt-auth.guard';
       provide: DIToken.SCOPE_KEY,
       useValue: SCOPE_KEY
     },
-    MyJwtAuthGuard
+    CustomJwtAuthGuard
   ],
   exports: [
     JwtService,
     JwtStrategy,
-    MyJwtAuthGuard,
+    CustomJwtAuthGuard,
     ClientAuthService.name,
     DIToken.SCOPE_KEY
   ]

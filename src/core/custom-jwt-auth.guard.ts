@@ -11,7 +11,7 @@ import { EntityJwtAuthGuard } from '@devseeder/nestjs-microservices-core';
 import { DIToken } from 'src/microservice/application/app.constants';
 
 @Injectable()
-export class MyJwtAuthGuard extends EntityJwtAuthGuard {
+export class CustomJwtAuthGuard extends EntityJwtAuthGuard {
   constructor(
     protected readonly reflector: Reflector,
     protected readonly jwtService: JwtService,

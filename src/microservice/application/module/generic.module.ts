@@ -25,12 +25,12 @@ import {
   GenericUpdateController
 } from '@devseeder/nestjs-microservices-commons';
 import { SCOPE_KEY } from 'src/microservice/domain/enum/enum-scopes.enum';
-import { MyJwtAuthGuard } from 'src/core/my-jwt-auth.guard';
+import { CustomJwtAuthGuard } from 'src/core/custom-jwt-auth.guard';
 import { JwtService } from '@nestjs/jwt';
-import { MetaDataInterceptor } from 'src/core/meta-data.interceptor';
+import { CustomInterceptor } from 'src/core/custom.interceptor';
 
-const authGuard = MyJwtAuthGuard;
-const interceptor = MetaDataInterceptor;
+const authGuard = CustomJwtAuthGuard;
+const interceptor = CustomInterceptor;
 
 @Module({})
 export class GenericModule {
@@ -62,7 +62,7 @@ export class GenericModule {
           provide: DIToken.SCOPE_KEY,
           useValue: SCOPE_KEY
         },
-        MyJwtAuthGuard,
+        CustomJwtAuthGuard,
         GenericModule.loadServiceProvider(entity, 'get', customProvider),
         GenericModule.loadServiceProvider(entity, 'update', customProvider),
         GenericModule.loadServiceProvider(entity, 'create', customProvider)
