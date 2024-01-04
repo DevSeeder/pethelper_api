@@ -1,4 +1,11 @@
-import { Controller, Get, Inject, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Inject,
+  Query,
+  UseGuards,
+  UseInterceptors
+} from '@nestjs/common';
 import { SearchExpenseDto } from 'src/microservice/application/dto/search/search-Expense.dto';
 import { ExpenseResponse } from 'src/microservice/application/dto/response/expense.response';
 import { Expense } from 'src/microservice/domain/schemas/entity/expenses.schema';
@@ -16,7 +23,11 @@ import {
   FieldSchema
 } from '@devseeder/nestjs-microservices-schemas';
 import { AbstractController } from '@devseeder/nestjs-microservices-commons';
+import { CustomInterceptor } from 'src/core/custom.interceptor';
+import { MetaScope } from '@devseeder/nestjs-microservices-core';
+import { CustomJwtAuthGuard } from 'src/core/custom-jwt-auth.guard';
 
+@UseInterceptors(CustomInterceptor)
 @Controller(DependencyEntityTokens.EXPENSE)
 export class ExpensesGetController extends AbstractController<
   Expense,
@@ -43,6 +54,11 @@ export class ExpensesGetController extends AbstractController<
     );
   }
 
+  @UseGuards(CustomJwtAuthGuard)
+  @MetaScope({
+    entity: DependencyEntityTokens.EXPENSE,
+    accessKey: 'groupByPetsAndCategory'
+  })
   @Get(`/groupby/pets/category`)
   async groupByPetsAndCategory(
     @Query() params: SearchExpenseDto
@@ -55,6 +71,11 @@ export class ExpensesGetController extends AbstractController<
     return this.getService.groupByPetsAndCategory(params);
   }
 
+  @UseGuards(CustomJwtAuthGuard)
+  @MetaScope({
+    entity: DependencyEntityTokens.EXPENSE,
+    accessKey: 'groupByCategoryAndPet'
+  })
   @Get(`/groupby/category/pets`)
   async groupByCategoryAndPet(
     @Query() params: SearchExpenseDto
