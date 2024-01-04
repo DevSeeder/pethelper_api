@@ -23,11 +23,13 @@ import {
   FieldSchema
 } from '@devseeder/nestjs-microservices-schemas';
 import { AbstractController } from '@devseeder/nestjs-microservices-commons';
-import { CustomInterceptor } from 'src/core/custom.interceptor';
-import { MetaScope } from '@devseeder/nestjs-microservices-core';
+import {
+  MetaDataInterceptor,
+  MetaScope
+} from '@devseeder/nestjs-microservices-core';
 import { CustomJwtAuthGuard } from 'src/core/custom-jwt-auth.guard';
 
-@UseInterceptors(CustomInterceptor)
+@UseInterceptors(MetaDataInterceptor)
 @Controller(DependencyEntityTokens.EXPENSE)
 export class ExpensesGetController extends AbstractController<
   Expense,

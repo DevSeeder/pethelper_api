@@ -3,17 +3,17 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import configuration from '../../../config/configuration';
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import { CustomInterceptor } from 'src/core/custom.interceptor';
 import { CustomJwtAuthGuard } from 'src/core/custom-jwt-auth.guard';
 import { EntitySetupConfig } from 'src/microservice/domain/setup/entity-stup.injector';
 import {
   GeneratorModuleOptions,
   GenericModuleGenerator
 } from '@devseeder/nestjs-microservices-commons';
+import { MetaDataInterceptor } from '@devseeder/nestjs-microservices-core';
 
 const moduleOptions = {
   authGuard: CustomJwtAuthGuard,
-  interceptor: CustomInterceptor,
+  interceptor: MetaDataInterceptor,
   configuration: configuration,
   modelTokens: EntitySetupConfig
 };
@@ -39,7 +39,7 @@ const moduleOptions = {
   providers: [
     {
       provide: APP_INTERCEPTOR,
-      useClass: CustomInterceptor
+      useClass: MetaDataInterceptor
     }
   ],
   exports: []
