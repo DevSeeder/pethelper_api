@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { AbstractDomain } from '@devseeder/nestjs-microservices-commons';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { AbstractDomain } from '../../../../../../nestjs-microservices-commons/src/schema/domain.schema';
 import { DependencyEntityTokens } from 'src/microservice/application/app.constants';
 
 export type AnimalGroupDocument = AnimalGroup & Document;
