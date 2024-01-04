@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import {
   Expense,
   ExpenseDocument
-} from 'src/microservice/domain/schemas/entity/expenses.schema';
+} from 'src/microservice/domain/schemas/expenses.schema';
 import { AggExpensesByPetAndCategoryDto } from 'src/microservice/application/dto/aggregate/agg-expenses-by-pet-and-category.dto';
 import { SearchExpenseDto } from 'src/microservice/application/dto/search/search-expense.dto';
 import { GenericRepository } from '@devseeder/nestjs-microservices-commons';

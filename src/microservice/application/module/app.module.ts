@@ -5,7 +5,7 @@ import configuration from '../../../config/configuration';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { CustomInterceptor } from 'src/core/custom.interceptor';
 import { CustomJwtAuthGuard } from 'src/core/custom-jwt-auth.guard';
-import { ProjectEntityConfig } from 'src/microservice/domain/entity/model-entity-token.injector';
+import { EntitySetupConfig } from 'src/microservice/domain/setup/entity-stup.injector';
 import {
   GeneratorModuleOptions,
   GenericModuleGenerator
@@ -15,7 +15,7 @@ const moduleOptions = {
   authGuard: CustomJwtAuthGuard,
   interceptor: CustomInterceptor,
   configuration: configuration,
-  modelTokens: ProjectEntityConfig
+  modelTokens: EntitySetupConfig
 };
 
 @Module({

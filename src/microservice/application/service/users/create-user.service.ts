@@ -12,7 +12,7 @@ import {
   GenericRepository,
   GenericCreateUserService
 } from '@devseeder/nestjs-microservices-commons';
-import { User } from 'src/microservice/domain/schemas/entity/users.schema';
+import { User } from 'src/microservice/domain/schemas/users.schema';
 import { UserBodyDto } from '@devseeder/nestjs-microservices-core/dist/dto/user.dto';
 import { ClientAuthService } from '@devseeder/nestjs-microservices-core';
 import { DIToken, PROJECT_KEY } from '../../app.constants';

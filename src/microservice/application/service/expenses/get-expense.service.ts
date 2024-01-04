@@ -1,5 +1,5 @@
 import { Inject, Injectable, Scope, forwardRef } from '@nestjs/common';
-import { Expense } from '../../../../domain/schemas/entity/expenses.schema';
+import { Expense } from '../../../domain/schemas/expenses.schema';
 import { ExpenseResponse } from 'src/microservice/application/dto/response/expense.response';
 import { SearchExpenseDto } from 'src/microservice/application/dto/search/search-expense.dto';
 import {
@@ -18,14 +18,14 @@ import {
 import {
   ExpenseCategory,
   ExpenseCategoryDocument
-} from 'src/microservice/domain/schemas/entity/expense-categories.schema';
+} from 'src/microservice/domain/schemas/expense-categories.schema';
 import {
   GenericGetService,
   Search,
   SearchDomainDto
 } from '@devseeder/nestjs-microservices-commons';
-import { User } from 'src/microservice/domain/schemas/entity/users.schema';
-import { Pet } from 'src/microservice/domain/schemas/entity/pets.schema';
+import { User } from 'src/microservice/domain/schemas/users.schema';
+import { Pet } from 'src/microservice/domain/schemas/pets.schema';
 import { PetResponse } from 'src/microservice/application/dto/response/pet.response';
 import { SearchPetDto } from 'src/microservice/application/dto/search/search-pet.dto';
 import { REQUEST } from '@nestjs/core';
@@ -33,7 +33,7 @@ import {
   EntitySchema,
   FieldSchema
 } from '@devseeder/nestjs-microservices-schemas';
-import { ExpensesRepository } from 'src/microservice/adapter/repository/entity/expenses.repository';
+import { ExpensesRepository } from 'src/microservice/adapter/repository/expenses.repository';
 
 @Injectable({ scope: Scope.REQUEST })
 export class GetExpenseService extends GenericGetService<

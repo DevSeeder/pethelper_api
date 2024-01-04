@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { SearchExpenseDto } from 'src/microservice/application/dto/search/search-Expense.dto';
 import { ExpenseResponse } from 'src/microservice/application/dto/response/expense.response';
-import { Expense } from 'src/microservice/domain/schemas/entity/expenses.schema';
+import { Expense } from 'src/microservice/domain/schemas/expenses.schema';
 import { ExpenseBodyDto } from 'src/microservice/application/dto/body/expense-body.dto';
 import { DependencyEntityTokens } from 'src/microservice/application/app.constants';
 import {
@@ -17,7 +17,7 @@ import {
   SchemaDependecyTokens
 } from '@devseeder/nestjs-microservices-schemas';
 import { GroupExpensesByPetAndCategoryResponse } from 'src/microservice/application/dto/response/groupby/group-expenses-by-pet-and-category.response';
-import { GetExpenseService } from 'src/microservice/application/service/entity/expenses/get-expense.service';
+import { GetExpenseService } from 'src/microservice/application/service/expenses/get-expense.service';
 import {
   EntitySchema,
   FieldSchema

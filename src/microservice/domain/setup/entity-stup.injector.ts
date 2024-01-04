@@ -1,30 +1,27 @@
-import { Color, ColorsSchema } from '../schemas/entity/colors.schema';
-import {
-  AnimalType,
-  AnimalTypesSchema
-} from '../schemas/entity/animal-type.schema';
+import { Color, ColorsSchema } from '../schemas/colors.schema';
+import { AnimalType, AnimalTypesSchema } from '../schemas/animal-type.schema';
 import {
   AnimalGroup,
   AnimalGroupsSchema
-} from '../schemas/entity/animal-group.schema';
-import { Race, RacesSchema } from '../schemas/entity/races.schema';
+} from '../schemas/animal-group.schema';
+import { Race, RacesSchema } from '../schemas/races.schema';
 import {
   ExpenseCategory,
   ExpenseCategoriesSchema
-} from '../schemas/entity/expense-categories.schema';
-import { Animal, AnimalsSchema } from '../schemas/entity/animals.schema';
-import { Pet, PetsSchema } from '../schemas/entity/pets.schema';
-import { Expense, ExpensesSchema } from '../schemas/entity/expenses.schema';
-import { User, UsersSchema } from '../schemas/entity/users.schema';
+} from '../schemas/expense-categories.schema';
+import { Animal, AnimalsSchema } from '../schemas/animals.schema';
+import { Pet, PetsSchema } from '../schemas/pets.schema';
+import { Expense, ExpensesSchema } from '../schemas/expenses.schema';
+import { User, UsersSchema } from '../schemas/users.schema';
 import { DependencyEntityTokens } from 'src/microservice/application/app.constants';
 import { ExpensesGetController } from 'src/microservice/adapter/controller/entity/expenses-get.controller';
-import { GetExpenseService } from 'src/microservice/application/service/entity/expenses/get-expense.service';
-import { ExpensesRepository } from 'src/microservice/adapter/repository/entity/expenses.repository';
+import { GetExpenseService } from 'src/microservice/application/service/expenses/get-expense.service';
+import { ExpensesRepository } from 'src/microservice/adapter/repository/expenses.repository';
 import { ModelEntityTokens } from '@devseeder/nestjs-microservices-commons';
 import { ClientAuthService } from '@devseeder/nestjs-microservices-core';
 import { CreateUserService } from 'src/microservice/application/service/users/create-user.service';
 
-export const ProjectEntityConfig: ModelEntityTokens = {
+export const EntitySetupConfig: ModelEntityTokens = {
   colors: {
     modelName: Color.name,
     schema: ColorsSchema,
